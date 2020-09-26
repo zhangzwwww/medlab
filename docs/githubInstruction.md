@@ -17,7 +17,7 @@ git checkout -b zzw/add_github_instruction # 建立新分支
 git commit --amend
 ```
 
-命令可以将这次提交合并到上次提交中
+命令可以将这次提交合并到上次提交中, 之后在 push 的时候后面要加上 -f 强制上传。
 
 在写 commit message 的时候写上这个提交做的事情如 feat（新功能）fix（bug）doc（文档） chore（杂事）等等
 
