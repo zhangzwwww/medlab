@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoginForm</class>
+ <widget class="QDialog" name="LoginForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>368</width>
+    <height>288</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>登录</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>91</y>
+     <width>198</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0" colspan="2">
+     <widget class="QLineEdit" name="id_input"/>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="retrive_button">
+      <property name="styleSheet">
+       <string notr="true">border: none;
+color: #2376b7;</string>
+      </property>
+      <property name="text">
+       <string>找回密码</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="sign_up_button">
+      <property name="styleSheet">
+       <string notr="true">border: none;
+color: #2376b7;</string>
+      </property>
+      <property name="text">
+       <string>注册账号</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QPushButton" name="sign_in_button">
+      <property name="text">
+       <string>登录</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QLineEdit" name="pwd_input"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>retrive_button</tabstop>
+  <tabstop>pwd_input</tabstop>
+  <tabstop>id_input</tabstop>
+  <tabstop>sign_up_button</tabstop>
+  <tabstop>sign_in_button</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
