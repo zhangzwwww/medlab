@@ -25,16 +25,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        communhttp.cpp \
         loginchecker.cpp \
         loginform.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        patient.cpp \
+        userinfo.cpp
 
 HEADERS += \
+        communhttp.h \
         errorcode.h \
         loginchecker.h \
         loginform.h \
-        mainwindow.h
+        mainwindow.h \
+        patient.h \
+        userinfo.h
 
 FORMS += \
         loginform.ui \

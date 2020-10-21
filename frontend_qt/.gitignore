@@ -1,0 +1,3 @@
+# ignore the ./build directory
+# note: ./build is for building project
+./build
