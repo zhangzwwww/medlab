@@ -45,6 +45,7 @@ HEADERS += \
         test_window.h \
         urlbase.h \
         userinfo.h
+        struct_define.h
 
 FORMS += \
         loginform.ui \
