@@ -32,9 +32,9 @@ QNetworkReply* communhttp::http_post(QNetworkRequest request, QByteArray data){
 }
 
 QNetworkReply* communhttp::http_head(QNetworkRequest request){
-    return nullptr;
+    return manager->head(request);
 }
 
 QNetworkReply* communhttp::http_delete(QNetworkRequest request){
-    return nullptr;
+    return manager->deleteResource(request);
 }

@@ -2,6 +2,7 @@
 #include "ui_test_window.h"
 
 #include "communhttp.h"
+#include "userinfo.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -12,12 +13,19 @@ test_window::test_window(QWidget *parent) :
     ui->setupUi(this);
     this->setCentralWidget(ui->plainTextEdit);
 
+    userinfo user;
+    // declare a communicator for http request
+    communhttp commuicator;
+
+    // Debug: for testing
+    bool a = user.get_user_info(&commuicator);
+    qDebug() << a;
+
     QNetworkRequest request;
     request.setUrl(QUrl("https://www.baidu.com"));
     request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
 
-    // declare a communicator for http request
-    communhttp commuicator;
+
     QNetworkReply* reply = commuicator.http_get(request);
     qDebug() << reply->readAll() << request.rawHeader("User-Agent");
 

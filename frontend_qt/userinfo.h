@@ -29,6 +29,11 @@ public:
     // constructor
     userinfo();
 
+    // judge whether the user is logged in
+    bool is_logged_in();
+    // update the logged in status
+    void update_login(bool status);
+
     /*---------------HTTP Communication Methods----------------------*/
     // TODO: all communication methods need handle data returned by server
 
