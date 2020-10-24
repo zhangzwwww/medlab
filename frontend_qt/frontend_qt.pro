@@ -32,6 +32,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         patient.cpp \
+        test_window.cpp \
         userinfo.cpp
 
 HEADERS += \
@@ -41,11 +42,13 @@ HEADERS += \
         loginform.h \
         mainwindow.h \
         patient.h \
+        test_window.h \
         userinfo.h
 
 FORMS += \
         loginform.ui \
-        mainwindow.ui
+        mainwindow.ui \
+        test_window.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

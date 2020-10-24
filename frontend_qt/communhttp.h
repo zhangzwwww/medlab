@@ -11,15 +11,26 @@ class communhttp : public QObject{
 private:
     // the network manager handling the communication
     QNetworkAccessManager * manager;
-    // the request sent to server: GET, POST, etc.
-    QNetworkRequest request;
 
 private slots:
     // after reply is finished -- do the following
     void replyfinished(QNetworkReply *reply);
 
 public:
+    // constructor
     explicit communhttp(QObject *parent = nullptr);
+
+    // Handle all GET operation, given the http request
+    QNetworkReply* http_get(QNetworkRequest request);
+
+    // Handle all POST operation, given the http request
+    QNetworkReply* http_post(QNetworkRequest request);
+
+    // Handle all DELETE operation, given the http request
+    QNetworkReply* http_delete(QNetworkRequest request);
+
+    // Handle HEAD operation, give http request
+    QNetworkReply* http_head(QNetworkRequest request);
 };
 
 #endif // COMMUNHTTP_H
