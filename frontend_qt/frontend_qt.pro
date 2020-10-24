@@ -43,6 +43,7 @@ HEADERS += \
         mainwindow.h \
         patient.h \
         test_window.h \
+        urlbase.h \
         userinfo.h
 
 FORMS += \

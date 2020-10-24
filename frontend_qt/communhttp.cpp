@@ -1,5 +1,12 @@
 #include "communhttp.h"
 
+/* Communication with http class.
+ * The method provide an interface for basic operations of http
+ *
+ * Note: in the whole application, only need keep
+ * one communhttp instance
+ */
+
 communhttp::communhttp(QObject *parent) : QObject (parent)
 {
     manager = new QNetworkAccessManager();
@@ -20,8 +27,8 @@ QNetworkReply* communhttp::http_get(QNetworkRequest request){
     return manager->get(request);
 }
 
-QNetworkReply* communhttp::http_post(QNetworkRequest request){
-    return nullptr;
+QNetworkReply* communhttp::http_post(QNetworkRequest request, QByteArray data){
+    return manager->post(request, data);
 }
 
 QNetworkReply* communhttp::http_head(QNetworkRequest request){

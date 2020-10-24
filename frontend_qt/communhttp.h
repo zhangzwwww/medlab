@@ -24,7 +24,7 @@ public:
     QNetworkReply* http_get(QNetworkRequest request);
 
     // Handle all POST operation, given the http request
-    QNetworkReply* http_post(QNetworkRequest request);
+    QNetworkReply* http_post(QNetworkRequest request, QByteArray data);
 
     // Handle all DELETE operation, given the http request
     QNetworkReply* http_delete(QNetworkRequest request);

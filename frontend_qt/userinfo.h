@@ -2,11 +2,20 @@
 #define USERINFO_H
 
 #include <QString>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QByteArray>
 #include "communhttp.h"
+#include "urlbase.h"
 
 class userinfo
 {
 private:
+    bool is_login;
+
+    // Content of the user information
     // TODO: decide content of a user
     int id;
     QString email;
@@ -20,11 +29,14 @@ public:
     // constructor
     userinfo();
 
-    // GET: get user info with a token
+    /*---------------HTTP Communication Methods----------------------*/
+    // TODO: all communication methods need handle data returned by server
+
+    // GET: get user info with a token from the server
     // return true if success
     bool get_user_info(communhttp* requester);
 
-    // POST: register as a new user
+    // POST: register as a new user to the server
     // return true if success
     bool register_user_info(communhttp* requester);
 
