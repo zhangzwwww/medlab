@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,20 +26,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        communhttp.cpp \
         loginchecker.cpp \
         loginform.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        patient.cpp \
+        test_window.cpp \
+        userinfo.cpp
 
 HEADERS += \
+        communhttp.h \
         errorcode.h \
         loginchecker.h \
         loginform.h \
-        mainwindow.h
+        mainwindow.h \
+        patient.h \
+        test_window.h \
+        urlbase.h \
+        userinfo.h
 
 FORMS += \
         loginform.ui \
-        mainwindow.ui
+        mainwindow.ui \
+        test_window.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
