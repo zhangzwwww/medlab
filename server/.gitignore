@@ -143,5 +143,6 @@ dmypy.json
 .prof
 
 config.yaml
+Dockerfile
 
 # End of https://www.toptal.com/developers/gitignore/api/python
