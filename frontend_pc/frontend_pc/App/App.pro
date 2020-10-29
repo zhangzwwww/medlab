@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2020-10-12T17:31:12
+# Project created by QtCreator 2020-10-21T22:20:45
 #
 #-------------------------------------------------
 
@@ -9,7 +9,7 @@ QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = frontend_qt
+TARGET = App
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -45,6 +45,7 @@ HEADERS += \
         test_window.h \
         urlbase.h \
         userinfo.h
+        struct_define.h
 
 FORMS += \
         loginform.ui \
@@ -55,8 +56,3 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-RESOURCES += \
-    resource.qrc
-
-DISTFILES +=
