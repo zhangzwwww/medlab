@@ -25,30 +25,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        Login/loginchecker.cpp \
+        Login/loginform.cpp \
         commu/communhttp.cpp \
         commu/patient.cpp \
         commu/userinfo.cpp \
-        loginchecker.cpp \
-        loginform.cpp \
         main.cpp \
         mainwindow.cpp \
 
 HEADERS += \
+        Login/errorcode.h \
+        Login/loginchecker.h \
+        Login/loginform.h \
         commu/communhttp.h \
         commu/patient.h \
         commu/urlbase.h \
         commu/userinfo.h \
-        errorcode.h \
-        loginchecker.h \
-        loginform.h \
         mainwindow.h \
         struct_define.h
 
 FORMS += \
-        loginform.ui \
+        Login/loginform.ui \
         mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    Login/login.qss
