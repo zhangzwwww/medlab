@@ -5,9 +5,13 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+<<<<<<< HEAD:frontend_pc/frontend_pc/App/App.pro
 
+=======
+>>>>>>> 5a1191dc221a70059291b2591db07d6910a16be4:frontend_qt/frontend_qt.pro
 TARGET = App
 TEMPLATE = app
 
@@ -25,22 +29,36 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        loginchecker.cpp \
-        loginform.cpp \
+        Login/loginchecker.cpp \
+        Login/loginform.cpp \
+        commu/communhttp.cpp \
+        commu/patient.cpp \
+        commu/userinfo.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
 
 HEADERS += \
-        errorcode.h \
-        loginchecker.h \
-        loginform.h \
-        mainwindow.h
+        Login/errorcode.h \
+        Login/loginchecker.h \
+        Login/loginform.h \
+        commu/communhttp.h \
+        commu/patient.h \
+        commu/urlbase.h \
+        commu/userinfo.h \
+        mainwindow.h \
+        struct_define.h
 
 FORMS += \
-        loginform.ui \
+        Login/loginform.ui \
         mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+<<<<<<< HEAD:frontend_pc/frontend_pc/App/App.pro
+=======
+
+DISTFILES += \
+    Login/login.qss
+>>>>>>> 5a1191dc221a70059291b2591db07d6910a16be4:frontend_qt/frontend_qt.pro
