@@ -35,7 +35,6 @@ SOURCES += \
         mainwindow.cpp \
 
 HEADERS += \
-        Login/errorcode.h \
         Login/loginchecker.h \
         Login/loginform.h \
         commu/communhttp.h \
@@ -43,6 +42,7 @@ HEADERS += \
         commu/urlbase.h \
         commu/userinfo.h \
         mainwindow.h \
+        errorcode.h \
         struct_define.h
 
 FORMS += \
