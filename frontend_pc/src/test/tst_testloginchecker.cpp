@@ -1,7 +1,7 @@
 #include <QtTest>
 #include <QCoreApplication>
 
-#include "../App/loginchecker.h"
+#include "../app/login/loginchecker.h"
 
 // add necessary includes here
 

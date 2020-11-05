@@ -7,6 +7,6 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES +=  tst_testloginchecker.cpp \
-            ../App/loginchecker.cpp
+            ../app/login/loginchecker.cpp
 
-HEADERS += ../App/loginchecker.h
+HEADERS += ../app/login/loginchecker.h
