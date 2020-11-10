@@ -17,7 +17,7 @@ private:
 
     // Content of the user information
     // TODO: decide content of a user
-    int id;
+    QString id;
     QString email;
     QString ctime;
     QString role;
@@ -31,8 +31,19 @@ public:
 
     // judge whether the user is logged in
     bool is_logged_in();
+
     // update the logged in status
     void update_login(bool status);
+
+    // get token of user locally
+    QString _token();
+    // get email of user locally
+    QString _email();
+
+    // handle user log in
+    // input: email, password
+    // return true if success
+    bool log_user_in(communhttp* requester, QString email, QString pw);
 
     /*---------------HTTP Communication Methods----------------------*/
     // TODO: all communication methods need handle data returned by server
@@ -43,11 +54,11 @@ public:
 
     // POST: register as a new user to the server
     // return true if success
-    bool register_user_info(communhttp* requester);
+    bool register_user_info(communhttp* requester, QString email, QString pw);
 
     // POST: get a new user token
     // return true if success
-    bool get_user_token(communhttp* requester);
+    bool get_user_token(communhttp* requester, QString email, QString pw);
 
     // DELETE: revoke a user token
     // return true if success
