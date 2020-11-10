@@ -52,7 +52,7 @@ class AuthToken(Resource):
         token = request.headers.get('X-Auth-Token')
         if existsToken(token):
             return "ok", 200
-        return "Invalid token", 400
+        return "Invalid token", 401
 
     def delete(self):
         token = request.headers['X-Auth-Token']
@@ -92,7 +92,7 @@ class AuthUser(Resource):
         else:
             print("user already registered!")
 
-            resp = Response(status=400)
+            resp = Response(status=409)
 
             return resp
 
