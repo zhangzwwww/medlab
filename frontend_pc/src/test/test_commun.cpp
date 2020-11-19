@@ -1,4 +1,4 @@
-#include "tst_testcommun.h"
+#include "test_commun.h"
 
 TestCommun::TestCommun(){
 

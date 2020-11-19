@@ -13,13 +13,13 @@ SOURCES +=  test_login.cpp \
             ../app/commu/patient.cpp \
             ../app/commu/userinfo.cpp \
             test_main.cpp \
-            tst_testcommun.cpp
+            test_commun.cpp
 
 HEADERS += ../app/Login/loginchecker.h \
     ../app/commu/communhttp.h \
     ../app/commu/patient.h \
     ../app/commu/urlbase.h \
     ../app/commu/userinfo.h \
-    tst_testcommun.h \
+    test_commun.h \
     test_login.h
 
