@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QFileDialog>
+#include <QDebug>
 
 // VTK
 #include "vtkAutoInit.h"
@@ -69,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     init_VTKView();
+
+    ui->data_manager->clear();
 
     connect(ui->actionLoadImage, SIGNAL(triggered()), this, SLOT(on_loadImage_clicked()));
 	connect(ui->actionVolume_Rendering, SIGNAL(triggered()), this, SLOT(on_Volume_clicked()));
@@ -162,6 +165,9 @@ void MainWindow::on_loadImage_clicked()
 	//�����Զ��庯����ʾ����ͼ
 	this->showImage();
 	//dataReady = true;
+    data_tree_.push_back({fileName});
+    data_tree_.back().push_back("original");
+    updataDataManager();
 }
 
 
@@ -368,4 +374,44 @@ void MainWindow::on_start_thresholding_button_clicked()
     params.max_value = ui->in_thresh_1_max_value->value();
     params.thresh_type = ui->in_thresh_2_type->currentIndex();
 //    TODO
+}
+
+void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
+{
+    qDebug()<<"data manageer item clicked: column("<<column<<")\t"<<item->text(column)<<"\t top counts:"<<ui->data_manager->topLevelItemCount();
+    if (item->parent() == nullptr) {
+        int top_num = ui->data_manager->topLevelItemCount();
+        int cur_num = ui->data_manager->indexOfTopLevelItem(item);
+        qDebug()<<"this is top item:\t"<<cur_num<<"\t"<<ui->data_manager->topLevelItem(cur_num)->checkState(column)<<"\t"<<item->checkState(column);
+        if (ui->data_manager->topLevelItem(cur_num)->checkState(0) == Qt::Checked) {
+            for (int i = 0; i < top_num; i++) {
+                if (i != cur_num) {
+                    ui->data_manager->topLevelItem(i)->setCheckState(0, Qt::Unchecked);
+                } else {
+                    ui->data_manager->topLevelItem(i)->setCheckState(0, Qt::Checked);
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::updataDataManager()
+{
+    if (data_tree_.empty()) {
+        return;
+    }
+    ui->data_manager->clear();
+    QTreeWidgetItem *folder_name;
+    for (vector<QString> &vec : data_tree_) {
+        if (vec.empty()) {
+            continue;
+        }
+        folder_name = new QTreeWidgetItem(ui->data_manager, QStringList(vec[0]));
+        folder_name->setCheckState(0, Qt::Unchecked);
+        int len = int(vec.size());
+        for (int i = 1; i < len; i++) {
+            QTreeWidgetItem *item = new QTreeWidgetItem(folder_name, QStringList(vec[i]));
+        }
+    }
+    folder_name->setCheckState(0, Qt::Checked);
 }

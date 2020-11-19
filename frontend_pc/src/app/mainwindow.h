@@ -2,8 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QString>
+
+#include <vector>
 
 #include "vtkSmartPointer.h"
+
+using std::vector;
 
 class vtkImageViewer2;
 class vtkImageData;
@@ -23,6 +30,7 @@ public:
 private:
     void init_VTKView();
     void showImage();
+    void updataDataManager();
 
 private slots:
     void on_loadImage_clicked();
@@ -46,10 +54,13 @@ private slots:
 
     void on_start_thresholding_button_clicked();
 
+    void on_data_manager_itemClicked(QTreeWidgetItem *item, int column);
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkImageData> image_;
     int dims[3];
+    vector<vector<QString>> data_tree_;
 
 private:
     Ui::MainWindow *ui;
