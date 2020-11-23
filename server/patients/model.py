@@ -19,6 +19,31 @@ class Patient(db.Model):
             'age': self.age,
         }
 
+# class Image(db.Model):
+    # __tablename__ = 'image'
+
+    # id = db.Column(db.String, unique=True, primary_key=True)
+    # name = db.Column(db.String)
+    # ctime = db.Column(db.DateTime)
+
+    # def serialize(self):
+        # return {
+            # 'id': self.id,
+            # 'name': self.name,
+            # 'ctime': str(self.ctime)
+        # }
+
+
+# class ImageService:
+
+    # def createImage(image):
+        # db.session.add(image)
+        # db.session.commit()
+        # return True
+
+    # def getImage(id):
+        # image = Image.query.filter_by(id=id).first()
+        # return image
 
 class PatientService:
     def createPatient(patient):

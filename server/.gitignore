@@ -144,5 +144,6 @@ dmypy.json
 
 config.yaml
 Dockerfile
+app.py.swap
 
 # End of https://www.toptal.com/developers/gitignore/api/python

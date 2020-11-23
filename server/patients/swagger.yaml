@@ -6,7 +6,91 @@ info:
 basePath: "/v1"
 tags:
   - name: "patient"
+  - name: "image"
 paths:
+  /images:
+    get:
+      tags:
+        - "image"
+      summary: "get images by patientId and ctime"
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: "formData"
+          name: patientId
+          type: "string"
+          required: True
+        - in: "formData"
+          name: ctime
+          type: "string"
+          required: True
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Image"
+        "401":
+          description: "Unauthorized"
+    post:
+      tags:
+        - "image"
+      summary: "upload file"
+      consumes:
+        - application/x-www-form-urlencoded
+        - multipart/form-data
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: "formData"
+          name: patientId
+          type: "string"
+          required: True
+        - in: "formData"
+          name: ctime
+          type: "string"
+          required: True
+        - in: "formData"
+          name: uploaded_file
+          type: "file"
+          required: True
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+  /image/ctime:
+    get:
+      tags:
+        - "image"
+      summary: "get image ctimes"
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: True
+        - in: "formData"
+          name: patientId
+          type: "string"
+          required: True
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CTime"
+        "401":
+          description: "Unauthorized"
   /patient:
     get:
       tags:
@@ -128,8 +212,7 @@ definitions:
     type: "object"
     properties:
       id:
-        type: "integer"
-        format: "int64"
+        type: "string"
       name:
         type: "string"
       gender:
@@ -139,4 +222,21 @@ definitions:
         format: "date"
       age:
         type: "integer"
-
+  Image:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      content:
+        type: "string"
+      patientId:
+        type: "string"
+      ctime:
+        type: "string"
+  CTime:
+    type: "object"
+    properties:
+      ctime:
+        type: "string"
