@@ -597,113 +597,113 @@ void MainWindow::image_threshold(vtkImageData* input_image,
 
 
 
-void MainWindow::on_pushButton_4_clicked()
-{
-    // TODO: start fusion
-    FusionParams fusion_params;
-    //fusion_params.img0 = ui->in_fusion_0_img0->currentText().toStdString();
-   // fusion_params.img1 = ui->in_fusion_1_img1->currentText().toStdString();
-    //fusion_params.opacity = double(ui->in_fusion_2_opacity->value())/100.0;
-    //fusion_params.fused_img_name = ui->in_fusion_3_fused_img_name->text().toStdString();
-}
+//void MainWindow::on_pushButton_4_clicked()
+//{
+//    // TODO: start fusion
+//    FusionParams fusion_params;
+//    //fusion_params.img0 = ui->in_fusion_0_img0->currentText().toStdString();
+//   // fusion_params.img1 = ui->in_fusion_1_img1->currentText().toStdString();
+//    //fusion_params.opacity = double(ui->in_fusion_2_opacity->value())/100.0;
+//    //fusion_params.fused_img_name = ui->in_fusion_3_fused_img_name->text().toStdString();
+//}
 
-void MainWindow::on_in_fusion_2_opacity_valueChanged(int value)
-{
-    //ui->out_fusion_0_opacity->setText(QString::number(double(value)/100.0));
-}
+//void MainWindow::on_in_fusion_2_opacity_valueChanged(int value)
+//{
+//    //ui->out_fusion_0_opacity->setText(QString::number(double(value)/100.0));
+//}
 
-void MainWindow::on_pushButton_5_clicked()
-{
-//    TODO: Load fixed image
-    QString fileName = QFileDialog::getOpenFileName(
-            this,
-            tr("open a file."),
-            "D:/",
-            tr("All files(*.*)"));
-    //ui->in_registration_0_fixed_img_name->setText(fileName);
-}
+//void MainWindow::on_pushButton_5_clicked()
+//{
+////    TODO: Load fixed image
+//    QString fileName = QFileDialog::getOpenFileName(
+//            this,
+//            tr("open a file."),
+//            "D:/",
+//            tr("All files(*.*)"));
+//    //ui->in_registration_0_fixed_img_name->setText(fileName);
+//}
 
-void MainWindow::on_pushButton_6_clicked()
-{
-//    TODO: Load moving image
-    QString fileName = QFileDialog::getOpenFileName(
-            this,
-            tr("open a file."),
-            "D:/",
-            tr("All files(*.*)"));
-    //ui->in_registration_1_moving_img_name->setText(fileName);
-}
+//void MainWindow::on_pushButton_6_clicked()
+//{
+////    TODO: Load moving image
+//    QString fileName = QFileDialog::getOpenFileName(
+//            this,
+//            tr("open a file."),
+//            "D:/",
+//            tr("All files(*.*)"));
+//    //ui->in_registration_1_moving_img_name->setText(fileName);
+//}
 
-void MainWindow::on_pushButton_7_clicked()
-{
-//    TODO: Registration
-    RegistrationParams registration_params;
-   /* registration_params.fixed_img_name = ui->in_registration_0_fixed_img_name->text().toStdString();
-    registration_params.moving_img_name = ui->in_registration_1_moving_img_name->text().toStdString();
-    registration_params.registration_type = RegistrationType(ui->in_registration_4_regi_type->currentIndex());
-    registration_params.metrics_type = MetricsType(ui->in_registration_5_metrics_type->currentIndex());*/
-}
+//void MainWindow::on_pushButton_7_clicked()
+//{
+////    TODO: Registration
+//    RegistrationParams registration_params;
+//   /* registration_params.fixed_img_name = ui->in_registration_0_fixed_img_name->text().toStdString();
+//    registration_params.moving_img_name = ui->in_registration_1_moving_img_name->text().toStdString();
+//    registration_params.registration_type = RegistrationType(ui->in_registration_4_regi_type->currentIndex());
+//    registration_params.metrics_type = MetricsType(ui->in_registration_5_metrics_type->currentIndex());*/
+//}
 
-void MainWindow::on_pushButton_clicked()
-{
-//    TODO: Generated surface
-    //ProcessParams process_params;
-    //process_params.img_name = ui->in_gray_0_img->currentText().toStdString();
-    //process_params.isosurface_value = ui->in_gray_1_isosurface_value->value();
-    //process_params.surface_name = ui->in_gray_2_surface_name->text().toStdString();
+//void MainWindow::on_pushButton_clicked()
+//{
+////    TODO: Generated surface
+//    //ProcessParams process_params;
+//    //process_params.img_name = ui->in_gray_0_img->currentText().toStdString();
+//    //process_params.isosurface_value = ui->in_gray_1_isosurface_value->value();
+//    //process_params.surface_name = ui->in_gray_2_surface_name->text().toStdString();
 
-}
+//}
 
-void MainWindow::on_start_smoothing_button_clicked()
-{
-    //SmoothingParams params;
-    //params.smooth_type = ui->smoothing_toolBox->currentIndex();
-    //switch (params.smooth_type) {
-    //case 0:
-    //    params.kernel_size = ui->in_smooth_gaussian_0_kernel_size->value();
-    //    params.sigma_x = ui->in_smooth_gaussian_1_sigma_x->value();
-    //    break;
-    //case 1:
-    //    params.kernel_size = ui->in_smooth_mean_0_kernel_size->value();
-    //    break;
-    //case 2:
-    //    params.kernel_size = ui->in_smooth_median_0_kernel_size->value();
-    //    break;
-    //default:
-    //    break;
-    //}
-//    TODO
-}
+//void MainWindow::on_start_smoothing_button_clicked()
+//{
+//    //SmoothingParams params;
+//    //params.smooth_type = ui->smoothing_toolBox->currentIndex();
+//    //switch (params.smooth_type) {
+//    //case 0:
+//    //    params.kernel_size = ui->in_smooth_gaussian_0_kernel_size->value();
+//    //    params.sigma_x = ui->in_smooth_gaussian_1_sigma_x->value();
+//    //    break;
+//    //case 1:
+//    //    params.kernel_size = ui->in_smooth_mean_0_kernel_size->value();
+//    //    break;
+//    //case 2:
+//    //    params.kernel_size = ui->in_smooth_median_0_kernel_size->value();
+//    //    break;
+//    //default:
+//    //    break;
+//    //}
+////    TODO
+//}
 
-void MainWindow::on_detect_edge_button_clicked()
-{
-    EdgeDetectParams params;
-    params.threshold_1 = ui->in_edge_0_thresh_1->value();
-    params.threshold_2 = ui->in_edge_0_thresh_2->value();
-//    TODO
-}
+//void MainWindow::on_detect_edge_button_clicked()
+//{
+//    EdgeDetectParams params;
+//    params.threshold_1 = ui->in_edge_0_thresh_1->value();
+//    params.threshold_2 = ui->in_edge_0_thresh_2->value();
+////    TODO
+//}
 
-void MainWindow::on_start_thresholding_button_clicked()
-{
-	ThresholdingParams params;
-	params.lower_value = this->ui->in_lower_value->value();
-	params.upper_value = this->ui->in_upper_value->value();
+//void MainWindow::on_start_thresholding_button_clicked()
+//{
+//	ThresholdingParams params;
+//	params.lower_value = this->ui->in_lower_value->value();
+//	params.upper_value = this->ui->in_upper_value->value();
 
-	vtkSmartPointer<vtkImageData> image_threshold_result;
+//	vtkSmartPointer<vtkImageData> image_threshold_result;
 
-	image_threshold(image_vtk_, image_threshold_result, params);
+//	image_threshold(image_vtk_, image_threshold_result, params);
 
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	riw_[i]->SetSlice(this->dims[i] / 2);
-	//	riw_[i]->SetInputData(image_threshold_result);
-	//	riw_[i]->SetSliceOrientation(i);
+//	//for (int i = 0; i < 3; i++)
+//	//{
+//	//	riw_[i]->SetSlice(this->dims[i] / 2);
+//	//	riw_[i]->SetInputData(image_threshold_result);
+//	//	riw_[i]->SetSliceOrientation(i);
 
-	//	riw_[i]->Render();
+//	//	riw_[i]->Render();
 
-	//	riw_[i]->GetRenderer()->ResetCamera();
+//	//	riw_[i]->GetRenderer()->ResetCamera();
 
-	//}
+//	//}
 
 
-}
+//}
