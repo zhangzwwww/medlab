@@ -12,6 +12,7 @@ LoginForm::LoginForm(communhttp *commu, userinfo *user_info, QWidget *parent) :
     ui->setupUi(this);
     ui->id_input->setPlaceholderText(tr("账号"));
     ui->pwd_input->setPlaceholderText(tr("密码"));
+    ui->id_input->setFocus();
 
     // initialize communication object
     this->user = user_info;
@@ -84,4 +85,11 @@ void LoginForm::on_retrive_button_clicked()
     qDebug("TODO: find my password back");
     QString id = ui->id_input->text();
     login_checker.RetrievePwd(id);
+}
+
+void LoginForm::on_pwd_input_editingFinished()
+{
+    if (ui->pwd_input->hasFocus()) {
+        on_sign_in_button_clicked();
+    }
 }

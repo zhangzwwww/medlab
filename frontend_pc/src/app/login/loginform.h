@@ -30,6 +30,8 @@ private slots:
 
     void on_retrive_button_clicked();
 
+    void on_pwd_input_editingFinished();
+
 private:
     Ui::LoginForm *ui;
     LoginChecker login_checker;
