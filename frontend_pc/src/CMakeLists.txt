@@ -36,6 +36,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/app
   ${PROJECT_SOURCE_DIR}/app/registration
+  ${PROJECT_SOURCE_DIR}/app/voxel2mesh
   ${PROJECT_SOURCE_DIR}/app/commu
   ${PROJECT_SOURCE_DIR}/app/login
   ${PROJECT_SOURCE_DIR}/app/general_processing
@@ -52,10 +53,11 @@ file(GLOB
      ${PROJECT_SOURCE_DIR}/app/login/*.h
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.h
+     ${PROJECT_SOURCE_DIR}/resources/myapp.rc
 )
 
 # QRC
-# set(PROJECT_QRCS src/.qrc)
+set(PROJECT_QRCS app/mainwindow.qrc)
 
 # UI
 set(PROJECT_UIS app/mainwindow.ui  app/login/loginform.ui)
@@ -75,6 +77,7 @@ target_link_libraries(MedPlatform
                       ${VTK_LIBRARIES}
                       ${ITK_LIBRARIES}
                       Registration
+                      Voxel2Mesh
                       Qt5::Widgets)
 
 # 屏蔽Release运行时的控制台窗口
