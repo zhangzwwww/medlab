@@ -68,8 +68,8 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkPolyDataMapper.h>
 
 #include "struct_define.h"
-#include "RegistrationWorker.h"
-#include "Voxel2Mesh.h"
+#include "registration/RegistrationWorker.h"
+#include "voxel2mesh/Voxel2Mesh.h"
 
 // ITK
 #include <itkImage.h>
