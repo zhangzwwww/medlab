@@ -144,6 +144,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	//const char* path = ":/resources/qssfile/dark_theme.qss";
+	//QFile qssfile(path);
+	//qssfile.open(QFile::ReadOnly);
+	//QString qss;
+	//qss = qssfile.readAll();
+	//this->setStyleSheet(qss);
+
+
 	this->ui->view1->hide();
 	this->ui->view2->hide();
 	this->ui->view3->hide();
@@ -220,7 +228,7 @@ void MainWindow::init_views()
 	//this->ui->view1->GetRenderWindow()->AddRenderer(m_Renderer2D[0]);
 	//this->ui->view2->GetRenderWindow()->AddRenderer(m_Renderer2D[1]);
 	//this->ui->view3->GetRenderWindow()->AddRenderer(m_Renderer2D[2]);
-
+	
 
 	renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
 	renderer3D_->SetBackground(1, 1, 1);

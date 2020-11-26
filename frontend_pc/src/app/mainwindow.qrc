@@ -7,4 +7,7 @@
     <file>../resources/icon/visualization.png</file>
     <file>../resources/icon/registration.png</file>
   </qresource>
+  <qresource prefix="qssfile">
+    <file>../resources/qssfile/dark_theme.qss</file>
+  </qresource>
 </RCC>

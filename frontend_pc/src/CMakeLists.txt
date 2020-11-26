@@ -26,9 +26,13 @@ else(ITK_FOUND)
   message(FATAL_ERROR "ITK not found. Please set ITK_DIR.")
 endif(ITK_FOUND)
 
+set(QT Core Gui Widgets Network DBus Sql)
+find_package(Qt5 REQUIRED ${QT})
+
 # QT
-find_package(Qt5Widgets)
+find_package(Qt5Widgets )
 find_package(Qt5WebEngineWidgets)
+find_package(Qt5Network)
 
 # 包含目录，引入头文件搜索路径
 include_directories(
@@ -51,6 +55,8 @@ file(GLOB
      ${PROJECT_SOURCE_DIR}/app/*.h
      ${PROJECT_SOURCE_DIR}/app/login/*.cpp
      ${PROJECT_SOURCE_DIR}/app/login/*.h
+     ${PROJECT_SOURCE_DIR}/app/commu/*.h
+     ${PROJECT_SOURCE_DIR}/app/commu/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.h
      ${PROJECT_SOURCE_DIR}/resources/myapp.rc
@@ -87,3 +93,5 @@ set_target_properties(${PROJECT_NAME}
 						 
 # 添加子目录
 add_subdirectory(app)
+
+qt5_use_modules(MedPlatform ${QT})

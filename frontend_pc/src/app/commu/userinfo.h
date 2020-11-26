@@ -2,8 +2,8 @@
 #define USERINFO_H
 
 #include <QString>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QByteArray>
