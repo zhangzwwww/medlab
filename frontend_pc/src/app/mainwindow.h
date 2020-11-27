@@ -85,6 +85,8 @@ private slots:
 
     void on_data_manager_itemClicked(QTreeWidgetItem *item, int column);
 
+    void on_addPatientBtn_clicked();
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
