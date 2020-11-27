@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icon/resources">
+        <file>icon/visualization.png</file>
+        <file>icon/registration.png</file>
+        <file>icon/processing.png</file>
+        <file>icon/open.png</file>
+        <file>icon/mesher.png</file>
+        <file>icon/max.png</file>
+        <file>icon/dicom.png</file>
+        <file>qssfile/dark_theme.qss</file>
+    </qresource>
+</RCC>

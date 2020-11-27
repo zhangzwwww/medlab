@@ -714,3 +714,7 @@ void MainWindow::on_start_thresholding_button_clicked()
 
 
 }
+
+void MainWindow::update_data_manager() {
+
+}

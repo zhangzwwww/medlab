@@ -111,3 +111,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     Login/login.qss
+
+RESOURCES     = ../resources/app.qrc
+
+RC_ICONS = ../resources/MedPlatform.ico
+RC_FILE = ../resources/myapp.rc

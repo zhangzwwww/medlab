@@ -890,7 +890,7 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view1" native="true">
+           <widget class="QVTKWidget" name="view1">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -1055,7 +1055,7 @@ background-color: rgb(0, 0, 0);</string>
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view2" native="true"/>
+           <widget class="QVTKWidget" name="view2"/>
           </item>
          </layout>
         </widget>
@@ -1166,7 +1166,7 @@ background-color: rgb(0, 0, 0);</string>
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1191,7 +1191,7 @@ background-color: rgb(0, 0, 0);</string>
         </sizepolicy>
        </property>
        <attribute name="icon">
-        <iconset resource="mainwindow.qrc">
+        <iconset>
          <normaloff>:/icon/resources/icon/registration.png</normaloff>:/icon/resources/icon/registration.png</iconset>
        </attribute>
        <attribute name="title">
@@ -1223,8 +1223,8 @@ background-color: rgb(0, 0, 0);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>507</width>
-                <height>898</height>
+                <width>470</width>
+                <height>876</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1981,7 +1981,7 @@ background-color: rgb(0, 0, 0);</string>
       </widget>
       <widget class="QWidget" name="tab_mesher">
        <attribute name="icon">
-        <iconset resource="mainwindow.qrc">
+        <iconset>
          <normaloff>:/icon/resources/icon/mesher.png</normaloff>:/icon/resources/icon/mesher.png</iconset>
        </attribute>
        <attribute name="title">
@@ -2013,8 +2013,8 @@ background-color: rgb(0, 0, 0);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>528</width>
-                <height>701</height>
+                <width>470</width>
+                <height>728</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2832,7 +2832,7 @@ background-color: rgb(0, 0, 0);</string>
       </widget>
       <widget class="QWidget" name="tab_processing">
        <attribute name="icon">
-        <iconset resource="mainwindow.qrc">
+        <iconset>
          <normaloff>:/icon/resources/icon/processing.png</normaloff>:/icon/resources/icon/processing.png</iconset>
        </attribute>
        <attribute name="title">
@@ -2865,8 +2865,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>240</width>
-                <height>85</height>
+                <width>206</width>
+                <height>78</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2913,8 +2913,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>176</width>
-                <height>50</height>
+                <width>158</width>
+                <height>46</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2948,8 +2948,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>176</width>
-                <height>50</height>
+                <width>445</width>
+                <height>70</height>
                </rect>
               </property>
               <attribute name="label">
@@ -3174,7 +3174,7 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view3" native="true"/>
+           <widget class="QVTKWidget" name="view3"/>
           </item>
          </layout>
         </widget>
@@ -3323,7 +3323,7 @@ border-style: solid;
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view4" native="true"/>
+           <widget class="QVTKWidget" name="view4"/>
           </item>
          </layout>
         </widget>
@@ -3392,7 +3392,7 @@ border-style: solid;
      <x>0</x>
      <y>0</y>
      <width>1161</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTool">
@@ -3417,7 +3417,7 @@ border-style: solid;
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_open_file">
    <property name="icon">
-    <iconset resource="mainwindow.qrc">
+    <iconset>
      <normaloff>:/icon/resources/icon/dicom.png</normaloff>:/icon/resources/icon/dicom.png</iconset>
    </property>
    <property name="text">
@@ -3429,7 +3429,7 @@ border-style: solid;
   </action>
   <action name="action_visualization">
    <property name="icon">
-    <iconset resource="mainwindow.qrc">
+    <iconset>
      <normaloff>:/icon/resources/icon/visualization.png</normaloff>:/icon/resources/icon/visualization.png</iconset>
    </property>
    <property name="text">
@@ -3445,12 +3445,10 @@ border-style: solid;
   <customwidget>
    <class>QVTKWidget</class>
    <extends>QWidget</extends>
-   <header location="global">QVTKWidget.h</header>
+   <header>QVTKWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="mainwindow.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

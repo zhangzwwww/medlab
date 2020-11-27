@@ -5,17 +5,26 @@
 
 #include <QMainWindow>
 
+#include <vector>
+
 #include <vtkSmartPointer.h>
 #include <itkImage.h>
 
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
 
+using std::vector;
+
 class vtkImageViewer2;
 class vtkRenderer;
 class vtkImageData;
 class vtkVolume;
 class vtkImageStack;
+
+struct ImageDataItem {
+    QString image_name;
+    vtkSmartPointer<vtkImageData> image_data;
+};
 
 
 namespace Ui {
@@ -39,6 +48,7 @@ private:
     void init_views();
     void show_image();
     void clean_view4();
+    void update_data_manager();
     
 
 private slots:
@@ -82,6 +92,8 @@ private:
     vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
     vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];
     //int dims_[3];
+
+    vector<vector<ImageDataItem>> image_tree_;
 
 private:
     Ui::MainWindow *ui;

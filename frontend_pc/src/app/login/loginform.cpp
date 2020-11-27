@@ -2,6 +2,7 @@
 #include "ui_loginform.h"
 
 #include <QMessageBox>
+#include <QSizePolicy>
 
 using std::string;
 
@@ -10,8 +11,11 @@ LoginForm::LoginForm(communhttp *commu, userinfo *user_info, QWidget *parent) :
     ui(new Ui::LoginForm)
 {
     ui->setupUi(this);
-    ui->id_input->setPlaceholderText(tr("账号"));
-    ui->pwd_input->setPlaceholderText(tr("密码"));
+    ui->id_input->setPlaceholderText("email address");
+    ui->pwd_input->setPlaceholderText("password");
+    ui->id_input->setFocus();
+//    hide forget pwd button
+    ui->retrive_button->hide();
 
     // initialize communication object
     this->user = user_info;
