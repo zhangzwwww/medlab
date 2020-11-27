@@ -14,6 +14,7 @@ SignUpForm::SignUpForm(communhttp *commu, userinfo *user_info, QWidget *parent) 
     ui->id_input->setPlaceholderText("email address");
     ui->pwd_input->setPlaceholderText("password");
     ui->id_input->setFocus();
+    ui->pwd_input->setToolTip("Password should be more than 6 words and not contain special characters");
 
     // initialize communication object
     this->user = user_info;
