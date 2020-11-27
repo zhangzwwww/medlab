@@ -68,8 +68,15 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkPolyDataMapper.h>
 
 #include "struct_define.h"
+#if defined(__WIN32__)
 #include "RegistrationWorker.h"
 #include "Voxel2Mesh.h"
+#elif TARGET_OS_MAC
+#include "registration/RegistrationWorker.h"
+#include "voxel2mesh/Voxel2Mesh.h"
+#elif defined(__linux__)
+#else
+#endif
 
 // ITK
 #include <itkImage.h>
@@ -227,7 +234,7 @@ void MainWindow::init_views()
 	renderer3D_->SetBackground2(0.5, 0.5, 0.5);
 	renderer3D_->SetGradientBackground(1);
 
-	this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
+//	this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
 
 	this->ui->view1->show();
 	this->ui->view2->show();
