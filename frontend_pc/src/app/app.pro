@@ -28,6 +28,7 @@ CONFIG += c++11
 
 SOURCES += \
         general_processing/general_processing.cpp \
+        login/signup_form.cpp \
         utils/general_util.cpp \
         login/loginchecker.cpp \
         login/loginform.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 
 HEADERS += \
         general_processing/general_processing.h \
+        login/signup_form.h \
         utils/general_util.h \
         login/loginchecker.h \
         login/loginform.h \
@@ -56,6 +58,7 @@ HEADERS += \
 
 FORMS += \
         login/loginform.ui \
+        login/signup_form.ui \
         mainwindow.ui
 
 INCLUDEPATH += /usr/local/include \
