@@ -4,6 +4,7 @@
 #include "struct_define.h"
 
 #include <QMainWindow>
+#include <QTreeWidgetItem>
 
 #include <vector>
 
@@ -12,6 +13,7 @@
 
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
+#include "utils/general_util.h"
 
 using std::vector;
 
@@ -81,6 +83,8 @@ private slots:
 
     void on_start_thresholding_button_clicked();
 
+    void on_data_manager_itemClicked(QTreeWidgetItem *item, int column);
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
@@ -94,6 +98,7 @@ private:
     //int dims_[3];
 
     vector<vector<ImageDataItem>> image_tree_;
+    int cur_selected_image_ind[2];
 
 private:
     Ui::MainWindow *ui;

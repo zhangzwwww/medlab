@@ -28,6 +28,7 @@ CONFIG += c++11
 
 SOURCES += \
         general_processing/general_processing.cpp \
+        utils/general_util.cpp \
         login/loginchecker.cpp \
         login/loginform.cpp \
         commu/communhttp.cpp \
@@ -40,6 +41,7 @@ SOURCES += \
 
 HEADERS += \
         general_processing/general_processing.h \
+        utils/general_util.h \
         login/loginchecker.h \
         login/loginform.h \
         commu/communhttp.h \
