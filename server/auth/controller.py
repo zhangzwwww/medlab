@@ -5,6 +5,7 @@ import uuid
 from datetime import datetime
 import hashlib
 import json
+import re
 from app import redis
 
 
@@ -71,6 +72,10 @@ class DeleteUser(Resource):
 class AuthUser(Resource):
     def post(self):
         email = request.json.get('email')
+        match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
+        if match == None:
+            return "bad syntax", 400
+
         user = UserService.getUser(email)
         if user is None:
             id = uuid.uuid5(uuid.NAMESPACE_DNS, email)
