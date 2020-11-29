@@ -70,10 +70,6 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkImageThreshold.h>
 #include <vtkPolyDataMapper.h>
 
-#include "struct_define.h"
-#include "registration/RegistrationWorker.h"
-#include "voxel2mesh/Voxel2Mesh.h"
-
 // ITK
 #include <itkImage.h>
 #include <itkImageToVTKImageFilter.h>
@@ -86,8 +82,21 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkSmartPointer.h>
 #include <itkImage.h>
 
+#ifdef Q_OS_MACOS   // Define on MACOS system
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
+#include "struct_define.h"
+#include "registration/RegistrationWorker.h"
+#include "voxel2mesh/Voxel2Mesh.h"
+#endif
+
+#ifdef Q_OS_WIN32   // Define on windows system
+#include "commu/communhttp.h"
+#include "commu/userinfo.h"
+#include "struct_define.h"
+#include "RegistrationWorker.h"
+#include "Voxel2Mesh.h"
+#endif
 
 //class vtkImageViewer2;
 //class vtkRenderer;
