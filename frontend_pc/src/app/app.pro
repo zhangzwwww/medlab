@@ -27,6 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    commu/imageinfo.cpp \
         general_processing/general_processing.cpp \
         login/loginchecker.cpp \
         login/loginform.cpp \
@@ -39,6 +40,7 @@ SOURCES += \
     voxel2mesh/Voxel2Mesh.cpp
 
 HEADERS += \
+        commu/imageinfo.h \
         general_processing/general_processing.h \
         login/loginchecker.h \
         login/loginform.h \
