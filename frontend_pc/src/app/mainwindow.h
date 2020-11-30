@@ -16,7 +16,7 @@ class vtkRenderer;
 class vtkImageData;
 class vtkVolume;
 class vtkImageStack;
-
+class vtkActor;
 
 namespace Ui {
 class MainWindow;
@@ -49,7 +49,7 @@ private slots:
     void view_change_slice();
 
     void generate_surface();
-
+    void clean_actors();
 
     void image_threshold(vtkImageData* input_image, vtkImageData* output_image, ThresholdingParams params);
 
@@ -78,6 +78,7 @@ private:
     itk::Image<float, 3>::Pointer image_itk_;
     vtkSmartPointer<vtkImageData> image_vtk_;
     vtkSmartPointer<vtkVolume> volume_;
+
 
     vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
     vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];

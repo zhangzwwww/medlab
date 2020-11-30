@@ -174,6 +174,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
 
+	connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
+
 
 //    TODO: make sure the number of spinbox/lineedit is legal
 //    AlgorithmParams
@@ -417,11 +419,25 @@ void MainWindow::volume_rendering(bool status)
 
 void MainWindow::clean_view4()
 {
-	if (volume_ != nullptr)
-	{
-		renderer3D_->RemoveVolume(volume_);
-	}
+	//if (volume_ != nullptr)
+	//{
+	//	renderer3D_->RemoveVolume(volume_);
+	//}
 
+	//if (mesher_ != nullptr)
+	//{
+	//	renderer3D_->RemoveActor(mesher_);
+	//}
+
+	this->ui->view4->GetRenderWindow()->RemoveRenderer(renderer3D_);
+
+	renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
+	renderer3D_->SetBackground(1, 1, 1);
+	renderer3D_->SetBackground2(0.5, 0.5, 0.5);
+	renderer3D_->SetGradientBackground(1);
+
+	this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
+	this->ui->view4->GetRenderWindow()->Render();
 }
 
 void MainWindow::view_zoom_to_fit()
@@ -587,11 +603,20 @@ void MainWindow::generate_surface()
 	mesh_actor->SetMapper(mesh_mapper);
 	mesh_actor->GetProperty()->SetColor(250 / 250.0, 187 / 250.0, 124 / 250.0);
 	mesh_actor->GetProperty()->SetOpacity(0.9);
-
+	
 	renderer3D_->AddActor(mesh_actor);
 	renderer3D_->ResetCamera();
 
 	this->ui->view4->GetRenderWindow()->Render();
+
+}
+
+void MainWindow::clean_actors()
+{
+
+	clean_view4();
+
+	ui->action_visualization->setChecked(false);
 
 }
 
