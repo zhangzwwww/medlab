@@ -23,6 +23,7 @@ training_data_dir='./data/Training'
 testing_data_dir='./data/Testing'
 TUMOR_train=datasets.ImageFolder(training_data_dir, DATA_transform)
 TUMOR_test = datasets.ImageFolder(testing_data_dir, DATA_transform)
+print(TUMOR_test.classes)
 # FASHION_trainval = datasets.FashionMNIST('.', download=True, train=True, transform=FASHION_transform)
 # FASHION_train = Subset(FASHION_trainval, range(50000))
 # FASHION_val = Subset(FASHION_trainval, range(50000,60000))
