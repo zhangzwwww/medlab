@@ -26,8 +26,9 @@ else(ITK_FOUND)
   message(FATAL_ERROR "ITK not found. Please set ITK_DIR.")
 endif(ITK_FOUND)
 
-set(QT Core Gui Widgets Network DBus Sql)
-find_package(Qt5 REQUIRED ${QT})
+#set(QT Core Gui Widgets Network DBus Sql)
+#find_package(Qt5 REQUIRED ${QT})
+#qt5_use_modules(MedPlatform ${QT})
 
 # QT
 find_package(Qt5Widgets )
@@ -84,7 +85,8 @@ target_link_libraries(MedPlatform
                       ${ITK_LIBRARIES}
                       Registration
                       Voxel2Mesh
-                      Qt5::Widgets)
+                      Qt5::Widgets
+                      Qt5::Network)
 
 # 屏蔽Release运行时的控制台窗口
 set_target_properties(${PROJECT_NAME}
@@ -94,4 +96,3 @@ set_target_properties(${PROJECT_NAME}
 # 添加子目录
 add_subdirectory(app)
 
-qt5_use_modules(MedPlatform ${QT})
