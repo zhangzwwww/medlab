@@ -26,7 +26,6 @@
     border-left: 1px solid #16181c;
     border-top: 1px solid #16181c;
     border-bottom: 1px solid #16181c;
-
 	background-color: rgb(37, 37, 38);
 }
 
@@ -1170,7 +1169,7 @@ background-color: rgb(0, 0, 0);</string>
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1227,7 +1226,7 @@ background-color: rgb(0, 0, 0);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>456</width>
+                <width>336</width>
                 <height>898</height>
                </rect>
               </property>
@@ -2608,7 +2607,7 @@ background-color: rgb(0, 0, 0);</string>
                         <number>1000000</number>
                        </property>
                        <property name="value">
-                        <number>50</number>
+                        <number>25</number>
                        </property>
                       </widget>
                      </item>
@@ -3278,10 +3277,13 @@ border-style: solid;
     <string>Open DICOM File</string>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;open DICOM files&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="action_visualization">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="mainwindow.qrc">
      <normaloff>:/icon/resources/icon/visualization.png</normaloff>:/icon/resources/icon/visualization.png</iconset>
@@ -3290,7 +3292,7 @@ border-style: solid;
     <string>Volume Rendering</string>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;volume rendering&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
  </widget>

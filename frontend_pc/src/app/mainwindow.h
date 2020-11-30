@@ -43,7 +43,7 @@ private:
 
 private slots:
     void load_image();
-    void volume_rendering();
+    void volume_rendering(bool status);
     void view_zoom_to_fit();
     void view_full_screen(bool full_status);
     void view_change_slice();
