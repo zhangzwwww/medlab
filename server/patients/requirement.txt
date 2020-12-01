@@ -7,3 +7,4 @@ redis
 uuid
 mysqlclient
 pymongo
+python-consul

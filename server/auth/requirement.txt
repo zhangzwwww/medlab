@@ -6,3 +6,4 @@ flask_restful
 redis
 uuid
 mysqlclient
+python-consul

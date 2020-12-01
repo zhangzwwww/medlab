@@ -18,10 +18,10 @@ def register_routes(api, app):
 
 class PredictController(Resource):
     def post(self):
-#         token = request.headers.get('X-Auth-Token')
-        # if not existsToken(token):
-            # resp = Response(status=401)
-            # return resp
+        token = request.headers.get('X-Auth-Token')
+        if not existsToken(token):
+            resp = Response(status=401)
+            return resp
 
         f = flask.request.files['tumor_image']
         # print(f)

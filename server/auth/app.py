@@ -4,6 +4,8 @@ from flask_restful import Api
 from redisConfig import Redis
 import os
 
+from register.register import Consul
+
 
 db = SQLAlchemy()
 
@@ -18,6 +20,12 @@ port = os.environ['MYSQL_PORT']
 redisHost = os.environ['REDIS_HOST']
 redisPort = os.environ['REDIS_PORT']
 
+consulHost = os.environ['CONSUL_HOST']
+consulPort = os.environ['CONSUL_PORT']
+
+serviceName = os.environ['SERVICE_NAME']
+serviceHost = os.environ['SERVICE_HOST']
+servicePort = int(os.environ['SERVICE_PORT'])
 
 redis = Redis(redisHost, redisPort)
 
@@ -34,6 +42,9 @@ def create_app():
 
     register_routes(api, app)
     db.init_app(app)
+
+    consul_client = Consul(consulHost, consulPort)
+    consul_client.RegisterService(serviceName, serviceHost, servicePort)
 
     return app
 
