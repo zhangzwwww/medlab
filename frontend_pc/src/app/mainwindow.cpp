@@ -92,6 +92,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 //local include file
 #include "load/upload_form.h"
 #include "load/download_form.h"
+#include "commu/patient_form.h"
 
 
 class vtkSharedWindowLevelCallback : public vtkCommand
@@ -854,6 +855,13 @@ void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
 void MainWindow::on_addPatientBtn_clicked()
 {
 //    TODO: add patient
+    PatientFormParams params;
+    params.user_info = user;
+    PatientForm patient_form(params, this);
+    int ret = patient_form.exec();
+    if (ret == QDialog::Accepted) {
+        update_patients();
+    }
 }
 
 void MainWindow::on_action_upload_file_triggered()
@@ -878,6 +886,16 @@ void MainWindow::on_action_download_file_triggered()
 void MainWindow::init()
 {
 //    init patient
+    update_patients();
+}
+
+void MainWindow::on_patientSelector_currentTextChanged(const QString &arg1)
+{
+    qDebug()<<"patient selected: "<<arg1;
+}
+
+void MainWindow::update_patients()
+{
     patient temp_patient;
     temp_patient.set_token(user._token());
     this->patients_ = temp_patient.http_get_all_patient(&communicator);
@@ -886,9 +904,4 @@ void MainWindow::init()
         qDebug()<<pa._id()<<":"<<pa._name();
         ui->patientSelector->addItem(pa._id());
     }
-}
-
-void MainWindow::on_patientSelector_currentTextChanged(const QString &arg1)
-{
-    qDebug()<<"patient selected: "<<arg1;
 }

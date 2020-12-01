@@ -27,6 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        commu/patient_form.cpp \
         general_processing/general_processing.cpp \
         load/download_form.cpp \
         load/upload_form.cpp \
@@ -43,6 +44,7 @@ SOURCES += \
         voxel2mesh/Voxel2Mesh.cpp
 
 HEADERS += \
+        commu/patient_form.h \
         general_processing/general_processing.h \
         load/download_form.h \
         load/upload_form.h \
@@ -61,6 +63,7 @@ HEADERS += \
         voxel2mesh/Voxel2Mesh.h
 
 FORMS += \
+        commu/patient_form.ui \
         load/download_form.ui \
         load/upload_form.ui \
         login/loginform.ui \

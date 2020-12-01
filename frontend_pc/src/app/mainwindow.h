@@ -54,6 +54,7 @@ private:
     void show_image();
     void clean_view4();
     void update_data_manager();
+    void update_patients();
     
 
 private slots:
