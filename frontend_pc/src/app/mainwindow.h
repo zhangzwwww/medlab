@@ -1,20 +1,116 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "struct_define.h"
+// #include "struct_define.h"
+#include <vector>
 
+// QT
 #include <QMainWindow>
 #include <QTreeWidgetItem>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QObject>
 
-#include <vector>
+
+// VTK
+#include "vtkAutoInit.h"
+VTK_MODULE_INIT(vtkRenderingOpenGL2);
+VTK_MODULE_INIT(vtkInteractionStyle);
+VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+
+
+#include "vtkSmartPointer.h"
+#include "vtkDICOMImageReader.h"
+#include "vtkImageViewer2.h"
+#include "vtkCamera.h"
+#include "vtkAxisActor.h"
+#include "vtkNIFTIImageReader.h"
+
+#include <vtkFixedPointVolumeRayCastMapper.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
+#include <vtkVolumeProperty.h>
+#include <vtkRendererCollection.h>
+#include <vtkOrientationMarkerWidget.h>
+#include <vtkAxesActor.h>
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include "vtkResliceImageViewer.h"
+#include "vtkResliceCursorLineRepresentation.h"
+#include "vtkResliceCursorThickLineRepresentation.h"
+#include "vtkResliceCursorWidget.h"
+#include "vtkResliceCursorActor.h"
+#include "vtkResliceCursorPolyDataAlgorithm.h"
+#include "vtkResliceCursor.h"
+#include "vtkDICOMImageReader.h"
+#include "vtkMetaImageReader.h"
+#include "vtkCellPicker.h"
+#include "vtkProperty.h"
+#include "vtkPlane.h"
+#include "vtkImageData.h"
+#include "vtkCommand.h"
+#include "vtkPlaneSource.h"
+#include "vtkLookupTable.h"
+#include "vtkImageMapToWindowLevelColors.h"
+#include "vtkInteractorStyleImage.h"
+#include "vtkImageSlabReslice.h"
+#include "vtkBoundedPlanePointPlacer.h"
+#include "vtkDistanceWidget.h"
+#include "vtkDistanceRepresentation.h"
+#include "vtkHandleRepresentation.h"
+#include "vtkResliceImageViewerMeasurements.h"
+#include "vtkDistanceRepresentation2D.h"
+#include "vtkPointHandleRepresentation3D.h"
+#include "vtkPointHandleRepresentation2D.h"
+
+//
+#include <vtkImageThreshold.h>
+#include <vtkPolyDataMapper.h>
+
+// ITK
+#include <itkImage.h>
+#include <itkImageToVTKImageFilter.h>
+#include <itkVTKImageToImageFilter.h>
+
+#include <vtkImageSliceMapper.h>
+#include <vtkImageSlice.h>
+#include <vtkImageStack.h>
 
 #include <vtkSmartPointer.h>
 #include <itkImage.h>
 
+#ifdef Q_OS_MACOS   // Define on MACOS system
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
 #include "commu/patient.h"
+#include "commu/patient_form.h"
+#include "commu/imageinfo.h"
 #include "utils/general_util.h"
+#include "load/upload_form.h"
+#include "load/download_form.h"
+#include "struct_define.h"
+#include "registration/RegistrationWorker.h"
+#include "voxel2mesh/Voxel2Mesh.h"
+#endif
+
+#ifdef Q_OS_WIN32   // Define on windows system
+#include "commu/communhttp.h"
+#include "commu/userinfo.h"
+#include "commu/patient.h"
+#include "commu/patient_form.h"
+#include "commu/imageinfo.h"
+#include "utils/general_util.h"
+#include "load/upload_form.h"
+#include "load/download_form.h"
+#include "struct_define.h"
+#include "RegistrationWorker.h"
+#include "Voxel2Mesh.h"
+#endif
 
 using std::vector;
 
@@ -43,6 +139,17 @@ public:
     communhttp communicator;
     // define the user object
     userinfo user;
+    // define the image requester
+    imageInfo image_requester;
+
+    // utility class
+    class vtkSharedWindowLevelCallback : public vtkCommand{
+    public:
+        static vtkSharedWindowLevelCallback* New();
+        void Execute(vtkObject* caller, unsigned long ev, void* callData);
+        vtkSharedWindowLevelCallback();
+        vtkImageViewer2* view[3];
+    };
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

@@ -28,6 +28,8 @@ CONFIG += c++11
 
 SOURCES += \
         commu/patient_form.cpp \
+    commu/imageinfo.cpp \
+    commu/prediction.cpp \
         general_processing/general_processing.cpp \
         load/download_form.cpp \
         load/upload_form.cpp \
@@ -45,6 +47,8 @@ SOURCES += \
 
 HEADERS += \
         commu/patient_form.h \
+        commu/imageinfo.h \
+        commu/prediction.h \
         general_processing/general_processing.h \
         load/download_form.h \
         load/upload_form.h \
@@ -111,12 +115,27 @@ LIBS += -L/usr/local/lib \
 -litkgdcmcharls-5.0.1 -litkgdcmjpeg12-5.0.1 -litkgdcmjpeg16-5.0.1 -litkgdcmjpeg8-5.0.1 -litkgdcmopenjp2-5.0.1 -litkgdcmsocketxx-5.0.1 \
 -litkgdcmuuid-5.0.1 -litkjpeg-5.0.1 -litklbfgs-5.0.1 -litkminc2-5.0.1 -litknetlib-5.0.1 -litkopenjpeg-5.0.1 \
 -litkpng-5.0.1 -litksys-5.0.1 -litktestlib-5.0.1 -litktiff-5.0.1 -litkv3p_netlib-5.0.1 -litkvcl-5.0.1 \
--litkvnl-5.0.1 -litkvnl_algo-5.0.1 -litkzlib-5.0.1
+-litkvnl-5.0.1 -litkvnl_algo-5.0.1 -litkzlib-5.0.1 \
 # -framework OpenGL -framework glut \
 #-lopencv_dnn -lopencv_ml -lopencv_objdetect -lopencv_shape \
 #-lopencv_stitching -lopencv_superres -lopencv_videostab \
 #-lopencv_calib3d -lopencv_features2d -lopencv_highgui -lopencv_videoio \
 #-lopencv_imgcodecs -lopencv_video -lopencv_photo -lopencv_imgproc -lopencv_flann -lopencv_core
+-lITKBiasCorrection-5.0 -lITKCommon-5.0 -lITKDICOMParser-5.0 -lITKEXPAT-5.0 -lITKIOBMP-5.0 -lITKIOBioRad-5.0 -lITKIOBruker-5.0 \
+-lITKIOCSV-5.0 -lITKIOGDCM-5.0 -lITKIOGE-5.0 -lITKIOGIPL-5.0 -lITKIOHDF5-5.0 -lITKIOIPL-5.0 -lITKIOImageBase-5.0 \
+-lITKIOJPEG-5.0 -lITKIOJPEG2000-5.0 -lITKIOLSM-5.0 -lITKIOMINC-5.0 -lITKIOMRC-5.0 -lITKIOMeshBYU-5.0 -lITKIOMeshBase-5.0 \
+-lITKIOMeshFreeSurfer-5.0 -lITKIOMeshGifti-5.0 -lITKIOMeshOBJ-5.0 -lITKIOMeshOFF-5.0 -lITKIOMeshVTK-5.0 -lITKIOMeta-5.0 -lITKIONIFTI-5.0 \
+-lITKIONRRD-5.0 -lITKIOPNG-5.0 -lITKIOSiemens-5.0 -lITKIOSpatialObjects-5.0 -lITKIOStimulate-5.0 -lITKIOTIFF-5.0 -lITKIOTransformBase-5.0 \
+-lITKIOTransformHDF5-5.0 -lITKIOTransformInsightLegacy-5.0 -lITKIOTransformMatlab-5.0 -lITKIOVTK-5.0 -lITKIOXML-5.0 \
+-lITKKLMRegionGrowing-5.0 -lITKLabelMap-5.0 \
+-lITKMesh-5.0 -lITKMetaIO-5.0 -lITKNrrdIO-5.0 -lITKOptimizers-5.0 -lITKOptimizersv4-5.0 -lITKPath-5.0 -lITKPolynomials-5.0 \
+-lITKQuadEdgeMesh-5.0 -lITKSpatialObjects-5.0 -lITKStatistics-5.0 -lITKTestKernel-5.0 -lITKTransform-5.0 -lITKTransformFactory-5.0 \
+-lITKVNLInstantiation-5.0 \
+-lITKVTK-5.0 -lITKVideoCore-5.0 -lITKVideoIO-5.0 -lITKVtkGlue-5.0 -lITKWatersheds-5.0 -lITKgiftiio-5.0 -lITKniftiio-5.0 \
+-lITKznz-5.0 -litkNetlibSlatec-5.0 -litkdouble-conversion-5.0 -litkgdcmCommon-5.0 -litkgdcmDICT-5.0 -litkgdcmDSED-5.0 -litkgdcmIOD-5.0 \
+-litkgdcmMEXD-5.0 -litkgdcmMSFF-5.0 -litkgdcmcharls-5.0 \
+-litkopenjpeg-5.0 -litkpng-5.0 -litksys-5.0 \
+-litktestlib-5.0 -litktiff-5.0 -litkv3p_netlib-5.0 -litkvcl-5.0 -litkvnl-5.0 -litkvnl_algo-5.0 -litkzlib-5.0
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -1,152 +1,56 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-// QT
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QObject>
-#include <QTreeWidget>
-#include <QTreeWidgetItemIterator>
 
+/*--------------------- Definition for subclass ------------------*/
+MainWindow::vtkSharedWindowLevelCallback* MainWindow::vtkSharedWindowLevelCallback::New(){
+    return new vtkSharedWindowLevelCallback;
+}
 
-// VTK
-#include "vtkAutoInit.h"
-VTK_MODULE_INIT(vtkRenderingOpenGL2);
-VTK_MODULE_INIT(vtkInteractionStyle);
-VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+void MainWindow::vtkSharedWindowLevelCallback::Execute(vtkObject *caller, unsigned long ev, void *callData){
+    if (ev == vtkCommand::WindowLevelEvent)
+    {
+        vtkInteractorStyleImage* style =
+            dynamic_cast<vtkInteractorStyleImage*>(caller);
 
+        if (style)
+        {
+            if (style == this->view[0]->GetInteractorStyle())
+            {
+                view[1]->SetColorLevel(view[0]->GetColorLevel());
+                view[1]->SetColorWindow(view[0]->GetColorWindow());
+                view[2]->SetColorLevel(view[0]->GetColorLevel());
+                view[2]->SetColorWindow(view[0]->GetColorWindow());
+            }
+            else if (style == this->view[1]->GetInteractorStyle())
+            {
+                view[0]->SetColorLevel(view[1]->GetColorLevel());
+                view[0]->SetColorWindow(view[1]->GetColorWindow());
+                view[2]->SetColorLevel(view[1]->GetColorLevel());
+                view[2]->SetColorWindow(view[1]->GetColorWindow());
+            }
+            else if (style == this->view[2]->GetInteractorStyle())
+            {
+                view[0]->SetColorLevel(view[2]->GetColorLevel());
+                view[0]->SetColorWindow(view[2]->GetColorWindow());
+                view[1]->SetColorLevel(view[2]->GetColorLevel());
+                view[1]->SetColorWindow(view[2]->GetColorWindow());
+            }
+        }
 
-#include "vtkSmartPointer.h"
-#include "vtkDICOMImageReader.h"
-#include "vtkImageViewer2.h"
-#include "vtkCamera.h"
-#include "vtkAxisActor.h"
-#include "vtkNIFTIImageReader.h"
+        for (int i = 0; i < 3; i++)
+        {
+            this->view[i]->Render();
+        }
 
-#include <vtkFixedPointVolumeRayCastMapper.h>
-#include <vtkColorTransferFunction.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkVolumeProperty.h>
-#include <vtkRendererCollection.h>
-#include <vtkOrientationMarkerWidget.h>
-#include <vtkAxesActor.h>
+        return;
+    }
+}
 
+MainWindow::vtkSharedWindowLevelCallback::vtkSharedWindowLevelCallback(){
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include "vtkResliceImageViewer.h"
-#include "vtkResliceCursorLineRepresentation.h"
-#include "vtkResliceCursorThickLineRepresentation.h"
-#include "vtkResliceCursorWidget.h"
-#include "vtkResliceCursorActor.h"
-#include "vtkResliceCursorPolyDataAlgorithm.h"
-#include "vtkResliceCursor.h"
-#include "vtkDICOMImageReader.h"
-#include "vtkMetaImageReader.h"
-#include "vtkCellPicker.h"
-#include "vtkProperty.h"
-#include "vtkPlane.h"
-#include "vtkImageData.h"
-#include "vtkCommand.h"
-#include "vtkPlaneSource.h"
-#include "vtkLookupTable.h"
-#include "vtkImageMapToWindowLevelColors.h"
-#include "vtkInteractorStyleImage.h"
-#include "vtkImageSlabReslice.h"
-#include "vtkBoundedPlanePointPlacer.h"
-#include "vtkDistanceWidget.h"
-#include "vtkDistanceRepresentation.h"
-#include "vtkHandleRepresentation.h"
-#include "vtkResliceImageViewerMeasurements.h"
-#include "vtkDistanceRepresentation2D.h"
-#include "vtkPointHandleRepresentation3D.h"
-#include "vtkPointHandleRepresentation2D.h"
-
-//
-#include <vtkImageThreshold.h>
-#include <vtkPolyDataMapper.h>
-
-#include "struct_define.h"
-#if defined(__WIN32__)
-#include "RegistrationWorker.h"
-#include "Voxel2Mesh.h"
-#elif TARGET_OS_MAC
-#include "registration/RegistrationWorker.h"
-#include "voxel2mesh/Voxel2Mesh.h"
-#elif defined(__linux__)
-#else
-#endif
-
-// ITK
-#include <itkImage.h>
-#include <itkImageToVTKImageFilter.h> 
-#include <itkVTKImageToImageFilter.h> 
-
-#include <vtkImageSliceMapper.h>
-#include <vtkImageSlice.h>
-#include <vtkImageStack.h>
-
-//local include file
-#include "load/upload_form.h"
-#include "load/download_form.h"
-#include "commu/patient_form.h"
-
-
-class vtkSharedWindowLevelCallback : public vtkCommand
-{
-public:
-	static vtkSharedWindowLevelCallback* New()
-	{
-		return new vtkSharedWindowLevelCallback;
-	}
-
-	void Execute(vtkObject* caller, unsigned long ev, void* callData)
-	{
-		if (ev == vtkCommand::WindowLevelEvent)
-		{
-			vtkInteractorStyleImage* style =
-				dynamic_cast<vtkInteractorStyleImage*>(caller);
-
-			if (style)
-			{
-				if (style == this->view[0]->GetInteractorStyle())
-				{
-					view[1]->SetColorLevel(view[0]->GetColorLevel());
-					view[1]->SetColorWindow(view[0]->GetColorWindow());
-					view[2]->SetColorLevel(view[0]->GetColorLevel());
-					view[2]->SetColorWindow(view[0]->GetColorWindow());
-				}
-				else if (style == this->view[1]->GetInteractorStyle())
-				{
-					view[0]->SetColorLevel(view[1]->GetColorLevel());
-					view[0]->SetColorWindow(view[1]->GetColorWindow());
-					view[2]->SetColorLevel(view[1]->GetColorLevel());
-					view[2]->SetColorWindow(view[1]->GetColorWindow());
-				}
-				else if (style == this->view[2]->GetInteractorStyle())
-				{
-					view[0]->SetColorLevel(view[2]->GetColorLevel());
-					view[0]->SetColorWindow(view[2]->GetColorWindow());
-					view[1]->SetColorLevel(view[2]->GetColorLevel());
-					view[1]->SetColorWindow(view[2]->GetColorWindow());
-				}
-			}
-
-			for (int i = 0; i < 3; i++)
-			{
-				this->view[i]->Render();
-			}
-
-			return;
-		}
-	}
-
-	vtkSharedWindowLevelCallback() {}
-	vtkImageViewer2* view[3];
-};
+}
+/*--------------------- End definition for subclass --------------*/
 
 
 
@@ -177,18 +81,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->action_open_file, SIGNAL(triggered()), this, SLOT(load_image()));
 	connect(ui->action_visualization, SIGNAL(triggered(bool)), this, SLOT(volume_rendering(bool)));
 
-	connect(ui->zoomBtn1, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
-	connect(ui->zoomBtn2, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
-	connect(ui->zoomBtn3, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
-	connect(ui->fullScreenBtn1, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
-	connect(ui->fullScreenBtn2, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
-	connect(ui->fullScreenBtn3, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
-	connect(ui->fullScreenBtn4, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
-	connect(ui->ScrollBar1, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
-	connect(ui->ScrollBar2, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
-	connect(ui->ScrollBar3, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
+    connect(ui->zoomBtn1, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
+    connect(ui->zoomBtn2, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
+    connect(ui->zoomBtn3, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
+    connect(ui->fullScreenBtn1, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
+    connect(ui->fullScreenBtn2, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
+    connect(ui->fullScreenBtn3, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
+    connect(ui->fullScreenBtn4, SIGNAL(clicked(bool)), this, SLOT(view_full_screen(bool)));
+    connect(ui->ScrollBar1, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
+    connect(ui->ScrollBar2, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
+    connect(ui->ScrollBar3, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
 
-	connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
+    connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
 
 	connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
 
@@ -239,7 +143,7 @@ void MainWindow::init_views()
 	//	// vtkRenderer
 	//	m_Renderer2D[crntViewLabel] = vtkSmartPointer<vtkRenderer>::New();
 	//	m_Renderer2D[crntViewLabel]->AddViewProp(m_ImageStack2D[crntViewLabel]);
-	//	m_Renderer2D[crntViewLabel]->GetActiveCamera()->ParallelProjectionOn(); // Æ½ÐÐÍ¶Ó°
+	//	m_Renderer2D[crntViewLabel]->GetActiveCamera()->ParallelProjectionOn(); // Æ½ï¿½ï¿½Í¶Ó°
 	//	
 	//}
 
@@ -651,11 +555,11 @@ void MainWindow::image_threshold(vtkImageData* input_image,
 	thresholdFilter->SetInputData(input_image);
 	thresholdFilter->ThresholdBetween(params.lower_value, params.upper_value);
 	
-	//thresholdFilter->ReplaceInOn();//ãÐÖµÄÚµÄÏñËØÖµÌæ»»
-	thresholdFilter->ReplaceOutOn();//ãÐÖµÍâµÄÏñËØÖµÌæ»»
+	//thresholdFilter->ReplaceInOn();//ï¿½ï¿½Öµï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½æ»»
+	thresholdFilter->ReplaceOutOn();//ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½æ»»
 
-	thresholdFilter->SetInValue(1);//ãÐÖµÄÚÏñËØÖµÈ«²¿Ìæ»»³É1
-	thresholdFilter->SetOutValue(0);//ãÐÖµÍâÏñËØÖµÈ«²¿Ìæ»»³É0
+	thresholdFilter->SetInValue(1);//ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÈ«ï¿½ï¿½ï¿½æ»»ï¿½ï¿½1
+	thresholdFilter->SetOutValue(0);//ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÈ«ï¿½ï¿½ï¿½æ»»ï¿½ï¿½0
 
 	thresholdFilter->Update();
 
