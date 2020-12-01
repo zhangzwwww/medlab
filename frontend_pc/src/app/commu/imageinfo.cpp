@@ -2,10 +2,10 @@
 
 
 // construct a progress window to show downloading progress
-ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent) : QProgressDialog (parent){
-    setWindowTitle(tr("Download Progress"));
+ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent, QString progress) : QProgressDialog (parent){
+    setWindowTitle(tr(progress.toUtf8() + " Progress"));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setLabelText(tr("Downloading %1.").arg(url.toDisplayString()));
+    setLabelText(tr(progress.toUtf8() + "ing %1.").arg(url.toDisplayString()));
     setMinimum(0);
     setValue(0);
     setMinimumDuration(0);
@@ -25,10 +25,9 @@ void ProgressDialog::networkReplyProgress(qint64 bytesRead, qint64 totalBytes){
 QString imageInfo::token = "";
 QString imageInfo::save_path = "";
 
-imageInfo::imageInfo(QWidget* parent)
+imageInfo::imageInfo(QObject* parent)
 {
-    setWindowFlags(windowFlags());
-    setWindowTitle(tr("Http"));
+
 }
 
 imageInfo::~imageInfo(){
@@ -80,7 +79,7 @@ void imageInfo::getImagesHttp(QString patientID, QString ctime){
 //    post_data.append("ctime="+ctime);
 
     // construct request
-    // connect(&qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
+    //connect(&qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
     QNetworkRequest request;
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
@@ -89,7 +88,7 @@ void imageInfo::getImagesHttp(QString patientID, QString ctime){
     QNetworkReply* reply = qnam.get(request);
 
     // construct the dialog window
-    ProgressDialog *progressDialog = new ProgressDialog(url, this);
+    ProgressDialog *progressDialog = new ProgressDialog(url, nullptr);
     progressDialog->setAttribute(Qt::WA_DeleteOnClose);
     connect(progressDialog, &QProgressDialog::canceled, this, &imageInfo::cancelDownload);
     connect(reply, &QNetworkReply::downloadProgress, progressDialog, &ProgressDialog::networkReplyProgress);
@@ -149,12 +148,114 @@ void imageInfo::downloadFile(QNetworkReply* reply){
     reply->deleteLater();
 }
 
+void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepath){
+    QFile afile(filepath);
+    if (!afile.exists()){
+        qDebug() << "The file doesn't exist";
+        return;
+    }
+    // Read in the file
+    afile.open(QIODevice::ReadOnly);
+    int file_len = afile.size();
+    QDataStream in(&afile);
+    char* buf = new char[file_len];
+    in.readRawData(buf, file_len);
+    afile.close();
+
+    // construct the request
+    QUrl url(urlbase["base2"] + urlbase["image"]);
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setRawHeader("X-Auth-Token", token.toUtf8());
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("multipart/form-data"));
+    // construct the data
+    QByteArray post_data;
+    post_data.append("patientId=" + patientId);
+    post_data.append("ctime=" + ctime);
+    QByteArray data = QByteArray(buf, file_len);
+    post_data.append("uploaded_file=" + data);
+
+    //connect(&qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(httpFinished(QNetworkReply*)));
+
+    QNetworkReply* reply = qnam.post(request, post_data);
+
+    // construct the dialog window
+    ProgressDialog *progressDialog = new ProgressDialog(url, nullptr, "Upload");
+    progressDialog->setAttribute(Qt::WA_DeleteOnClose);
+    connect(progressDialog, &QProgressDialog::canceled, this, &imageInfo::cancelDownload);
+    connect(reply, &QNetworkReply::uploadProgress, progressDialog, &ProgressDialog::networkReplyProgress);
+    connect(reply, &QNetworkReply::finished, progressDialog, &ProgressDialog::hide);
+    progressDialog->show();
+
+    // Debug: use straight way to handle reply
+    QEventLoop eventloop;
+    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
+    eventloop.exec();
+    httpFinished(reply);
+}
+
+QVector<QString> imageInfo::getCtimeHttp(QString patientId){
+    // construct url and query item
+    QUrl url(urlbase["base2"] + urlbase["image"] + "/ctime");
+    QUrlQuery query;
+    query.addQueryItem("patientId", patientId);
+    url.setQuery(query.query());
+    // construct request
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setRawHeader("X-Auth-Token", token.toUtf8());
+    // send request
+    QNetworkReply* reply = qnam.get(request);
+
+    QEventLoop eventloop;
+    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
+    eventloop.exec();
+
+    // handle the reply body
+    if (reply->error()){
+        qDebug() << reply->errorString();
+        reply->deleteLater();
+        return QVector<QString>();
+    }
+    int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
+    if (status == 401){
+        qDebug() << "Token unauthorized";
+        reply->deleteLater();
+        return QVector<QString>();
+    }
+
+    QVector<QString> result;
+    if (status == 200){
+        // normal case
+        QByteArray resp = reply->readAll();
+        QJsonParseError jerror;
+        QJsonDocument json = QJsonDocument::fromJson(resp, &jerror);
+        if (jerror.error == QJsonParseError::NoError && !json.isNull() && !json.isEmpty()){
+            // parse each patient
+            QVariantList list = json.toVariant().toList();
+            for (int i = 0; i < list.count(); i++){
+                // get each ctime
+                QVariantMap map = list[i].toMap();
+                result.push_back(map["ctime"].toString());
+            }
+        }
+    }
+    reply->deleteLater();
+    return result;
+}
+
 void imageInfo::cancelDownload(){
 
 }
 
 void imageInfo::httpFinished(QNetworkReply* reply){
-
+    // handle error
+    // handle the error
+    if (reply->error()){
+        qDebug() << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
 }
 
 void imageInfo::httpReadyRead(){

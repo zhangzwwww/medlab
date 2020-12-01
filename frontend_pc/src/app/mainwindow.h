@@ -85,6 +85,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #ifdef Q_OS_MACOS   // Define on MACOS system
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
+#include "commu/imageinfo.h"
 #include "struct_define.h"
 #include "registration/RegistrationWorker.h"
 #include "voxel2mesh/Voxel2Mesh.h"
@@ -118,6 +119,8 @@ public:
     communhttp communicator;
     // define the user object
     userinfo user;
+    // define the image requester
+    imageInfo image_requester;
 
     // utility class
     class vtkSharedWindowLevelCallback : public vtkCommand{

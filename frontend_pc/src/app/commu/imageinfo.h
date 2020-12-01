@@ -1,13 +1,12 @@
 #ifndef IMAGEINFO_H
 #define IMAGEINFO_H
 
+#include <QObject>
 #include <QString>
 #include <QVector>
-#include <QWidget>
 #include <QNetworkAccessManager>
 #include <QUrl>
 #include <QDir>
-#include <QFileDialog>
 #include <QUrlQuery>
 #include <QProgressDialog>
 #include <QJsonObject>
@@ -22,7 +21,7 @@ class ProgressDialog : public QProgressDialog{
     Q_OBJECT
 
 public:
-    explicit ProgressDialog(const QUrl &url, QWidget *parent=nullptr);
+    explicit ProgressDialog(const QUrl &url, QWidget *parent=nullptr, QString progress="Download");
     ~ProgressDialog();
 
 public slots:
@@ -30,10 +29,9 @@ public slots:
 };
 
 
-class imageInfo : public QDialog
+class imageInfo : public QObject
 {
     Q_OBJECT
-
 private:
     // the path where user save the image data
     static QString save_path;
@@ -44,6 +42,8 @@ private:
     QNetworkAccessManager qnam;
     // the folder path for a patient and ctime
     QString folder_path;
+    // the parent widget
+    // QWidget* parent;
 
 private slots:
     void downloadFile(QNetworkReply*);
@@ -54,7 +54,7 @@ private slots:
 
 public:
     // constructor and destructor
-    explicit imageInfo(QWidget *parent=nullptr);
+    explicit imageInfo(QObject *parent = nullptr);
     ~imageInfo();
 
     // set file path that will save images
@@ -68,6 +68,11 @@ public:
 
     // Upload image data to the server
     // INPUT: patientId and ctime
+    void uploadImageHttp(QString patientId, QString ctime, QString filepath);
+
+    // Get image ctimes given patientId
+    // INPUT: patientId
+    QVector<QString> getCtimeHttp(QString patientId);
 };
 
 #endif // IMAGEINFO_H
