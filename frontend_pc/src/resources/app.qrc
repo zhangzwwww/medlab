@@ -8,5 +8,9 @@
         <file>icon/max.png</file>
         <file>icon/dicom.png</file>
         <file>qssfile/dark_theme.qss</file>
+        <file>icon/upload_file.png</file>
+        <file>icon/download_file.png</file>
+        <file>icon/open_folder.png</file>
+        <file>qssfile/load_form.qss</file>
     </qresource>
 </RCC>

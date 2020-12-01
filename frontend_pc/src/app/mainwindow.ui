@@ -3323,6 +3323,16 @@ background-color: rgb(45, 45, 48);</string>
           <property name="focusPolicy">
            <enum>Qt::TabFocus</enum>
           </property>
+          <item>
+           <property name="text">
+            <string>test_0</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>test_1</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item row="1" column="0">
@@ -3517,6 +3527,8 @@ border-style: solid;
    </attribute>
    <addaction name="action_open_file"/>
    <addaction name="action_visualization"/>
+   <addaction name="action_upload_file"/>
+   <addaction name="action_download_file"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_open_file">
@@ -3541,6 +3553,26 @@ border-style: solid;
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="action_upload_file">
+   <property name="icon">
+    <iconset resource="../resources/app.qrc">
+     <normaloff>:/icon/resources/icon/upload_file.png</normaloff>
+     <normalon>:/icon/resources/icon/open.png</normalon>:/icon/resources/icon/upload_file.png</iconset>
+   </property>
+   <property name="text">
+    <string>upload_file</string>
+   </property>
+  </action>
+  <action name="action_download_file">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icon/resources/icon/download_file.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>download_file</string>
    </property>
   </action>
  </widget>

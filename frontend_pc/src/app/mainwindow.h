@@ -87,6 +87,10 @@ private slots:
 
     void on_addPatientBtn_clicked();
 
+    void on_action_upload_file_triggered();
+
+    void on_action_download_file_triggered();
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;

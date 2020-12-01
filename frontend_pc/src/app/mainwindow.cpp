@@ -89,6 +89,8 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkImageSlice.h>
 #include <vtkImageStack.h>
 
+//local include file
+#include "load/upload_form.h"
 
 
 class vtkSharedWindowLevelCallback : public vtkCommand
@@ -153,7 +155,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
     ui->data_manager->clear();
-    ui->patientSelector->setFocus();
+//    ui->patientSelector->setFocus();
+//    TODO: getAllPatient and update ui, suppose we input a vector<QString> vec, use ui->patientSelector->addItem(vec[i]) to update
 
 	this->ui->view1->hide();
 	this->ui->view2->hide();
@@ -806,4 +809,15 @@ void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
 void MainWindow::on_addPatientBtn_clicked()
 {
 //    TODO: add patient
+}
+
+void MainWindow::on_action_upload_file_triggered()
+{
+    UploadForm upload_form(ui->patientSelector, this);
+    upload_form.exec();
+}
+
+void MainWindow::on_action_download_file_triggered()
+{
+
 }
