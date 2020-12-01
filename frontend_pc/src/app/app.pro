@@ -28,6 +28,7 @@ CONFIG += c++11
 
 SOURCES += \
         general_processing/general_processing.cpp \
+        load/download_form.cpp \
         load/upload_form.cpp \
         login/signup_form.cpp \
         utils/general_util.cpp \
@@ -43,6 +44,7 @@ SOURCES += \
 
 HEADERS += \
         general_processing/general_processing.h \
+        load/download_form.h \
         load/upload_form.h \
         login/signup_form.h \
         utils/general_util.h \
@@ -59,6 +61,7 @@ HEADERS += \
         voxel2mesh/Voxel2Mesh.h
 
 FORMS += \
+        load/download_form.ui \
         load/upload_form.ui \
         login/loginform.ui \
         login/signup_form.ui \

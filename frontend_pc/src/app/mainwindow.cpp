@@ -91,6 +91,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 
 //local include file
 #include "load/upload_form.h"
+#include "load/download_form.h"
 
 
 class vtkSharedWindowLevelCallback : public vtkCommand
@@ -819,5 +820,6 @@ void MainWindow::on_action_upload_file_triggered()
 
 void MainWindow::on_action_download_file_triggered()
 {
-
+    DownloadForm download_form(ui->patientSelector, ui->patientImageSelector, this);
+    download_form.exec();
 }
