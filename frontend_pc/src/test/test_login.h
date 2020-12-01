@@ -19,6 +19,8 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void test_case1();
+    void test_id();
+    void test_pwd();
 
 private:
     LoginChecker m_login_checker;

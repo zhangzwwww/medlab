@@ -5,6 +5,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QObject>
+#include <QTreeWidget>
+#include <QTreeWidgetItemIterator>
 
 
 // VTK
@@ -68,8 +70,15 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkPolyDataMapper.h>
 
 #include "struct_define.h"
+#if defined(__WIN32__)
 #include "RegistrationWorker.h"
 #include "Voxel2Mesh.h"
+#elif TARGET_OS_MAC
+#include "registration/RegistrationWorker.h"
+#include "voxel2mesh/Voxel2Mesh.h"
+#elif defined(__linux__)
+#else
+#endif
 
 // ITK
 #include <itkImage.h>
@@ -227,7 +236,7 @@ void MainWindow::init_views()
 	renderer3D_->SetBackground2(0.5, 0.5, 0.5);
 	renderer3D_->SetGradientBackground(1);
 
-	this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
+//	this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
 
 	this->ui->view1->show();
 	this->ui->view2->show();
@@ -275,6 +284,13 @@ void MainWindow::load_image()
 	}
 
 	image_vtk_ = filter->GetOutput();
+    ImageDataItem image_item;
+    image_item.image_name = GetFileName(fileName);
+    image_item.image_data = image_vtk_;
+    image_tree_.push_back(vector<ImageDataItem>{image_item});
+    image_item.image_name = "test";
+    image_tree_.back().push_back(image_item);
+    update_data_manager();
 
 	// clean the current volume
 	this->clean_view4();
@@ -706,4 +722,81 @@ void MainWindow::on_start_thresholding_button_clicked()
 	//}
 
 
+}
+
+/*
+ * update_data_manager: udpate ui->data_manager according to this->image_tree_
+ * image_tree_ is two layer: 1. folder 2. images, eg: image_tree_[0][0] saves the original image of first folder we opened
+ * cur_selected_image_ind saves the index, !!! make sure to check if cur_selected_image_ind is >= 0 before using it !!!
+ * cur_selected_image_ind[0] = -1 means there is no selected image in current stage
+ */
+void MainWindow::update_data_manager() {
+    if (image_tree_.empty()) {
+        return;
+    }
+    ui->data_manager->clear();
+    QTreeWidgetItem *folder_name;
+    for (vector<ImageDataItem> &vec : image_tree_) {
+        if (vec.empty()) {
+            continue;
+        }
+        folder_name = new QTreeWidgetItem(ui->data_manager, QStringList(vec[0].image_name));
+        folder_name->setCheckState(0, Qt::Unchecked);
+        int len = int(vec.size());
+        for (int i = 1; i < len; i++) {
+            QTreeWidgetItem *item = new QTreeWidgetItem(folder_name, QStringList(vec[i].image_name));
+            item->setCheckState(0, Qt::Unchecked);
+        }
+    }
+    folder_name->setCheckState(0, Qt::Checked);
+    cur_selected_image_ind[0] = int(image_tree_.size())-1;
+    cur_selected_image_ind[1] = 0;
+//    update combo box
+    ui->FixedImageSelector->clear();
+    ui->MovingImageSelector->clear();
+    ui->maskImageSelector->clear();
+    ui->greyScaleImageSelector->clear();
+    ui->BlendImage0Selector->clear();
+    ui->BlendImage1Selector->clear();
+    for (vector<ImageDataItem> &vec: image_tree_) {
+        for (ImageDataItem &item: vec) {
+            ui->FixedImageSelector->addItem(item.image_name);
+            ui->MovingImageSelector->addItem(item.image_name);
+            ui->maskImageSelector->addItem(item.image_name);
+            ui->greyScaleImageSelector->addItem(item.image_name);
+            ui->BlendImage0Selector->addItem(item.image_name);
+            ui->BlendImage1Selector->addItem(item.image_name);
+        }
+    }
+}
+
+/*
+ * on_data_manager_itemClicked: triggered when item is clicked
+ * [in]   item: the item user clicked
+ * [in] column:
+ * make sure single checked item in data_manager
+ */
+void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
+{
+    if (item->checkState(column) == Qt::Checked) {
+        QTreeWidgetItemIterator iter(ui->data_manager);
+        while (*iter) {
+//            qDebug()<<(*iter)->text(0);
+            (*iter)->setCheckState(0, Qt::Unchecked);
+            ++iter;
+        }
+        item->setCheckState(column, Qt::Checked);
+        if (item->parent() == nullptr) {
+            cur_selected_image_ind[0] = ui->data_manager->indexOfTopLevelItem(item);
+            cur_selected_image_ind[1] = 0;
+        } else {
+            cur_selected_image_ind[0] = ui->data_manager->indexOfTopLevelItem(item->parent());
+            cur_selected_image_ind[1] = column+1;
+        }
+//        TODO: switch img when user select
+    } else {
+        cur_selected_image_ind[0] = -1;
+    }
+    qDebug()<<"data manager item clicked index: ("<<cur_selected_image_ind[0]<<","
+           <<cur_selected_image_ind[1]<<"), name["<<item->text(column)<<"]";
 }

@@ -19,6 +19,9 @@ public:
     ERROR_CODE SignIn(QString id, QString pwd, communhttp *commu, userinfo *user);
     ERROR_CODE SignUp(QString id, QString pwd, communhttp *commu, userinfo *user);
     ERROR_CODE RetrievePwd(QString id);
+
+    bool IsValidID(QString id);
+    bool IsValidPwd(QString pwd);
 };
 
 #endif // LOGINCHECKER_H

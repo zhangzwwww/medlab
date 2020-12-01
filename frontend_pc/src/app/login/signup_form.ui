@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LoginForm</class>
- <widget class="QDialog" name="LoginForm">
+ <class>SignUpForm</class>
+ <widget class="QDialog" name="SignUpForm">
   <property name="enabled">
    <bool>true</bool>
   </property>
@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>386</width>
-    <height>227</height>
+    <height>239</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Sign In</string>
+   <string>Sign Up</string>
   </property>
   <property name="styleSheet">
    <string notr="true">
@@ -601,45 +601,6 @@ QFrame[width=&quot;3&quot;] {
       </item>
       <item row="2" column="0">
        <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="1" colspan="2">
-         <widget class="QLineEdit" name="pwd_input">
-          <property name="echoMode">
-           <enum>QLineEdit::Password</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1" colspan="2">
-         <widget class="QPushButton" name="sign_in_button">
-          <property name="text">
-           <string>Sign In</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QPushButton" name="sign_up_button">
-          <property name="styleSheet">
-           <string notr="true">border: none;
-color: #2376b7;</string>
-          </property>
-          <property name="text">
-           <string>Sign Up</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QLineEdit" name="id_input"/>
-        </item>
-        <item row="4" column="1">
-         <widget class="QPushButton" name="retrive_button">
-          <property name="styleSheet">
-           <string notr="true">border: none;
-color: #2376b7;</string>
-          </property>
-          <property name="text">
-           <string>Forget pwd?</string>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="4">
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
@@ -652,6 +613,26 @@ color: #2376b7;</string>
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="1" column="1" colspan="2">
+         <widget class="QLineEdit" name="pwd_input">
+          <property name="toolTip">
+           <string extracomment="Password should be no more than 6 words and not contain special characters"/>
+          </property>
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QPushButton" name="sign_up_button">
+          <property name="text">
+           <string>Sign Up</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QLineEdit" name="id_input"/>
         </item>
         <item row="1" column="0">
          <spacer name="horizontalSpacer">
@@ -702,7 +683,7 @@ color: #2376b7;</string>
  <tabstops>
   <tabstop>pwd_input</tabstop>
   <tabstop>id_input</tabstop>
-  <tabstop>sign_in_button</tabstop>
+  <tabstop>sign_up_button</tabstop>
  </tabstops>
  <resources/>
  <connections/>

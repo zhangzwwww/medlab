@@ -4,18 +4,29 @@
 #include "struct_define.h"
 
 #include <QMainWindow>
+#include <QTreeWidgetItem>
+
+#include <vector>
 
 #include <vtkSmartPointer.h>
 #include <itkImage.h>
 
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
+#include "utils/general_util.h"
+
+using std::vector;
 
 class vtkImageViewer2;
 class vtkRenderer;
 class vtkImageData;
 class vtkVolume;
 class vtkImageStack;
+
+struct ImageDataItem {
+    QString image_name;
+    vtkSmartPointer<vtkImageData> image_data;
+};
 
 
 namespace Ui {
@@ -39,6 +50,7 @@ private:
     void init_views();
     void show_image();
     void clean_view4();
+    void update_data_manager();
     
 
 private slots:
@@ -71,6 +83,8 @@ private slots:
 
     void on_start_thresholding_button_clicked();
 
+    void on_data_manager_itemClicked(QTreeWidgetItem *item, int column);
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
@@ -82,6 +96,9 @@ private:
     vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
     vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];
     //int dims_[3];
+
+    vector<vector<ImageDataItem>> image_tree_;
+    int cur_selected_image_ind[2];
 
 private:
     Ui::MainWindow *ui;
