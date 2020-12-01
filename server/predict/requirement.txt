@@ -6,5 +6,7 @@ flask_restful
 redis
 uuid
 mysqlclient
-pymongo
 torch
+python-consul
+Pillow
+torchvision
