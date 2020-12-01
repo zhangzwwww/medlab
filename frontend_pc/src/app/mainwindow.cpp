@@ -80,6 +80,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkImageSlice.h>
 #include <vtkImageStack.h>
 
+#include <qtextcodec.h>
 
 
 class vtkSharedWindowLevelCallback : public vtkCommand
@@ -251,12 +252,15 @@ void MainWindow::load_image()
 
 	if (fileName.isEmpty() == true)
 		return;
+	
+	QTextCodec* code = QTextCodec::codecForName("GB2312");
+	std::string name = code->fromUnicode(fileName).data();
 
-	QByteArray ba = fileName.toLocal8Bit();
-	const char* fileName_str = ba.data();
+	//QByteArray ba = fileName.toLocal8Bit();
+	//const char* fileName_str = ba.data();
 
 	RegistrationWorker worker;
-	image_itk_ = worker.readImageDICOM(fileName_str);
+	image_itk_ = worker.readImageDICOM(name.c_str());
 
 	if (image_itk_ == nullptr)
 	{
@@ -373,7 +377,7 @@ void MainWindow::volume_rendering(bool status)
 			vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
 		volumeMapper->SetInputData(image_vtk_);
 
-		volumeMapper->SetSampleDistance(volumeMapper->GetSampleDistance() / 4);
+		volumeMapper->SetSampleDistance(volumeMapper->GetSampleDistance() / 2);
 		volumeMapper->SetAutoAdjustSampleDistances(0);
 		volumeMapper->SetImageSampleDistance(2);
 
