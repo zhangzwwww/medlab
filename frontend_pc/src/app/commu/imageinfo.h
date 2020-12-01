@@ -6,6 +6,9 @@
 #include <QWidget>
 #include <QNetworkAccessManager>
 #include <QUrl>
+#include <QDir>
+#include <QFileDialog>
+#include <QUrlQuery>
 #include <QProgressDialog>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -37,10 +40,16 @@ private:
     // got from user object or server
     static QString token;
 
+    // the communicator
+    QNetworkAccessManager qnam;
+    // the folder path for a patient and ctime
+    QString folder_path;
+
 private slots:
-    void downloadFile();
+    void downloadFile(QNetworkReply*);
+    // void uploadFile();
     void cancelDownload();
-    void httpFinished();
+    void httpFinished(QNetworkReply*);
     void httpReadyRead();
 
 public:
@@ -55,7 +64,10 @@ public:
 
     // Asynchronously get info and files through http requests
     // INPUT: patientID and ctime needed for searching data
-    static void getImagesHttp(QString patientID, QString ctime);
+    void getImagesHttp(QString patientID, QString ctime);
+
+    // Upload image data to the server
+    // INPUT: patientId and ctime
 };
 
 #endif // IMAGEINFO_H
