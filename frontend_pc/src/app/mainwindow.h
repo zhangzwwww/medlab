@@ -13,6 +13,7 @@
 
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
+#include "commu/patient.h"
 #include "utils/general_util.h"
 
 using std::vector;
@@ -45,6 +46,8 @@ public:
 
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    void init();
 
 private:
     void init_views();
@@ -91,6 +94,8 @@ private slots:
 
     void on_action_download_file_triggered();
 
+    void on_patientSelector_currentTextChanged(const QString &arg1);
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
@@ -106,6 +111,8 @@ private:
 
     vector<vector<ImageDataItem>> image_tree_;
     int cur_selected_image_ind[2];
+
+   QVector<patient> patients_;
 
 private:
     Ui::MainWindow *ui;

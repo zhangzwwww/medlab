@@ -2913,8 +2913,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>445</width>
-                <height>70</height>
+                <width>158</width>
+                <height>46</height>
                </rect>
               </property>
               <attribute name="label">
@@ -3120,7 +3120,7 @@ background-color: rgb(45, 45, 48);</string>
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_data_manager">
        <attribute name="title">

@@ -25,6 +25,23 @@ UploadForm::UploadForm(QComboBox *patient_id_combo, QWidget *parent) :
     }
 }
 
+UploadForm::UploadForm(UploadFormParams &params, QWidget *parent) :
+    QDialog (parent),
+    ui(new Ui::UploadForm)
+{
+    ui->setupUi(this);
+    user_info_ = params.user_info;
+    patients_ = params.patients;
+    if (patients_.empty()) {
+        patient temp_patient;
+        temp_patient.set_token(user_info_._token());
+        patients_ = temp_patient.http_get_all_patient(&communicator_);
+    }
+    for (patient &pat:patients_) {
+        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+    }
+}
+
 UploadForm::~UploadForm()
 {
     delete ui;

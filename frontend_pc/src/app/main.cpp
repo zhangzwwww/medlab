@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 
     int ret = login_form.exec();
     if (ret == QDialog::Accepted) {
+        w.init();
         w.showMaximized();
         return a.exec();
     } else {

@@ -3,10 +3,21 @@
 
 #include <QDialog>
 #include <QComboBox>
+#include <QVector>
+
+#include "commu/communhttp.h"
+#include "commu/patient.h"
+#include "commu/userinfo.h"
 
 namespace Ui {
 class UploadForm;
 }
+
+struct UploadFormParams {
+    communhttp communicator;
+    userinfo user_info;
+    QVector<patient> patients;
+};
 
 class UploadForm : public QDialog
 {
@@ -15,6 +26,7 @@ class UploadForm : public QDialog
 public:
     explicit UploadForm(QWidget *parent = nullptr);
     explicit UploadForm(QComboBox *patient_id_combo, QWidget *parent = nullptr);
+    explicit UploadForm(UploadFormParams &params, QWidget *parent = nullptr);
     ~UploadForm();
 
 private slots:
@@ -24,6 +36,9 @@ private slots:
 
 private:
     Ui::UploadForm *ui;
+    communhttp communicator_;
+    userinfo user_info_;
+    QVector<patient> patients_;
 };
 
 #endif // UPLOAD_FORM_H

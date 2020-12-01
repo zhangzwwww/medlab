@@ -858,12 +858,37 @@ void MainWindow::on_addPatientBtn_clicked()
 
 void MainWindow::on_action_upload_file_triggered()
 {
-    UploadForm upload_form(ui->patientSelector, this);
+    UploadFormParams params;
+//    params.communicator = communicator;
+    params.user_info = user;
+//    params.patients = patients_;
+    UploadForm upload_form(params, this);
     upload_form.exec();
 }
 
 void MainWindow::on_action_download_file_triggered()
 {
-    DownloadForm download_form(ui->patientSelector, ui->patientImageSelector, this);
+    DownloadFormParams params;
+    params.user_info = user;
+//    params.patients = patients_;
+    DownloadForm download_form(params, this);
     download_form.exec();
+}
+
+void MainWindow::init()
+{
+//    init patient
+    patient temp_patient;
+    temp_patient.set_token(user._token());
+    this->patients_ = temp_patient.http_get_all_patient(&communicator);
+    ui->patientSelector->clear();
+    for (patient &pa: patients_) {
+        qDebug()<<pa._id()<<":"<<pa._name();
+        ui->patientSelector->addItem(pa._id());
+    }
+}
+
+void MainWindow::on_patientSelector_currentTextChanged(const QString &arg1)
+{
+    qDebug()<<"patient selected: "<<arg1;
 }

@@ -29,6 +29,23 @@ DownloadForm::DownloadForm(QComboBox *patient_id_combo, QComboBox *image_name_co
     }
 }
 
+DownloadForm::DownloadForm(DownloadFormParams &params, QWidget *parent) :
+    QDialog (parent),
+    ui(new Ui::DownloadForm)
+{
+    ui->setupUi(this);
+    user_info_ = params.user_info;
+    patients_ = params.patients;
+    if (patients_.empty()) {
+        patient pat;
+        pat.set_token(user_info_._token());
+        patients_ = pat.http_get_all_patient(&communicator_);
+    }
+    for (patient &pat: patients_) {
+        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+    }
+}
+
 DownloadForm::~DownloadForm()
 {
     delete ui;
@@ -57,4 +74,9 @@ void DownloadForm::on_downloadFileBtn_clicked()
     params.image_name = ui->imageNameSelector->currentText().toStdString();
 //    if upload succeed
     accept();
+}
+
+void DownloadForm::on_patientIDSelector_currentIndexChanged(int index)
+{
+//    TODO: update image name list
 }
