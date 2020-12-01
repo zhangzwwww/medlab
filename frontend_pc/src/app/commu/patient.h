@@ -3,8 +3,8 @@
 
 #include <QString>
 #include <QVector>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QByteArray>

@@ -16,6 +16,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     LoginForm login_form(&w.communicator, &w.user);
 
+
+
     int ret = login_form.exec();
     if (ret == QDialog::Accepted) {
         w.showMaximized();

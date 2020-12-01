@@ -22,12 +22,12 @@ class vtkRenderer;
 class vtkImageData;
 class vtkVolume;
 class vtkImageStack;
+class vtkActor;
 
 struct ImageDataItem {
     QString image_name;
     vtkSmartPointer<vtkImageData> image_data;
 };
-
 
 namespace Ui {
 class MainWindow;
@@ -55,13 +55,13 @@ private:
 
 private slots:
     void load_image();
-    void volume_rendering();
+    void volume_rendering(bool status);
     void view_zoom_to_fit();
     void view_full_screen(bool full_status);
     void view_change_slice();
 
     void generate_surface();
-
+    void clean_actors();
 
     void image_threshold(vtkImageData* input_image, vtkImageData* output_image, ThresholdingParams params);
 
@@ -98,6 +98,7 @@ private:
     itk::Image<float, 3>::Pointer image_itk_;
     vtkSmartPointer<vtkImageData> image_vtk_;
     vtkSmartPointer<vtkVolume> volume_;
+
 
     vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
     vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];

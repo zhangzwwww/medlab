@@ -26,9 +26,14 @@ else(ITK_FOUND)
   message(FATAL_ERROR "ITK not found. Please set ITK_DIR.")
 endif(ITK_FOUND)
 
+#set(QT Core Gui Widgets Network DBus Sql)
+#find_package(Qt5 REQUIRED ${QT})
+#qt5_use_modules(MedPlatform ${QT})
+
 # QT
-find_package(Qt5Widgets)
+find_package(Qt5Widgets )
 find_package(Qt5WebEngineWidgets)
+find_package(Qt5Network)
 
 # 包含目录，引入头文件搜索路径
 include_directories(
@@ -51,6 +56,8 @@ file(GLOB
      ${PROJECT_SOURCE_DIR}/app/*.h
      ${PROJECT_SOURCE_DIR}/app/login/*.cpp
      ${PROJECT_SOURCE_DIR}/app/login/*.h
+     ${PROJECT_SOURCE_DIR}/app/commu/*.h
+     ${PROJECT_SOURCE_DIR}/app/commu/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.h
      ${PROJECT_SOURCE_DIR}/resources/myapp.rc
@@ -78,7 +85,8 @@ target_link_libraries(MedPlatform
                       ${ITK_LIBRARIES}
                       Registration
                       Voxel2Mesh
-                      Qt5::Widgets)
+                      Qt5::Widgets
+                      Qt5::Network)
 
 # 屏蔽Release运行时的控制台窗口
 set_target_properties(${PROJECT_NAME}
@@ -87,3 +95,4 @@ set_target_properties(${PROJECT_NAME}
 						 
 # 添加子目录
 add_subdirectory(app)
+
