@@ -13,7 +13,8 @@ static QHash<QString, QString> urlbase{
     {"base3", "http://42.193.8.10:5002"},
     {"auth", "/v1/auth"},
     {"patient", "/v1/patient"},
-    {"image", "/v1/image"}
+    {"image", "/v1/image"},
+    {"predict", "v1/predict"}
 };
 
 #endif // URLBASE_H

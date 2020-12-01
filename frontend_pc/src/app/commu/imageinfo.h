@@ -5,6 +5,7 @@
 #include <QString>
 #include <QVector>
 #include <QNetworkAccessManager>
+#include <QHttpMultiPart>
 #include <QUrl>
 #include <QDir>
 #include <QUrlQuery>
@@ -12,6 +13,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QByteArray>
+#include <stdlib.h>
+#include <cstdio>
 
 #include "communhttp.h"
 #include "urlbase.h"

@@ -28,6 +28,7 @@ CONFIG += c++11
 
 SOURCES += \
     commu/imageinfo.cpp \
+    commu/prediction.cpp \
         general_processing/general_processing.cpp \
         login/loginchecker.cpp \
         login/loginform.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 
 HEADERS += \
         commu/imageinfo.h \
+        commu/prediction.h \
         general_processing/general_processing.h \
         login/loginchecker.h \
         login/loginform.h \

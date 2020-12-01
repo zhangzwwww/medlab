@@ -139,8 +139,8 @@ void imageInfo::downloadFile(QNetworkReply* reply){
                 }
                 // TODO: check how to write the file
                 QString content = map["content"].toString();
-                // qDebug() << "NEW FIG";
-                // qDebug() << content.toLatin1();
+//                qDebug() << "NEW FIG";
+//                qDebug() << content.toLatin1();
                 afile.write(content.toLatin1(), content.length());
             }
         }
@@ -154,44 +154,88 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
         qDebug() << "The file doesn't exist";
         return;
     }
+//    QHttpMultiPart* multipart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+//    QHttpPart imagePart;
+//    imagePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
+//    imagePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"uploaded_file\""));
+//    QFile *imgfile = new QFile(filepath);
+//    // QFile imgfile(filepath);
+//    imgfile->open(QIODevice::ReadOnly);
+//    imagePart.setBodyDevice(imgfile);
+//    imgfile->setParent(multipart);
+//    multipart->append(imagePart);
+
+//    QHttpPart textpart;
+//    textpart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"patientId\""));
+//    textpart.setBody(patientId.toUtf8());
+
+//    QHttpPart textpart2;
+//    textpart2.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"ctime\""));
+//    textpart2.setBody(ctime.toUtf8());
+
+//    multipart->append(textpart);
+//    multipart->append(textpart2);
+
+//    QUrl url_test(urlbase["base2"] + urlbase["image"]);
+//    QNetworkRequest request_test;
+//    request_test.setRawHeader("X-Auth-Token", token.toUtf8());
+//    request_test.setUrl(url_test);
+//    QNetworkReply* reply_test = qnam.post(request_test, multipart);
+//    qDebug() << "first request";
+//        // Debug: use straight way to handle reply
+//    QEventLoop eventloop;
+//    connect(reply_test, SIGNAL(finished()), &eventloop, SLOT(quit()));
+//    eventloop.exec();
+//    httpFinished(reply_test);
+
+    FILE *fp;
+    QString URL = urlbase["base3"] + urlbase["image"];
+    QString req = "curl --location --request POST '" + URL + "'";
+    req = req + " --header 'X-Auth-Token: " + token.toUtf8() + "'";
+    req = req + " --form 'uploaded_file=@" + filepath + "'";
+    req = req + " --form 'patientId=" + patientId + "'";
+    req = req + " --form 'filename=" + ctime + "'";
+    char buffer[1024] = {0};
+    qDebug() << req;
+    fp = popen(req.toUtf8(), "r");
+
+
     // Read in the file
-    afile.open(QIODevice::ReadOnly);
-    int file_len = afile.size();
-    QDataStream in(&afile);
-    char* buf = new char[file_len];
-    in.readRawData(buf, file_len);
-    afile.close();
+//    afile.open(QIODevice::ReadOnly);
+//    QByteArray data = afile.readAll();
+//    afile.close();
 
-    // construct the request
-    QUrl url(urlbase["base2"] + urlbase["image"]);
-    QNetworkRequest request;
-    request.setUrl(url);
-    request.setRawHeader("X-Auth-Token", token.toUtf8());
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("multipart/form-data"));
-    // construct the data
-    QByteArray post_data;
-    post_data.append("patientId=" + patientId);
-    post_data.append("ctime=" + ctime);
-    QByteArray data = QByteArray(buf, file_len);
-    post_data.append("uploaded_file=" + data);
+//    // construct the request
+//    QUrl url(urlbase["base3"] + urlbase["image"]);
+//    // QUrl url("http://10.166.95.178:5001/v1/predict");
+//    QNetworkRequest request;
+//    request.setUrl(url);
+//    request.setRawHeader("X-Auth-Token", token.toUtf8());
+//    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("multipart/form-data"));
+//    // construct the data
+//    QByteArray post_data;
+//    post_data.append("patientId=" + patientId);
+//    post_data.append("filename =" + ctime);
+//    // qDebug() << data;
+//    post_data.append("uploaded_file=" + data.toBase64());
 
-    //connect(&qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(httpFinished(QNetworkReply*)));
+//    //connect(&qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(httpFinished(QNetworkReply*)));
 
-    QNetworkReply* reply = qnam.post(request, post_data);
+//    QNetworkReply* reply = qnam.post(request, post_data);
 
-    // construct the dialog window
-    ProgressDialog *progressDialog = new ProgressDialog(url, nullptr, "Upload");
-    progressDialog->setAttribute(Qt::WA_DeleteOnClose);
-    connect(progressDialog, &QProgressDialog::canceled, this, &imageInfo::cancelDownload);
-    connect(reply, &QNetworkReply::uploadProgress, progressDialog, &ProgressDialog::networkReplyProgress);
-    connect(reply, &QNetworkReply::finished, progressDialog, &ProgressDialog::hide);
-    progressDialog->show();
+//    // construct the dialog window
+//    ProgressDialog *progressDialog = new ProgressDialog(url, nullptr, "Upload");
+//    progressDialog->setAttribute(Qt::WA_DeleteOnClose);
+//    connect(progressDialog, &QProgressDialog::canceled, this, &imageInfo::cancelDownload);
+//    connect(reply, &QNetworkReply::uploadProgress, progressDialog, &ProgressDialog::networkReplyProgress);
+//    connect(reply, &QNetworkReply::finished, progressDialog, &ProgressDialog::hide);
+//    progressDialog->show();
 
-    // Debug: use straight way to handle reply
-    QEventLoop eventloop;
-    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
-    eventloop.exec();
-    httpFinished(reply);
+//    // Debug: use straight way to handle reply
+//    QEventLoop eventloop;
+//    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
+//    eventloop.exec();
+//    httpFinished(reply);
 }
 
 QVector<QString> imageInfo::getCtimeHttp(QString patientId){
