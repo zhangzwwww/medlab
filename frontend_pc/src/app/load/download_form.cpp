@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QVector>
 
 #include "struct_define.h"
 #include "utils/general_util.h"
@@ -36,6 +37,7 @@ DownloadForm::DownloadForm(DownloadFormParams &params, QWidget *parent) :
     ui->setupUi(this);
     user_info_ = params.user_info;
     patients_ = params.patients;
+    image_manager_.setToken(user_info_._token());
     if (patients_.empty()) {
         patient pat;
         pat.set_token(user_info_._token());
@@ -63,15 +65,29 @@ void DownloadForm::on_openFileBtn_clicked()
 
 void DownloadForm::on_downloadFileBtn_clicked()
 {
-//    TODO: upload file
-    if (ui->filePathEdit->text().isEmpty()) {
+//    TODO: download file
+    QString file_path = ui->filePathEdit->text();
+    if (file_path.isEmpty()) {
         QMessageBox::warning(this, "w", "Please select folder to upload!", QMessageBox::Yes);
         return;
     }
-    DownloadFileParams params;
-    params.save_path = ui->filePathEdit->text().toStdString();
-    params.patient_id = ui->patientIDSelector->currentText().toStdString();
-    params.image_name = ui->imageNameSelector->currentText().toStdString();
+    int cur_patient_index = ui->patientIDSelector->currentIndex();
+    if (cur_patient_index >= patients_.size()) {
+        QMessageBox::warning(this, "w", "Invalid patient id!", QMessageBox::Yes);
+        return;
+    }
+    QString patient_id = patients_[cur_patient_index]._id();
+    QString ctime = ui->imageNameSelector->currentText();
+    if (ctime.isEmpty()) {
+        QMessageBox::warning(this, "w", "Invalid ctime!", QMessageBox::Yes);
+        return;
+    }
+    image_manager_.setFilePath(file_path);
+    image_manager_.getImagesHttp(patient_id, ctime);
+//    DownloadFileParams params;
+//    params.save_path = ui->filePathEdit->text().toStdString();
+//    params.patient_id = ui->patientIDSelector->currentText().toStdString();
+//    params.image_name = ui->imageNameSelector->currentText().toStdString();
 //    if upload succeed
     accept();
 }
@@ -79,4 +95,15 @@ void DownloadForm::on_downloadFileBtn_clicked()
 void DownloadForm::on_patientIDSelector_currentIndexChanged(int index)
 {
 //    TODO: update image name list
+    if (index >= patients_.size()) {
+        return;
+    }
+    QVector<QString> image_names = image_manager_.getCtimeHttp(patients_[index]._id());
+    if (image_names.isEmpty()) {
+        return;
+    }
+    ui->imageNameSelector->clear();
+    for (QString &name:image_names) {
+        ui->imageNameSelector->addItem(name);
+    }
 }

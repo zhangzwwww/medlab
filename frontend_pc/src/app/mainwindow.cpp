@@ -57,29 +57,29 @@ MainWindow::vtkSharedWindowLevelCallback::vtkSharedWindowLevelCallback(){
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-	image_itk_(nullptr), image_vtk_(nullptr)
+    image_itk_(nullptr), image_vtk_(nullptr)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
     ui->data_manager->clear();
 //    ui->patientSelector->setFocus();
 //    TODO: getAllPatient and update ui, suppose we input a vector<QString> vec, use ui->patientSelector->addItem(vec[i]) to update
 
-	//const char* path = ":/resources/qssfile/dark_theme.qss";
-	//QFile qssfile(path);
-	//qssfile.open(QFile::ReadOnly);
-	//QString qss;
-	//qss = qssfile.readAll();
-	//this->setStyleSheet(qss);
+    //const char* path = ":/resources/qssfile/dark_theme.qss";
+    //QFile qssfile(path);
+    //qssfile.open(QFile::ReadOnly);
+    //QString qss;
+    //qss = qssfile.readAll();
+    //this->setStyleSheet(qss);
 
 
-	this->ui->view1->hide();
-	this->ui->view2->hide();
-	this->ui->view3->hide();
+    this->ui->view1->hide();
+    this->ui->view2->hide();
+    this->ui->view3->hide();
 
     this->init_views();
 
     connect(ui->action_open_file, SIGNAL(triggered()), this, SLOT(load_image()));
-	connect(ui->action_visualization, SIGNAL(triggered(bool)), this, SLOT(volume_rendering(bool)));
+    connect(ui->action_visualization, SIGNAL(triggered(bool)), this, SLOT(volume_rendering(bool)));
 
     connect(ui->zoomBtn1, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
     connect(ui->zoomBtn2, SIGNAL(clicked()), this, SLOT(view_zoom_to_fit()));
@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
 
-	connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
+    connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
 
 
 //    TODO: make sure the number of spinbox/lineedit is legal
@@ -112,50 +112,50 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-	
+
 }
 
 
 void MainWindow::init_views()
 {
 
-	for (int i = 0; i < 3; i++)
-	{
-		riw_[i] = vtkSmartPointer< vtkImageViewer2 >::New();
-	}
+    for (int i = 0; i < 3; i++)
+    {
+        riw_[i] = vtkSmartPointer< vtkImageViewer2 >::New();
+    }
 
-	riw_[0]->SetRenderWindow(this->ui->view1->GetRenderWindow());
-	riw_[1]->SetRenderWindow(this->ui->view2->GetRenderWindow());
-	riw_[2]->SetRenderWindow(this->ui->view3->GetRenderWindow());
+    riw_[0]->SetRenderWindow(this->ui->view1->GetRenderWindow());
+    riw_[1]->SetRenderWindow(this->ui->view2->GetRenderWindow());
+    riw_[2]->SetRenderWindow(this->ui->view3->GetRenderWindow());
 
-	riw_[0]->SetupInteractor(
-		this->ui->view1->GetRenderWindow()->GetInteractor());
-	riw_[1]->SetupInteractor(
-		this->ui->view2->GetRenderWindow()->GetInteractor());
-	riw_[2]->SetupInteractor(
-		this->ui->view3->GetRenderWindow()->GetInteractor());
+    riw_[0]->SetupInteractor(
+        this->ui->view1->GetRenderWindow()->GetInteractor());
+    riw_[1]->SetupInteractor(
+        this->ui->view2->GetRenderWindow()->GetInteractor());
+    riw_[2]->SetupInteractor(
+        this->ui->view3->GetRenderWindow()->GetInteractor());
 
-	// Image Stack
-	//for (int crntViewLabel = 0; crntViewLabel < 3; crntViewLabel++)
-	//{
-	//	// vtkImageStack
-	//	m_ImageStack2D[crntViewLabel] = vtkSmartPointer<vtkImageStack>::New();
-	//	// vtkRenderer
-	//	m_Renderer2D[crntViewLabel] = vtkSmartPointer<vtkRenderer>::New();
-	//	m_Renderer2D[crntViewLabel]->AddViewProp(m_ImageStack2D[crntViewLabel]);
-	//	m_Renderer2D[crntViewLabel]->GetActiveCamera()->ParallelProjectionOn(); // ƽ��ͶӰ
-	//	
-	//}
+    // Image Stack
+    //for (int crntViewLabel = 0; crntViewLabel < 3; crntViewLabel++)
+    //{
+    //	// vtkImageStack
+    //	m_ImageStack2D[crntViewLabel] = vtkSmartPointer<vtkImageStack>::New();
+    //	// vtkRenderer
+    //	m_Renderer2D[crntViewLabel] = vtkSmartPointer<vtkRenderer>::New();
+    //	m_Renderer2D[crntViewLabel]->AddViewProp(m_ImageStack2D[crntViewLabel]);
+    //	m_Renderer2D[crntViewLabel]->GetActiveCamera()->ParallelProjectionOn(); // ƽ��ͶӰ
+    //
+    //}
 
-	//this->ui->view1->GetRenderWindow()->AddRenderer(m_Renderer2D[0]);
-	//this->ui->view2->GetRenderWindow()->AddRenderer(m_Renderer2D[1]);
-	//this->ui->view3->GetRenderWindow()->AddRenderer(m_Renderer2D[2]);
-	
+    //this->ui->view1->GetRenderWindow()->AddRenderer(m_Renderer2D[0]);
+    //this->ui->view2->GetRenderWindow()->AddRenderer(m_Renderer2D[1]);
+    //this->ui->view3->GetRenderWindow()->AddRenderer(m_Renderer2D[2]);
 
-	renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
-	renderer3D_->SetBackground(1, 1, 1);
-	renderer3D_->SetBackground2(0.5, 0.5, 0.5);
-	renderer3D_->SetGradientBackground(1);
+
+    renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
+    renderer3D_->SetBackground(1, 1, 1);
+    renderer3D_->SetBackground2(0.5, 0.5, 0.5);
+    renderer3D_->SetGradientBackground(1);
 
 //    this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
 
@@ -167,44 +167,44 @@ void MainWindow::init_views()
 
 void MainWindow::load_image()
 {
-	QString fileName = QFileDialog::getExistingDirectory(this, QString(tr("Open DICOM Image")));
+    QString fileName = QFileDialog::getExistingDirectory(this, QString(tr("Open DICOM Image")));
 
-	if (fileName.isEmpty() == true)
-		return;
+    if (fileName.isEmpty() == true)
+        return;
 
-	QByteArray ba = fileName.toLocal8Bit();
-	const char* fileName_str = ba.data();
+    QByteArray ba = fileName.toLocal8Bit();
+    const char* fileName_str = ba.data();
 
-	RegistrationWorker worker;
-	image_itk_ = worker.readImageDICOM(fileName_str);
+    RegistrationWorker worker;
+    image_itk_ = worker.readImageDICOM(fileName_str);
 
-	if (image_itk_ == nullptr)
-	{
-		QMessageBox::warning(nullptr,
-			tr("Read Image Error"),
-			tr("Read image error, Please read the correct Image."),
-			QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    if (image_itk_ == nullptr)
+    {
+        QMessageBox::warning(nullptr,
+            tr("Read Image Error"),
+            tr("Read image error, Please read the correct Image."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
-		return;
-	}
+        return;
+    }
 
-	using FilterType = itk::ImageToVTKImageFilter<itk::Image<float, 3>>;
-	FilterType::Pointer filter = FilterType::New();
-	filter->SetInput(image_itk_);
+    using FilterType = itk::ImageToVTKImageFilter<itk::Image<float, 3>>;
+    FilterType::Pointer filter = FilterType::New();
+    filter->SetInput(image_itk_);
 
-	try
-	{
-		filter->Update();
-	}
-	catch (itk::ExceptionObject & error)
-	{
-		QMessageBox::warning(nullptr,
-			tr("Read Image Error"),
-			tr(error.GetDescription()),
-			QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-	}
+    try
+    {
+        filter->Update();
+    }
+    catch (itk::ExceptionObject & error)
+    {
+        QMessageBox::warning(nullptr,
+            tr("Read Image Error"),
+            tr(error.GetDescription()),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
 
-	image_vtk_ = filter->GetOutput();
+    image_vtk_ = filter->GetOutput();
     ImageDataItem image_item;
     image_item.image_name = GetFileName(fileName);
     image_item.image_data = image_vtk_;
@@ -213,7 +213,7 @@ void MainWindow::load_image()
     image_tree_.back().push_back(image_item);
     update_data_manager();
 
-	// clean the current volume
+    // clean the current volume
     this->clean_view4();
     this->show_image();
 }
@@ -221,349 +221,349 @@ void MainWindow::load_image()
 
 void MainWindow::show_image()
 {
-	vtkSmartPointer< vtkSharedWindowLevelCallback > sharedWLcbk =
-		vtkSmartPointer< vtkSharedWindowLevelCallback >::New();
+    vtkSmartPointer< vtkSharedWindowLevelCallback > sharedWLcbk =
+        vtkSmartPointer< vtkSharedWindowLevelCallback >::New();
 
-	double range[2];
-	int dims[3];
-	image_vtk_->GetScalarRange(range);
-	image_vtk_->GetDimensions(dims);
-
-
-	//vtkSmartPointer<vtkImageSliceMapper> imageSliceMapper = 
-	//	vtkSmartPointer<vtkImageSliceMapper>::New();
-	//imageSliceMapper->SetInputData(image_vtk_);
-	//vtkSmartPointer<vtkImageSlice> imageSlice = vtkSmartPointer<vtkImageSlice>::New();
-	//imageSlice->SetMapper(imageSliceMapper);
-	//for (int crntViewLabel = 0; crntViewLabel < 3; crntViewLabel++)
-	//{
-	//	m_ImageStack2D[crntViewLabel]->AddImage(imageSlice);
-	//}
+    double range[2];
+    int dims[3];
+    image_vtk_->GetScalarRange(range);
+    image_vtk_->GetDimensions(dims);
 
 
-	for (int i = 0; i < 3; i++)
-	{
-		riw_[i]->SetInputData(image_vtk_);
-		riw_[i]->SetSliceOrientation(i);
-		riw_[i]->SetSlice(dims[i] / 2);
+    //vtkSmartPointer<vtkImageSliceMapper> imageSliceMapper =
+    //	vtkSmartPointer<vtkImageSliceMapper>::New();
+    //imageSliceMapper->SetInputData(image_vtk_);
+    //vtkSmartPointer<vtkImageSlice> imageSlice = vtkSmartPointer<vtkImageSlice>::New();
+    //imageSlice->SetMapper(imageSliceMapper);
+    //for (int crntViewLabel = 0; crntViewLabel < 3; crntViewLabel++)
+    //{
+    //	m_ImageStack2D[crntViewLabel]->AddImage(imageSlice);
+    //}
 
-		riw_[i]->SetColorWindow((range[1] - range[0]));
-		riw_[i]->SetColorLevel((range[0] + range[1]) / 2.0);
 
-		sharedWLcbk->view[i] = riw_[i];
-		riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, sharedWLcbk);
-	}
+    for (int i = 0; i < 3; i++)
+    {
+        riw_[i]->SetInputData(image_vtk_);
+        riw_[i]->SetSliceOrientation(i);
+        riw_[i]->SetSlice(dims[i] / 2);
 
-	this->ui->ScrollBar1->setMaximum(dims[0]);
-	this->ui->ScrollBar2->setMaximum(dims[1]);
-	this->ui->ScrollBar3->setMaximum(dims[2]);
-	this->ui->ScrollBar1->setSliderPosition(dims[0] / 2 - 1);
-	this->ui->ScrollBar2->setSliderPosition(dims[1] / 2 - 1);
-	this->ui->ScrollBar3->setSliderPosition(dims[2] / 2 - 1);
+        riw_[i]->SetColorWindow((range[1] - range[0]));
+        riw_[i]->SetColorLevel((range[0] + range[1]) / 2.0);
 
-	this->view_zoom_to_fit();
+        sharedWLcbk->view[i] = riw_[i];
+        riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, sharedWLcbk);
+    }
+
+    this->ui->ScrollBar1->setMaximum(dims[0]);
+    this->ui->ScrollBar2->setMaximum(dims[1]);
+    this->ui->ScrollBar3->setMaximum(dims[2]);
+    this->ui->ScrollBar1->setSliderPosition(dims[0] / 2 - 1);
+    this->ui->ScrollBar2->setSliderPosition(dims[1] / 2 - 1);
+    this->ui->ScrollBar3->setSliderPosition(dims[2] / 2 - 1);
+
+    this->view_zoom_to_fit();
 }
 
 void MainWindow::volume_rendering(bool status)
 {
-	if (status == false)
-	{
-		if (volume_ != nullptr)
-		{
-			renderer3D_->RemoveVolume(volume_);
-			this->ui->view4->GetRenderWindow()->Render();
-		}
+    if (status == false)
+    {
+        if (volume_ != nullptr)
+        {
+            renderer3D_->RemoveVolume(volume_);
+            this->ui->view4->GetRenderWindow()->Render();
+        }
 
-		return;
-	}
-	else {
+        return;
+    }
+    else {
 
-		if (image_vtk_ == nullptr)
-		{
-			QMessageBox::warning(nullptr,
-				tr("Error"),
-				tr("Please read the image first."),
-				QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-		
-			ui->action_visualization->setChecked(false);
-			return;
-		}
+        if (image_vtk_ == nullptr)
+        {
+            QMessageBox::warning(nullptr,
+                tr("Error"),
+                tr("Please read the image first."),
+                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
-		if (volume_ == nullptr)
-		{
-			volume_ = vtkSmartPointer<vtkVolume>::New();
-		}
+            ui->action_visualization->setChecked(false);
+            return;
+        }
 
-		ui->action_visualization->setEnabled(0);
+        if (volume_ == nullptr)
+        {
+            volume_ = vtkSmartPointer<vtkVolume>::New();
+        }
 
-		vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper =
-			vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
-		volumeMapper->SetInputData(image_vtk_);
+        ui->action_visualization->setEnabled(0);
 
-		volumeMapper->SetSampleDistance(volumeMapper->GetSampleDistance() / 4);
-		volumeMapper->SetAutoAdjustSampleDistances(0);
-		volumeMapper->SetImageSampleDistance(2);
+        vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper =
+            vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
+        volumeMapper->SetInputData(image_vtk_);
 
-		vtkSmartPointer<vtkVolumeProperty> volumeProperty =
-			vtkSmartPointer<vtkVolumeProperty>::New();
-		volumeProperty->SetInterpolationTypeToLinear();
-		volumeProperty->ShadeOn();
-		volumeProperty->SetAmbient(.1);
-		volumeProperty->SetDiffuse(.9);
-		volumeProperty->SetSpecular(.2);
-		volumeProperty->SetSpecularPower(10);
+        volumeMapper->SetSampleDistance(volumeMapper->GetSampleDistance() / 4);
+        volumeMapper->SetAutoAdjustSampleDistances(0);
+        volumeMapper->SetImageSampleDistance(2);
 
-		vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity =
-			vtkSmartPointer<vtkPiecewiseFunction>::New();
-		vtkSmartPointer<vtkColorTransferFunction> colorFun =
-			vtkSmartPointer<vtkColorTransferFunction>::New();
+        vtkSmartPointer<vtkVolumeProperty> volumeProperty =
+            vtkSmartPointer<vtkVolumeProperty>::New();
+        volumeProperty->SetInterpolationTypeToLinear();
+        volumeProperty->ShadeOn();
+        volumeProperty->SetAmbient(.1);
+        volumeProperty->SetDiffuse(.9);
+        volumeProperty->SetSpecular(.2);
+        volumeProperty->SetSpecularPower(10);
 
-		compositeOpacity->AddPoint(-3024, 0, 0.5, 0.0);
-		compositeOpacity->AddPoint(-16, 0, .49, .61);
-		compositeOpacity->AddPoint(641, .72, .5, 0.0);
-		compositeOpacity->AddPoint(3071, .71, 0.5, 0.0);
+        vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity =
+            vtkSmartPointer<vtkPiecewiseFunction>::New();
+        vtkSmartPointer<vtkColorTransferFunction> colorFun =
+            vtkSmartPointer<vtkColorTransferFunction>::New();
 
-		colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
-		colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
-		colorFun->AddRGBPoint(641, .90, .82, .56, .5, 0.0);
-		colorFun->AddRGBPoint(3071, 1, 1, 1, .5, 0.0);
+        compositeOpacity->AddPoint(-3024, 0, 0.5, 0.0);
+        compositeOpacity->AddPoint(-16, 0, .49, .61);
+        compositeOpacity->AddPoint(641, .72, .5, 0.0);
+        compositeOpacity->AddPoint(3071, .71, 0.5, 0.0);
 
-		volumeProperty->SetScalarOpacity(compositeOpacity); 
-		volumeProperty->SetColor(colorFun);
+        colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+        colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
+        colorFun->AddRGBPoint(641, .90, .82, .56, .5, 0.0);
+        colorFun->AddRGBPoint(3071, 1, 1, 1, .5, 0.0);
 
-	
-		volume_->SetMapper(volumeMapper);
-		volume_->SetProperty(volumeProperty);
+        volumeProperty->SetScalarOpacity(compositeOpacity);
+        volumeProperty->SetColor(colorFun);
 
-		renderer3D_->AddVolume(volume_);
-		renderer3D_->ResetCamera();
-		this->ui->view4->GetRenderWindow()->Render();
 
-		ui->action_visualization->setEnabled(1);
-	}
+        volume_->SetMapper(volumeMapper);
+        volume_->SetProperty(volumeProperty);
+
+        renderer3D_->AddVolume(volume_);
+        renderer3D_->ResetCamera();
+        this->ui->view4->GetRenderWindow()->Render();
+
+        ui->action_visualization->setEnabled(1);
+    }
 }
 
 
 void MainWindow::clean_view4()
 {
-	//if (volume_ != nullptr)
-	//{
-	//	renderer3D_->RemoveVolume(volume_);
-	//}
+    //if (volume_ != nullptr)
+    //{
+    //	renderer3D_->RemoveVolume(volume_);
+    //}
 
-	//if (mesher_ != nullptr)
-	//{
-	//	renderer3D_->RemoveActor(mesher_);
-	//}
+    //if (mesher_ != nullptr)
+    //{
+    //	renderer3D_->RemoveActor(mesher_);
+    //}
 
-	this->ui->view4->GetRenderWindow()->RemoveRenderer(renderer3D_);
+    this->ui->view4->GetRenderWindow()->RemoveRenderer(renderer3D_);
 
-	renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
-	renderer3D_->SetBackground(1, 1, 1);
-	renderer3D_->SetBackground2(0.5, 0.5, 0.5);
-	renderer3D_->SetGradientBackground(1);
+    renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
+    renderer3D_->SetBackground(1, 1, 1);
+    renderer3D_->SetBackground2(0.5, 0.5, 0.5);
+    renderer3D_->SetGradientBackground(1);
 
-	this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
-	this->ui->view4->GetRenderWindow()->Render();
+    this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
+    this->ui->view4->GetRenderWindow()->Render();
 }
 
 void MainWindow::view_zoom_to_fit()
 {
-	for (int i = 0; i < 3; i++)
-	{
-		riw_[i]->GetRenderer()->ResetCamera();
-		riw_[i]->Render();
-	}
+    for (int i = 0; i < 3; i++)
+    {
+        riw_[i]->GetRenderer()->ResetCamera();
+        riw_[i]->Render();
+    }
 
 }
 
 void MainWindow::view_full_screen(bool full_status)
 {
-	QObject* obj = sender();
+    QObject* obj = sender();
 
-	if (obj == this->ui->fullScreenBtn1)
-	{
-		if (full_status)
-		{
-			this->ui->view1Widget->show();
+    if (obj == this->ui->fullScreenBtn1)
+    {
+        if (full_status)
+        {
+            this->ui->view1Widget->show();
 
-			this->ui->view2Widget->hide();
-			this->ui->view3Widget->hide();
-			this->ui->view4Widget->hide();
-		}
-		else {
-			this->ui->view1Widget->show();
-			this->ui->view2Widget->show();
-			this->ui->view3Widget->show();
-			this->ui->view4Widget->show();
-		}
-	}
-	if (obj == this->ui->fullScreenBtn2)
-	{
-		if (full_status)
-		{
-			this->ui->view2Widget->show();
+            this->ui->view2Widget->hide();
+            this->ui->view3Widget->hide();
+            this->ui->view4Widget->hide();
+        }
+        else {
+            this->ui->view1Widget->show();
+            this->ui->view2Widget->show();
+            this->ui->view3Widget->show();
+            this->ui->view4Widget->show();
+        }
+    }
+    if (obj == this->ui->fullScreenBtn2)
+    {
+        if (full_status)
+        {
+            this->ui->view2Widget->show();
 
-			this->ui->view1Widget->hide();
-			this->ui->view3Widget->hide();
-			this->ui->view4Widget->hide();
-		}
-		else {
-			this->ui->view1Widget->show();
-			this->ui->view2Widget->show();
-			this->ui->view3Widget->show();
-			this->ui->view4Widget->show();
-		}
-	}
-	if (obj == this->ui->fullScreenBtn3)
-	{
-		if (full_status)
-		{
-			this->ui->view3Widget->show();
+            this->ui->view1Widget->hide();
+            this->ui->view3Widget->hide();
+            this->ui->view4Widget->hide();
+        }
+        else {
+            this->ui->view1Widget->show();
+            this->ui->view2Widget->show();
+            this->ui->view3Widget->show();
+            this->ui->view4Widget->show();
+        }
+    }
+    if (obj == this->ui->fullScreenBtn3)
+    {
+        if (full_status)
+        {
+            this->ui->view3Widget->show();
 
-			this->ui->view2Widget->hide();
-			this->ui->view1Widget->hide();
-			this->ui->view4Widget->hide();
-		}
-		else {
-			this->ui->view1Widget->show();
-			this->ui->view2Widget->show();
-			this->ui->view3Widget->show();
-			this->ui->view4Widget->show();
-		}
-	}
-	if (obj == this->ui->fullScreenBtn4)
-	{
-		if (full_status)
-		{
-			this->ui->view4Widget->show();
+            this->ui->view2Widget->hide();
+            this->ui->view1Widget->hide();
+            this->ui->view4Widget->hide();
+        }
+        else {
+            this->ui->view1Widget->show();
+            this->ui->view2Widget->show();
+            this->ui->view3Widget->show();
+            this->ui->view4Widget->show();
+        }
+    }
+    if (obj == this->ui->fullScreenBtn4)
+    {
+        if (full_status)
+        {
+            this->ui->view4Widget->show();
 
-			this->ui->view2Widget->hide();
-			this->ui->view3Widget->hide();
-			this->ui->view1Widget->hide();
-		}
-		else {
-			this->ui->view1Widget->show();
-			this->ui->view2Widget->show();
-			this->ui->view3Widget->show();
-			this->ui->view4Widget->show();
-		}
-	}
+            this->ui->view2Widget->hide();
+            this->ui->view3Widget->hide();
+            this->ui->view1Widget->hide();
+        }
+        else {
+            this->ui->view1Widget->show();
+            this->ui->view2Widget->show();
+            this->ui->view3Widget->show();
+            this->ui->view4Widget->show();
+        }
+    }
 
 }
 
 
 void MainWindow::view_change_slice()
 {
-	QObject* obj = sender();
-	if (obj == this->ui->ScrollBar1)
-	{
-		QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
-		riw_[0]->SetSlice(tempScroll->value());
-		riw_[0]->Render();
+    QObject* obj = sender();
+    if (obj == this->ui->ScrollBar1)
+    {
+        QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
+        riw_[0]->SetSlice(tempScroll->value());
+        riw_[0]->Render();
 
-		//this->ui->label_slicenum1->
-		//	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[2]));
+        //this->ui->label_slicenum1->
+        //	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[2]));
 
-	}
-	if (obj == this->ui->ScrollBar2)
-	{
-		QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
-		riw_[1]->SetSlice(tempScroll->value());
-		riw_[0]->Render();
+    }
+    if (obj == this->ui->ScrollBar2)
+    {
+        QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
+        riw_[1]->SetSlice(tempScroll->value());
+        riw_[0]->Render();
 
-		//this->ui->label_slicenum2->
-		//	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[1]));
-	
-	}
-	if (obj == this->ui->ScrollBar3)
-	{
-		QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
-		riw_[2]->SetSlice(tempScroll->value());
-		riw_[0]->Render();
+        //this->ui->label_slicenum2->
+        //	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[1]));
 
-		//this->ui->label_slicenum3->
-		//	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[0]));
-	
-	}
+    }
+    if (obj == this->ui->ScrollBar3)
+    {
+        QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
+        riw_[2]->SetSlice(tempScroll->value());
+        riw_[0]->Render();
+
+        //this->ui->label_slicenum3->
+        //	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[0]));
+
+    }
 }
 
 void MainWindow::generate_surface()
 {
-	Voxel2Mesh voxel2mesh_filter;
+    Voxel2Mesh voxel2mesh_filter;
 
-	voxel2mesh_filter.SetUseGuassianSmoothing(ui->medianGroup->isChecked());
-	voxel2mesh_filter.SetMedianKernelSize(ui->kernelXSpinBox->value(),
-		ui->kernelYSpinBox->value(), ui->kernelZSpinBox->value());
+    voxel2mesh_filter.SetUseGuassianSmoothing(ui->medianGroup->isChecked());
+    voxel2mesh_filter.SetMedianKernelSize(ui->kernelXSpinBox->value(),
+        ui->kernelYSpinBox->value(), ui->kernelZSpinBox->value());
 
-	voxel2mesh_filter.SetUseGuassianSmoothing(ui->gaussGroup->isChecked());
-	voxel2mesh_filter.SetGaussianStandardDeviation(ui->deviationSpinBox->value());
-	voxel2mesh_filter.SetGaussianRadius(ui->radiusSpinBox->value());
+    voxel2mesh_filter.SetUseGuassianSmoothing(ui->gaussGroup->isChecked());
+    voxel2mesh_filter.SetGaussianStandardDeviation(ui->deviationSpinBox->value());
+    voxel2mesh_filter.SetGaussianRadius(ui->radiusSpinBox->value());
 
-	voxel2mesh_filter.SetPolygonSmoothing(ui->smoothingGroup->isChecked());
-	voxel2mesh_filter.SetIteration(ui->iterationSpinBox->value());
-	voxel2mesh_filter.SetRelaxationFactor(ui->relaxationSpinBox->value());
+    voxel2mesh_filter.SetPolygonSmoothing(ui->smoothingGroup->isChecked());
+    voxel2mesh_filter.SetIteration(ui->iterationSpinBox->value());
+    voxel2mesh_filter.SetRelaxationFactor(ui->relaxationSpinBox->value());
 
-	voxel2mesh_filter.SetIsovalue(ui->isovalueSpinBox->value());
+    voxel2mesh_filter.SetIsovalue(ui->isovalueSpinBox->value());
 
-	if (image_vtk_ == nullptr)
-	{
-		QMessageBox::warning(nullptr,
-			tr("Error"),
-			tr("No Image."),
-			QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    if (image_vtk_ == nullptr)
+    {
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
-	}
+    }
 
-	voxel2mesh_filter.SetInputData(image_vtk_);
-	voxel2mesh_filter.Update();
+    voxel2mesh_filter.SetInputData(image_vtk_);
+    voxel2mesh_filter.Update();
 
-	vtkPolyData* mesh = voxel2mesh_filter.GetOutput();
+    vtkPolyData* mesh = voxel2mesh_filter.GetOutput();
 
-	vtkSmartPointer<vtkPolyDataMapper> mesh_mapper =
-		vtkSmartPointer<vtkPolyDataMapper>::New();
-	mesh_mapper->SetInputData(mesh);
-	mesh_mapper->ScalarVisibilityOff();
+    vtkSmartPointer<vtkPolyDataMapper> mesh_mapper =
+        vtkSmartPointer<vtkPolyDataMapper>::New();
+    mesh_mapper->SetInputData(mesh);
+    mesh_mapper->ScalarVisibilityOff();
 
-	vtkSmartPointer<vtkActor> mesh_actor =
-		vtkSmartPointer<vtkActor>::New();
-	mesh_actor->SetMapper(mesh_mapper);
-	mesh_actor->GetProperty()->SetColor(250 / 250.0, 187 / 250.0, 124 / 250.0);
-	mesh_actor->GetProperty()->SetOpacity(0.9);
-	
-	renderer3D_->AddActor(mesh_actor);
-	renderer3D_->ResetCamera();
+    vtkSmartPointer<vtkActor> mesh_actor =
+        vtkSmartPointer<vtkActor>::New();
+    mesh_actor->SetMapper(mesh_mapper);
+    mesh_actor->GetProperty()->SetColor(250 / 250.0, 187 / 250.0, 124 / 250.0);
+    mesh_actor->GetProperty()->SetOpacity(0.9);
 
-	this->ui->view4->GetRenderWindow()->Render();
+    renderer3D_->AddActor(mesh_actor);
+    renderer3D_->ResetCamera();
+
+    this->ui->view4->GetRenderWindow()->Render();
 
 }
 
 void MainWindow::clean_actors()
 {
 
-	clean_view4();
+    clean_view4();
 
-	ui->action_visualization->setChecked(false);
+    ui->action_visualization->setChecked(false);
 
 }
 
-void MainWindow::image_threshold(vtkImageData* input_image, 
-	vtkImageData* output_image, ThresholdingParams params)
+void MainWindow::image_threshold(vtkImageData* input_image,
+    vtkImageData* output_image, ThresholdingParams params)
 {
-	vtkSmartPointer<vtkImageThreshold> thresholdFilter = vtkSmartPointer<vtkImageThreshold>::New();
-	
-	thresholdFilter->SetInputData(input_image);
-	thresholdFilter->ThresholdBetween(params.lower_value, params.upper_value);
-	
-	//thresholdFilter->ReplaceInOn();//��ֵ�ڵ�����ֵ�滻
-	thresholdFilter->ReplaceOutOn();//��ֵ�������ֵ�滻
+    vtkSmartPointer<vtkImageThreshold> thresholdFilter = vtkSmartPointer<vtkImageThreshold>::New();
 
-	thresholdFilter->SetInValue(1);//��ֵ������ֵȫ���滻��1
-	thresholdFilter->SetOutValue(0);//��ֵ������ֵȫ���滻��0
+    thresholdFilter->SetInputData(input_image);
+    thresholdFilter->ThresholdBetween(params.lower_value, params.upper_value);
 
-	thresholdFilter->Update();
+    //thresholdFilter->ReplaceInOn();//��ֵ�ڵ�����ֵ�滻
+    thresholdFilter->ReplaceOutOn();//��ֵ�������ֵ�滻
 
-	output_image = thresholdFilter->GetOutput();
+    thresholdFilter->SetInValue(1);//��ֵ������ֵȫ���滻��1
+    thresholdFilter->SetOutValue(0);//��ֵ������ֵȫ���滻��0
+
+    thresholdFilter->Update();
+
+    output_image = thresholdFilter->GetOutput();
 }
 
 
@@ -656,25 +656,25 @@ void MainWindow::on_detect_edge_button_clicked()
 
 void MainWindow::on_start_thresholding_button_clicked()
 {
-	ThresholdingParams params;
-	params.lower_value = this->ui->in_lower_value->value();
-	params.upper_value = this->ui->in_upper_value->value();
+    ThresholdingParams params;
+    params.lower_value = this->ui->in_lower_value->value();
+    params.upper_value = this->ui->in_upper_value->value();
 
-	vtkSmartPointer<vtkImageData> image_threshold_result;
+    vtkSmartPointer<vtkImageData> image_threshold_result;
 
-	image_threshold(image_vtk_, image_threshold_result, params);
+    image_threshold(image_vtk_, image_threshold_result, params);
 
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	riw_[i]->SetSlice(this->dims[i] / 2);
-	//	riw_[i]->SetInputData(image_threshold_result);
-	//	riw_[i]->SetSliceOrientation(i);
+    //for (int i = 0; i < 3; i++)
+    //{
+    //	riw_[i]->SetSlice(this->dims[i] / 2);
+    //	riw_[i]->SetInputData(image_threshold_result);
+    //	riw_[i]->SetSliceOrientation(i);
 
-	//	riw_[i]->Render();
+    //	riw_[i]->Render();
 
-	//	riw_[i]->GetRenderer()->ResetCamera();
+    //	riw_[i]->GetRenderer()->ResetCamera();
 
-	//}
+    //}
 
 
 }
@@ -796,6 +796,12 @@ void MainWindow::init()
 void MainWindow::on_patientSelector_currentTextChanged(const QString &arg1)
 {
     qDebug()<<"patient selected: "<<arg1;
+    image_requester.setToken(user._token());
+    QVector<QString> image_names = image_requester.getCtimeHttp(arg1);
+    ui->patientImageSelector->clear();
+    for (QString &name: image_names) {
+        ui->patientImageSelector->addItem(name);
+    }
 }
 
 void MainWindow::update_patients()
@@ -804,8 +810,8 @@ void MainWindow::update_patients()
     temp_patient.set_token(user._token());
     this->patients_ = temp_patient.http_get_all_patient(&communicator);
     ui->patientSelector->clear();
-    for (patient &pa: patients_) {
-        qDebug()<<pa._id()<<":"<<pa._name();
-        ui->patientSelector->addItem(pa._id());
+    for (patient &pat: patients_) {
+        qDebug()<<pat._id()<<":"<<pat._name();
+        ui->patientSelector->addItem(pat._id());
     }
 }

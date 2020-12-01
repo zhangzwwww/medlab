@@ -8,6 +8,7 @@
 #include "commu/communhttp.h"
 #include "commu/patient.h"
 #include "commu/userinfo.h"
+#include "commu/imageinfo.h"
 
 namespace Ui {
 class DownloadForm;
@@ -40,6 +41,7 @@ private:
     communhttp communicator_;
     userinfo user_info_;
     QVector<patient> patients_;
+    imageInfo image_manager_;
 };
 
 #endif // UPLOAD_FORM_H
