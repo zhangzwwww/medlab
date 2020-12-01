@@ -824,7 +824,7 @@ QTabWidget::pane:selected {
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QWidget" name="view1Widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -993,156 +993,7 @@ background-color: rgb(0, 0, 0);
       </layout>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QWidget" name="view2Widget" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_13">
-       <property name="spacing">
-        <number>1</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QFrame" name="frame2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-width: 4px;
-border-radius: 5px;
-border-color: rgb(0, 194, 12);
-border-style: solid; 
-background-color: rgb(0, 0, 0);</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_17">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QVTKWidget" name="view2" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="view2subWidget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_19">
-          <property name="spacing">
-           <number>4</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QScrollBar" name="ScrollBar2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Maximum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="zoomBtn2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string> zoom to fit </string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="fullScreenBtn2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string> full screen </string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="2" rowspan="2">
+    <item row="1" column="2" rowspan="3">
      <widget class="QTabWidget" name="tabWidget">
       <property name="enabled">
        <bool>true</bool>
@@ -1191,7 +1042,7 @@ background-color: rgb(0, 0, 0);</string>
         </sizepolicy>
        </property>
        <attribute name="icon">
-        <iconset resource="mainwindow.qrc">
+        <iconset>
          <normaloff>:/icon/resources/icon/registration.png</normaloff>:/icon/resources/icon/registration.png</iconset>
        </attribute>
        <attribute name="title">
@@ -1223,8 +1074,8 @@ background-color: rgb(0, 0, 0);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>507</width>
-                <height>898</height>
+                <width>470</width>
+                <height>876</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1981,7 +1832,7 @@ background-color: rgb(0, 0, 0);</string>
       </widget>
       <widget class="QWidget" name="tab_mesher">
        <attribute name="icon">
-        <iconset resource="mainwindow.qrc">
+        <iconset>
          <normaloff>:/icon/resources/icon/mesher.png</normaloff>:/icon/resources/icon/mesher.png</iconset>
        </attribute>
        <attribute name="title">
@@ -2013,8 +1864,8 @@ background-color: rgb(0, 0, 0);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>528</width>
-                <height>701</height>
+                <width>470</width>
+                <height>728</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -2832,7 +2683,7 @@ background-color: rgb(0, 0, 0);</string>
       </widget>
       <widget class="QWidget" name="tab_processing">
        <attribute name="icon">
-        <iconset resource="mainwindow.qrc">
+        <iconset>
          <normaloff>:/icon/resources/icon/processing.png</normaloff>:/icon/resources/icon/processing.png</iconset>
        </attribute>
        <attribute name="title">
@@ -2865,8 +2716,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>240</width>
-                <height>85</height>
+                <width>206</width>
+                <height>78</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2913,8 +2764,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>176</width>
-                <height>50</height>
+                <width>158</width>
+                <height>46</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2948,8 +2799,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>176</width>
-                <height>50</height>
+                <width>445</width>
+                <height>70</height>
                </rect>
               </property>
               <attribute name="label">
@@ -3111,7 +2962,130 @@ background-color: rgb(45, 45, 48);</string>
       </widget>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="3" column="1">
+     <widget class="QWidget" name="view4Widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_15">
+       <property name="spacing">
+        <number>1</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-width: 4px;
+border-radius: 5px;
+border-color: rgb(255, 255, 0);
+border-style: solid; 
+</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_19">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QVTKWidget" name="view4" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="view4subWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_21">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="fullScreenBtn4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string> full screen </string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QWidget" name="view3Widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -3262,14 +3236,14 @@ background-color: rgb(0, 0, 0);
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QWidget" name="view4Widget" native="true">
+     <widget class="QWidget" name="view2Widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_15">
+      <layout class="QVBoxLayout" name="verticalLayout_13">
        <property name="spacing">
         <number>1</number>
        </property>
@@ -3286,7 +3260,7 @@ background-color: rgb(0, 0, 0);
         <number>0</number>
        </property>
        <item>
-        <widget class="QFrame" name="frame">
+        <widget class="QFrame" name="frame2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -3296,9 +3270,9 @@ background-color: rgb(0, 0, 0);
          <property name="styleSheet">
           <string notr="true">border-width: 4px;
 border-radius: 5px;
-border-color: rgb(255, 255, 0);
+border-color: rgb(0, 194, 12);
 border-style: solid; 
-</string>
+background-color: rgb(0, 0, 0);</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -3306,7 +3280,7 @@ border-style: solid;
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_19">
+         <layout class="QVBoxLayout" name="verticalLayout_17">
           <property name="spacing">
            <number>0</number>
           </property>
@@ -3323,14 +3297,14 @@ border-style: solid;
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view4" native="true"/>
+           <widget class="QVTKWidget" name="view2" native="true"/>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="view4subWidget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_21">
+        <widget class="QWidget" name="view2subWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_19">
           <property name="spacing">
            <number>4</number>
           </property>
@@ -3347,12 +3321,25 @@ border-style: solid;
            <number>0</number>
           </property>
           <item>
-           <spacer name="horizontalSpacer4">
+           <widget class="QScrollBar" name="ScrollBar2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
+             <enum>QSizePolicy::Maximum</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -3363,7 +3350,20 @@ border-style: solid;
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="fullScreenBtn4">
+           <widget class="QPushButton" name="zoomBtn2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string> zoom to fit </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="fullScreenBtn2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -3392,7 +3392,7 @@ border-style: solid;
      <x>0</x>
      <y>0</y>
      <width>1161</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTool">
@@ -3417,7 +3417,7 @@ border-style: solid;
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_open_file">
    <property name="icon">
-    <iconset resource="mainwindow.qrc">
+    <iconset>
      <normaloff>:/icon/resources/icon/dicom.png</normaloff>:/icon/resources/icon/dicom.png</iconset>
    </property>
    <property name="text">
@@ -3429,7 +3429,7 @@ border-style: solid;
   </action>
   <action name="action_visualization">
    <property name="icon">
-    <iconset resource="mainwindow.qrc">
+    <iconset>
      <normaloff>:/icon/resources/icon/visualization.png</normaloff>:/icon/resources/icon/visualization.png</iconset>
    </property>
    <property name="text">
@@ -3449,8 +3449,6 @@ border-style: solid;
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="mainwindow.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
