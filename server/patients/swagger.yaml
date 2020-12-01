@@ -13,18 +13,16 @@ paths:
       tags:
         - "image"
       summary: "get images by patientId and ctime"
-      consumes:
-        - application/x-www-form-urlencoded
       parameters:
         - in: "header"
           name: X-Auth-Token
           type: "string"
           required: true
-        - in: "formData"
+        - in: query
           name: patientId
           type: "string"
           required: True
-        - in: "formData"
+        - in: query
           name: ctime
           type: "string"
           required: True
@@ -71,14 +69,12 @@ paths:
       tags:
         - "image"
       summary: "get image ctimes"
-      consumes:
-        - application/x-www-form-urlencoded
       parameters:
         - in: "header"
           name: X-Auth-Token
           type: "string"
           required: True
-        - in: "formData"
+        - in: query
           name: patientId
           type: "string"
           required: True

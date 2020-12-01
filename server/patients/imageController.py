@@ -26,8 +26,10 @@ class ImageController(Resource):
             resp = Response(status=401)
             return resp
 
-        patientId = request.form['patientId']
-        time = request.form['ctime']
+        args = request.args
+
+        patientId = args['patientId']
+        time = args['ctime']
 
         contents = mongodb.files.find({'patientId': patientId, 'ctime': time})
         data = [{'name': d['name'],
@@ -60,7 +62,9 @@ class ImageDateController(Resource):
             resp = Response(status=401)
             return resp
 
-        patientId = request.form['patientId']
+        args = request.args
+
+        patientId = args['patientId']
         contents = mongodb.files.find({'patientId': patientId})
         d = [d['ctime'] for d in contents]
         data = [{'ctime': d} for d in list(set(d))]
