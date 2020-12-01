@@ -152,6 +152,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	image_itk_(nullptr), image_vtk_(nullptr)
 {
 	ui->setupUi(this);
+    ui->data_manager->clear();
+    ui->patientSelector->setFocus();
 
 	this->ui->view1->hide();
 	this->ui->view2->hide();
@@ -238,9 +240,9 @@ void MainWindow::init_views()
 
 //	this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
 
-	this->ui->view1->show();
-	this->ui->view2->show();
-	this->ui->view3->show();
+//	this->ui->view1->show();
+//	this->ui->view2->show();
+//	this->ui->view3->show();
 
 }
 
@@ -293,8 +295,8 @@ void MainWindow::load_image()
     update_data_manager();
 
 	// clean the current volume
-	this->clean_view4();
-	this->show_image();
+    this->clean_view4();
+    this->show_image();
 }
 
 
@@ -799,4 +801,9 @@ void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
     }
     qDebug()<<"data manager item clicked index: ("<<cur_selected_image_ind[0]<<","
            <<cur_selected_image_ind[1]<<"), name["<<item->text(column)<<"]";
+}
+
+void MainWindow::on_addPatientBtn_clicked()
+{
+//    TODO: add patient
 }
