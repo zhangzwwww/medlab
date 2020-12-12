@@ -44,6 +44,8 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/app/voxel2mesh
   ${PROJECT_SOURCE_DIR}/app/commu
   ${PROJECT_SOURCE_DIR}/app/login
+  ${PROJECT_SOURCE_DIR}/app/utils
+  ${PROJECT_SOURCE_DIR}/app/load
   ${PROJECT_SOURCE_DIR}/app/general_processing
   ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -58,6 +60,10 @@ file(GLOB
      ${PROJECT_SOURCE_DIR}/app/login/*.h
      ${PROJECT_SOURCE_DIR}/app/commu/*.h
      ${PROJECT_SOURCE_DIR}/app/commu/*.cpp
+     ${PROJECT_SOURCE_DIR}/app/utils/*.h
+     ${PROJECT_SOURCE_DIR}/app/load/*.h
+     ${PROJECT_SOURCE_DIR}/app/utils/*.cpp
+     ${PROJECT_SOURCE_DIR}/app/load/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.h
      ${PROJECT_SOURCE_DIR}/resources/myapp.rc

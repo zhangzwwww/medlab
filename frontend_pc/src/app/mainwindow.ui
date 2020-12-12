@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1161</width>
+    <width>1440</width>
     <height>869</height>
    </rect>
   </property>
@@ -886,7 +886,7 @@ background-color: rgb(0, 0, 0);</string>
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view2"/>
+           <widget class="QVTKWidget" name="view2" native="true"/>
           </item>
          </layout>
         </widget>
@@ -1039,7 +1039,7 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view1">
+           <widget class="QVTKWidget" name="view1" native="true">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -1205,7 +1205,7 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view3"/>
+           <widget class="QVTKWidget" name="view3" native="true"/>
           </item>
          </layout>
         </widget>
@@ -1341,7 +1341,7 @@ background-color: rgb(0, 0, 0);
         </sizepolicy>
        </property>
        <attribute name="icon">
-        <iconset resource="../resources/app.qrc">
+        <iconset resource="mainwindow.qrc">
          <normaloff>:/icon/resources/icon/registration.png</normaloff>:/icon/resources/icon/registration.png</iconset>
        </attribute>
        <attribute name="title">
@@ -1373,8 +1373,8 @@ background-color: rgb(0, 0, 0);
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>470</width>
-                <height>876</height>
+                <width>456</width>
+                <height>898</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -2131,7 +2131,7 @@ background-color: rgb(0, 0, 0);
       </widget>
       <widget class="QWidget" name="tab_mesher">
        <attribute name="icon">
-        <iconset resource="../resources/app.qrc">
+        <iconset resource="mainwindow.qrc">
          <normaloff>:/icon/resources/icon/mesher.png</normaloff>:/icon/resources/icon/mesher.png</iconset>
        </attribute>
        <attribute name="title">
@@ -2166,8 +2166,8 @@ background-color: rgb(0, 0, 0);
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>470</width>
-                <height>707</height>
+                <width>472</width>
+                <height>695</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2832,7 +2832,7 @@ background-color: rgb(0, 0, 0);
       </widget>
       <widget class="QWidget" name="tab_processing">
        <attribute name="icon">
-        <iconset resource="../resources/app.qrc">
+        <iconset resource="mainwindow.qrc">
          <normaloff>:/icon/resources/icon/processing.png</normaloff>:/icon/resources/icon/processing.png</iconset>
        </attribute>
        <attribute name="title">
@@ -2865,8 +2865,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>445</width>
-                <height>78</height>
+                <width>448</width>
+                <height>85</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2913,8 +2913,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>158</width>
-                <height>46</height>
+                <width>176</width>
+                <height>50</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2948,8 +2948,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>158</width>
-                <height>46</height>
+                <width>176</width>
+                <height>50</height>
                </rect>
               </property>
               <attribute name="label">
@@ -3287,7 +3287,7 @@ border-style: solid;
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view4"/>
+           <widget class="QVTKWidget" name="view4" native="true"/>
           </item>
          </layout>
         </widget>
@@ -3362,8 +3362,8 @@ border-style: solid;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1161</width>
-     <height>22</height>
+     <width>1440</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTool">
@@ -3390,7 +3390,7 @@ border-style: solid;
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_open_file">
    <property name="icon">
-    <iconset resource="../resources/app.qrc">
+    <iconset resource="mainwindow.qrc">
      <normaloff>:/icon/resources/icon/dicom.png</normaloff>:/icon/resources/icon/dicom.png</iconset>
    </property>
    <property name="text">
@@ -3405,7 +3405,7 @@ border-style: solid;
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources/app.qrc">
+    <iconset resource="mainwindow.qrc">
      <normaloff>:/icon/resources/icon/visualization.png</normaloff>:/icon/resources/icon/visualization.png</iconset>
    </property>
    <property name="text">
@@ -3417,7 +3417,7 @@ border-style: solid;
   </action>
   <action name="action_upload_file">
    <property name="icon">
-    <iconset resource="../resources/app.qrc">
+    <iconset resource="mainwindow.qrc">
      <normaloff>:/icon/resources/icon/upload_file.png</normaloff>
      <normalon>:/icon/resources/icon/open.png</normalon>:/icon/resources/icon/upload_file.png</iconset>
    </property>
@@ -3446,7 +3446,7 @@ border-style: solid;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/app.qrc"/>
+  <include location="mainwindow.qrc"/>
  </resources>
  <connections/>
 </ui>
