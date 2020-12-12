@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QTextCodec>
 
 /*--------------------- Definition for subclass ------------------*/
 MainWindow::vtkSharedWindowLevelCallback* MainWindow::vtkSharedWindowLevelCallback::New(){
@@ -172,11 +173,14 @@ void MainWindow::load_image()
     if (fileName.isEmpty() == true)
         return;
 
-    QByteArray ba = fileName.toLocal8Bit();
-    const char* fileName_str = ba.data();
+	QTextCodec* code = QTextCodec::codecForName("GB2312");
+	std::string name = code->fromUnicode(fileName).data();
 
-    RegistrationWorker worker;
-    image_itk_ = worker.readImageDICOM(fileName_str);
+	//QByteArray ba = fileName.toLocal8Bit();
+	//const char* fileName_str = ba.data();
+
+	RegistrationWorker worker;
+	image_itk_ = worker.readImageDICOM(name.c_str());
 
     if (image_itk_ == nullptr)
     {
@@ -266,81 +270,81 @@ void MainWindow::show_image()
 
 void MainWindow::volume_rendering(bool status)
 {
-    if (status == false)
-    {
-        if (volume_ != nullptr)
-        {
-            renderer3D_->RemoveVolume(volume_);
-            this->ui->view4->GetRenderWindow()->Render();
-        }
+	if (status == false)
+	{
+		if (volume_ != nullptr)
+		{
+			renderer3D_->RemoveVolume(volume_);
+			this->ui->view4->GetRenderWindow()->Render();
+		}
 
-        return;
-    }
-    else {
+		return;
+	}
+	else {
 
-        if (image_vtk_ == nullptr)
-        {
-            QMessageBox::warning(nullptr,
-                tr("Error"),
-                tr("Please read the image first."),
-                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+		if (image_vtk_ == nullptr)
+		{
+			QMessageBox::warning(nullptr,
+				tr("Error"),
+				tr("Please read the image first."),
+				QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+		
+			ui->action_visualization->setChecked(false);
+			return;
+		}
 
-            ui->action_visualization->setChecked(false);
-            return;
-        }
+		if (volume_ == nullptr)
+		{
+			volume_ = vtkSmartPointer<vtkVolume>::New();
+		}
 
-        if (volume_ == nullptr)
-        {
-            volume_ = vtkSmartPointer<vtkVolume>::New();
-        }
+		ui->action_visualization->setEnabled(0);
 
-        ui->action_visualization->setEnabled(0);
+		vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper =
+			vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
+		volumeMapper->SetInputData(image_vtk_);
 
-        vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper =
-            vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
-        volumeMapper->SetInputData(image_vtk_);
+		volumeMapper->SetSampleDistance(volumeMapper->GetSampleDistance() / 2);
+		volumeMapper->SetAutoAdjustSampleDistances(0);
+		volumeMapper->SetImageSampleDistance(2);
 
-        volumeMapper->SetSampleDistance(volumeMapper->GetSampleDistance() / 4);
-        volumeMapper->SetAutoAdjustSampleDistances(0);
-        volumeMapper->SetImageSampleDistance(2);
+		vtkSmartPointer<vtkVolumeProperty> volumeProperty =
+			vtkSmartPointer<vtkVolumeProperty>::New();
+		volumeProperty->SetInterpolationTypeToLinear();
+		volumeProperty->ShadeOn();
+		volumeProperty->SetAmbient(.1);
+		volumeProperty->SetDiffuse(.9);
+		volumeProperty->SetSpecular(.2);
+		volumeProperty->SetSpecularPower(10);
 
-        vtkSmartPointer<vtkVolumeProperty> volumeProperty =
-            vtkSmartPointer<vtkVolumeProperty>::New();
-        volumeProperty->SetInterpolationTypeToLinear();
-        volumeProperty->ShadeOn();
-        volumeProperty->SetAmbient(.1);
-        volumeProperty->SetDiffuse(.9);
-        volumeProperty->SetSpecular(.2);
-        volumeProperty->SetSpecularPower(10);
+		vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity =
+			vtkSmartPointer<vtkPiecewiseFunction>::New();
+		vtkSmartPointer<vtkColorTransferFunction> colorFun =
+			vtkSmartPointer<vtkColorTransferFunction>::New();
 
-        vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity =
-            vtkSmartPointer<vtkPiecewiseFunction>::New();
-        vtkSmartPointer<vtkColorTransferFunction> colorFun =
-            vtkSmartPointer<vtkColorTransferFunction>::New();
+		compositeOpacity->AddPoint(-3024, 0, 0.5, 0.0);
+		compositeOpacity->AddPoint(-16, 0, .49, .61);
+		compositeOpacity->AddPoint(641, .72, .5, 0.0);
+		compositeOpacity->AddPoint(3071, .71, 0.5, 0.0);
 
-        compositeOpacity->AddPoint(-3024, 0, 0.5, 0.0);
-        compositeOpacity->AddPoint(-16, 0, .49, .61);
-        compositeOpacity->AddPoint(641, .72, .5, 0.0);
-        compositeOpacity->AddPoint(3071, .71, 0.5, 0.0);
+		colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
+		colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
+		colorFun->AddRGBPoint(641, .90, .82, .56, .5, 0.0);
+		colorFun->AddRGBPoint(3071, 1, 1, 1, .5, 0.0);
 
-        colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
-        colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
-        colorFun->AddRGBPoint(641, .90, .82, .56, .5, 0.0);
-        colorFun->AddRGBPoint(3071, 1, 1, 1, .5, 0.0);
+		volumeProperty->SetScalarOpacity(compositeOpacity); 
+		volumeProperty->SetColor(colorFun);
 
-        volumeProperty->SetScalarOpacity(compositeOpacity);
-        volumeProperty->SetColor(colorFun);
+	
+		volume_->SetMapper(volumeMapper);
+		volume_->SetProperty(volumeProperty);
 
+		renderer3D_->AddVolume(volume_);
+		renderer3D_->ResetCamera();
+		this->ui->view4->GetRenderWindow()->Render();
 
-        volume_->SetMapper(volumeMapper);
-        volume_->SetProperty(volumeProperty);
-
-        renderer3D_->AddVolume(volume_);
-        renderer3D_->ResetCamera();
-        this->ui->view4->GetRenderWindow()->Render();
-
-        ui->action_visualization->setEnabled(1);
-    }
+		ui->action_visualization->setEnabled(1);
+	}
 }
 
 
