@@ -94,8 +94,8 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "load/upload_form.h"
 #include "load/download_form.h"
 #include "struct_define.h"
-#include "registration/RegistrationWorker.h"
-#include "voxel2mesh/Voxel2Mesh.h"
+#include "registration/registration_worker.h"
+#include "voxel2mesh/voxel2mesh.h"
 #endif
 
 #ifdef Q_OS_WIN32   // Define on windows system
@@ -108,8 +108,8 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "load/upload_form.h"
 #include "load/download_form.h"
 #include "struct_define.h"
-#include "RegistrationWorker.h"
-#include "Voxel2Mesh.h"
+#include "registration_worker.h"
+#include "voxel2mesh.h"
 #endif
 
 using std::vector;

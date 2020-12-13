@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # 模块名
-set(MODULE_NAME Registration)
+set(MODULE_NAME registration)
 
 # SRC
 file(GLOB MODULE_SRCS1 "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -10,7 +10,7 @@ file(GLOB MODULE_SRCS1 "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
            
 
 foreach(source IN LISTS MODULE_SRCS1)
-    source_group("\\Registration" FILES "${source}")
+    source_group("\\registration" FILES "${source}")
 endforeach()
 
 

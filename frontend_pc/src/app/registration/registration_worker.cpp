@@ -7,7 +7,7 @@
 #include "itkGDCMSeriesFileNames.h"
 #include "itkImageSeriesReader.h"
 
-#include "RegistrationWorker.h"
+#include "registration_worker.h"
 
 
 RegistrationWorker::RegistrationWorker()
