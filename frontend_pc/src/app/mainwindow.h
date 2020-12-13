@@ -1,10 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "struct_define.h"
+// #include "struct_define.h"
+#include <vector>
 
-#include <QMainWindow>
 // QT
+#include <QMainWindow>
+#include <QTreeWidgetItem>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QObject>
@@ -85,7 +87,12 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #ifdef Q_OS_MACOS   // Define on MACOS system
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
+#include "commu/patient.h"
+#include "commu/patient_form.h"
 #include "commu/imageinfo.h"
+#include "utils/general_util.h"
+#include "load/upload_form.h"
+#include "load/download_form.h"
 #include "struct_define.h"
 #include "registration/RegistrationWorker.h"
 #include "voxel2mesh/Voxel2Mesh.h"
@@ -94,17 +101,30 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #ifdef Q_OS_WIN32   // Define on windows system
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
+#include "commu/patient.h"
+#include "commu/patient_form.h"
+#include "commu/imageinfo.h"
+#include "utils/general_util.h"
+#include "load/upload_form.h"
+#include "load/download_form.h"
 #include "struct_define.h"
 #include "RegistrationWorker.h"
 #include "Voxel2Mesh.h"
 #endif
 
-//class vtkImageViewer2;
-//class vtkRenderer;
-//class vtkImageData;
-//class vtkVolume;
-//class vtkImageStack;
+using std::vector;
 
+class vtkImageViewer2;
+class vtkRenderer;
+class vtkImageData;
+class vtkVolume;
+class vtkImageStack;
+class vtkActor;
+
+struct ImageDataItem {
+    QString image_name;
+    vtkSmartPointer<vtkImageData> image_data;
+};
 
 namespace Ui {
 class MainWindow;
@@ -134,21 +154,25 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void init();
+
 private:
     void init_views();
     void show_image();
     void clean_view4();
+    void update_data_manager();
+    void update_patients();
     
 
 private slots:
     void load_image();
-    void volume_rendering();
+    void volume_rendering(bool status);
     void view_zoom_to_fit();
     void view_full_screen(bool full_status);
     void view_change_slice();
 
     void generate_surface();
-
+    void clean_actors();
 
     void image_threshold(vtkImageData* input_image, vtkImageData* output_image, ThresholdingParams params);
 
@@ -170,6 +194,16 @@ private slots:
 
     void on_start_thresholding_button_clicked();
 
+    void on_data_manager_itemClicked(QTreeWidgetItem *item, int column);
+
+    void on_addPatientBtn_clicked();
+
+    void on_action_upload_file_triggered();
+
+    void on_action_download_file_triggered();
+
+    void on_patientSelector_currentTextChanged(const QString &arg1);
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
@@ -178,9 +212,15 @@ private:
     vtkSmartPointer<vtkImageData> image_vtk_;
     vtkSmartPointer<vtkVolume> volume_;
 
+
     vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
     vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];
     //int dims_[3];
+
+    vector<vector<ImageDataItem>> image_tree_;
+    int cur_selected_image_ind[2];
+
+   QVector<patient> patients_;
 
 private:
     Ui::MainWindow *ui;

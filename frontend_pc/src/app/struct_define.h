@@ -77,4 +77,16 @@ struct ThresholdingParams {
     double upper_value;
 };
 
+struct UploadFileParams {
+    string file_path;
+    string patient_id;
+    string image_name;
+};
+
+struct DownloadFileParams {
+    string save_path;
+    string patient_id;
+    string image_name;
+};
+
 #endif // STRUCT_DEFINE_H

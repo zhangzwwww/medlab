@@ -197,7 +197,15 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
     req = req + " --form 'filename=" + ctime + "'";
     char buffer[1024] = {0};
     qDebug() << req;
+
+#ifdef Q_OS_WIN32   // Define on windows system
+    fp = _popen(req.toUtf8(), "r");
+#endif
+
+#ifdef Q_OS_MACOS   // Define on MACOS system
+
     fp = popen(req.toUtf8(), "r");
+#endif
 
 
     // Read in the file

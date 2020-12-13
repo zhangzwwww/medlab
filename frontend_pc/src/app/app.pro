@@ -27,9 +27,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        commu/patient_form.cpp \
     commu/imageinfo.cpp \
     commu/prediction.cpp \
         general_processing/general_processing.cpp \
+        load/download_form.cpp \
+        load/upload_form.cpp \
+        login/signup_form.cpp \
+        utils/general_util.cpp \
         login/loginchecker.cpp \
         login/loginform.cpp \
         commu/communhttp.cpp \
@@ -37,13 +42,18 @@ SOURCES += \
         commu/userinfo.cpp \
         main.cpp \
         mainwindow.cpp \
-    registration/RegistrationWorker.cpp \
-    voxel2mesh/Voxel2Mesh.cpp
+        registration/RegistrationWorker.cpp \
+        voxel2mesh/Voxel2Mesh.cpp
 
 HEADERS += \
+        commu/patient_form.h \
         commu/imageinfo.h \
         commu/prediction.h \
         general_processing/general_processing.h \
+        load/download_form.h \
+        load/upload_form.h \
+        login/signup_form.h \
+        utils/general_util.h \
         login/loginchecker.h \
         login/loginform.h \
         commu/communhttp.h \
@@ -57,7 +67,11 @@ HEADERS += \
         voxel2mesh/Voxel2Mesh.h
 
 FORMS += \
+        commu/patient_form.ui \
+        load/download_form.ui \
+        load/upload_form.ui \
         login/loginform.ui \
+        login/signup_form.ui \
         mainwindow.ui
 
 INCLUDEPATH += /usr/local/include \
@@ -86,6 +100,22 @@ LIBS += -L/usr/local/lib \
 -lvtkdoubleconversion-8.2 -lvtkexodusII-8.2 -lvtkexpat-8.2 -lvtkfreetype-8.2 -lvtkgl2ps-8.2 -lvtkglew-8.2 -lvtkhdf5-8.2 -lvtkhdf5_hl-8.2 \
 -lvtkjpeg-8.2 -lvtkjsoncpp-8.2 -lvtklibharu-8.2 -lvtklibxml2-8.2 -lvtklz4-8.2 -lvtklzma-8.2 -lvtkmetaio-8.2 -lvtkogg-8.2 -lvtkpng-8.2 \
 -lvtkproj-8.2 -lvtkpugixml-8.2 -lvtksqlite-8.2 -lvtksys-8.2 -lvtktheora-8.2 -lvtktiff-8.2 -lvtkverdict-8.2 -lvtkzlib-8.2 \
+-lITKBiasCorrection-5.0.1 -lITKCommon-5.0.1 -lITKDICOMParser-5.0.1 -lITKEXPAT-5.0.1 -lITKIOBMP-5.0.1 -lITKIOBioRad-5.0.1 \
+-lITKIOBruker-5.0.1 -lITKIOCSV-5.0.1 -lITKIOGDCM-5.0.1 -lITKIOGE-5.0.1 -lITKIOGIPL-5.0.1 -lITKIOHDF5-5.0.1 \
+-lITKIOIPL-5.0.1 -lITKIOImageBase-5.0.1 -lITKIOJPEG-5.0.1 -lITKIOJPEG2000-5.0.1 -lITKIOLSM-5.0.1 -lITKIOMINC-5.0.1 \
+-lITKIOMRC-5.0.1 -lITKIOMeshBYU-5.0.1 -lITKIOMeshBase-5.0.1 -lITKIOMeshFreeSurfer-5.0.1 -lITKIOMeshGifti-5.0.1 -lITKIOMeshOBJ-5.0.1 \
+-lITKIOMeshOFF-5.0.1 -lITKIOMeshVTK-5.0.1 -lITKIOMeta-5.0.1 -lITKIONIFTI-5.0.1 -lITKIONRRD-5.0.1 -lITKIOPNG-5.0.1 \
+-lITKIOSiemens-5.0.1 -lITKIOSpatialObjects-5.0.1 -lITKIOStimulate-5.0.1 -lITKIOTIFF-5.0.1 -lITKIOTransformBase-5.0.1 -lITKIOTransformHDF5-5.0.1 \
+-lITKIOTransformInsightLegacy-5.0.1 -lITKIOTransformMatlab-5.0.1 -lITKIOVTK-5.0.1 -lITKIOXML-5.0.1 -lITKKLMRegionGrowing-5.0.1 -lITKLabelMap-5.0.1 \
+-lITKMesh-5.0.1 -lITKMetaIO-5.0.1 -lITKNrrdIO-5.0.1 -lITKOptimizers-5.0.1 -lITKOptimizersv4-5.0.1 -lITKPath-5.0.1 \
+-lITKPolynomials-5.0.1 -lITKQuadEdgeMesh-5.0.1 -lITKSpatialObjects-5.0.1 -lITKStatistics-5.0.1 -lITKTestKernel-5.0.1 -lITKTransform-5.0.1 \
+-lITKTransformFactory-5.0.1 -lITKVNLInstantiation-5.0.1 -lITKVTK-5.0.1 -lITKVideoCore-5.0.1 -lITKVideoIO-5.0.1 -lITKVtkGlue-5.0.1 \
+-lITKWatersheds-5.0.1 -lITKgiftiio-5.0.1 -lITKniftiio-5.0.1 -lITKznz-5.0.1 -litkNetlibSlatec-5.0.1 -litkdouble-conversion-5.0.1 \
+-litkgdcmCommon-5.0.1 -litkgdcmDICT-5.0.1 -litkgdcmDSED-5.0.1 -litkgdcmIOD-5.0.1 -litkgdcmMEXD-5.0.1 -litkgdcmMSFF-5.0.1 \
+-litkgdcmcharls-5.0.1 -litkgdcmjpeg12-5.0.1 -litkgdcmjpeg16-5.0.1 -litkgdcmjpeg8-5.0.1 -litkgdcmopenjp2-5.0.1 -litkgdcmsocketxx-5.0.1 \
+-litkgdcmuuid-5.0.1 -litkjpeg-5.0.1 -litklbfgs-5.0.1 -litkminc2-5.0.1 -litknetlib-5.0.1 -litkopenjpeg-5.0.1 \
+-litkpng-5.0.1 -litksys-5.0.1 -litktestlib-5.0.1 -litktiff-5.0.1 -litkv3p_netlib-5.0.1 -litkvcl-5.0.1 \
+-litkvnl-5.0.1 -litkvnl_algo-5.0.1 -litkzlib-5.0.1 \
 # -framework OpenGL -framework glut \
 #-lopencv_dnn -lopencv_ml -lopencv_objdetect -lopencv_shape \
 #-lopencv_stitching -lopencv_superres -lopencv_videostab \
@@ -114,3 +144,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     Login/login.qss
+
+RESOURCES     = mainwindow.qrc
+
+RC_ICONS = ../resources/MedPlatform.ico
+RC_FILE = ../resources/myapp.rc

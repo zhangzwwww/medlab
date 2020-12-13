@@ -1,10 +1,17 @@
 <RCC>
   <qresource prefix="icon">
+    <file>../resources/icon/download_file.png</file>
+    <file>../resources/icon/open_folder.png</file>
+    <file>../resources/icon/upload_file.png</file>
     <file>../resources/icon/processing.png</file>
     <file>../resources/icon/dicom.png</file>
     <file>../resources/icon/mesher.png</file>
     <file>../resources/icon/open.png</file>
     <file>../resources/icon/visualization.png</file>
     <file>../resources/icon/registration.png</file>
+  </qresource>
+  <qresource prefix="qssfile">
+    <file>../resources/qssfile/load_form.qss</file>
+    <file>../resources/qssfile/dark_theme.qss</file>
   </qresource>
 </RCC>
