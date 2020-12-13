@@ -1,4 +1,4 @@
-#include "Voxel2Mesh.h"
+#include "voxel2mesh.h"
 
 #include <vtkSmartPointer.h>
 #include <vtkImageData.h>

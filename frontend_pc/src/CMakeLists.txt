@@ -73,7 +73,10 @@ file(GLOB
 set(PROJECT_QRCS app/mainwindow.qrc)
 
 # UI
-set(PROJECT_UIS app/mainwindow.ui  app/login/loginform.ui)
+set(PROJECT_UIS app/mainwindow.ui  
+                           app/login/loginform.ui 
+                           app/load/upload_form.ui
+                           app/load/download_form.ui)
 
 # 链接库文件
 #link_directories(${PROJECT_SOURCE_DIR}/lib)
@@ -89,8 +92,8 @@ add_executable(MedPlatform ${PROJECT_SRCS} ${PROJECT_UIS} ${PROJECT_QRCS})
 target_link_libraries(MedPlatform
                       ${VTK_LIBRARIES}
                       ${ITK_LIBRARIES}
-                      Registration
-                      Voxel2Mesh
+                      registration
+                      voxel2mesh
                       Qt5::Widgets
                       Qt5::Network)
 
