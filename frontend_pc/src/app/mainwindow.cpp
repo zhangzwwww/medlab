@@ -517,16 +517,32 @@ void MainWindow::generate_surface()
 
     voxel2mesh_filter.SetIsovalue(ui->isovalueSpinBox->value());
 
-    if (image_vtk_ == nullptr)
+    // loop for finding corresponding ImageDataItem
+    QString current_name = ui->greyScaleImageSelector->currentText();
+    
+    for (vector<ImageDataItem>& vec : image_tree_)
     {
-        QMessageBox::warning(nullptr,
-            tr("Error"),
-            tr("No Image."),
-            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        for (ImageDataItem& item : vec)
+        {
+            if (current_name == item.image_name)
+            {
+                if (item.image_data == nullptr)
+                {
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
 
+                }
+                else {
+                    voxel2mesh_filter.SetInputData(item.image_data);
+                    break;
+                }
+            }
+        }
     }
 
-    voxel2mesh_filter.SetInputData(image_vtk_);
     voxel2mesh_filter.Update();
 
     vtkPolyData* mesh = voxel2mesh_filter.GetOutput();
@@ -561,6 +577,34 @@ void MainWindow::clean_actors()
 void MainWindow::image_threshold(vtkImageData* input_image,
     vtkImageData* output_image, ThresholdingParams params)
 {
+    // loop for finding corresponding ImageDataItem
+    QString current_name = ui->greyScaleImageSelector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_)
+    {
+        for (ImageDataItem& item : vec)
+        {
+            if (current_name == item.image_name)
+            {
+                if (item.image_data == nullptr)
+                {
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+
+                }
+                else {
+                    //voxel2mesh_filter.SetInputData(item.image_data);
+                    break;
+                }
+            }
+        }
+    }
+
+
+
     vtkSmartPointer<vtkImageThreshold> thresholdFilter = vtkSmartPointer<vtkImageThreshold>::New();
 
     thresholdFilter->SetInputData(input_image);
@@ -740,6 +784,14 @@ void MainWindow::update_data_manager() {
 
     for (vector<ImageDataItem> &vec: image_tree_)
     {
+        // name: (1)(1)
+        //ui->FixedImageSelector->addItem(vec[0].image_name);
+        //ui->MovingImageSelector->addItem(vec[0].image_name);
+        ////            ui->maskImageSelector->addItem(item.image_name);
+        //ui->greyScaleImageSelector->addItem(vec[0].image_name);
+        //ui->BlendImage0Selector->addItem(vec[0].image_name);
+        //ui->BlendImage1Selector->addItem(vec[0].image_name);
+
         for (ImageDataItem &item: vec) 
         {
             ui->FixedImageSelector->addItem(item.image_name);
