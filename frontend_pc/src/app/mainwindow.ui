@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MedPlatform</string>
   </property>
   <property name="styleSheet">
    <string notr="true">/* 全局字体 */
@@ -21,18 +21,19 @@
 
 /* 工具栏 */
 #mainToolBar
- {
-	color: #F0F0F0;
+{
+	color: rgb(240, 240, 240);
     border-left: 1px solid #16181c;
     border-top: 1px solid #16181c;
     border-bottom: 1px solid #16181c;
 	background-color: rgb(37, 37, 38);
+font-size:14px;
 }
 
 
 /* 状态栏 */
 #statusBar {
-	color: #F0F0F0;
+    color: #f0f0f0;
     background-color:rgb(45, 45, 48);
     border-right: 1px solid #16181c;
     border-left: 1px solid #16181c;
@@ -40,13 +41,12 @@
 }
 
 QMenuBar {
-    background-color: rgb(37, 37, 38);
-    color: #9DA5B4;
+    background-color: rgb(45, 45, 48);
+    color: #f0f0f0;
 }
 
 
-QWidget
-{
+QWidget{
 background-color: rgb(45, 45, 48);
 }
 
@@ -814,7 +814,83 @@ QTabWidget::pane {
 QTabWidget::pane:selected {
     background-color: #32414B;
     border: 1px solid #1464A0;
-}</string>
+}
+
+
+/* 树型View */
+QTreeWidget:branch:selected,
+QTreeWidget:branch:hover {
+    background: url(:/icon/transparent);
+}
+
+QTreeWidget::branch:has-siblings:!adjoins-item {
+    border-image: url(:/icon/transparent);
+}
+
+QTreeWidget::branch:has-siblings:adjoins-item {
+    border-image: url(:/icon/transparent);
+}
+
+QTreeWidget::branch:!has-children:!has-siblings:adjoins-item {
+    border-image: url(:/icon/transparent);
+}
+
+QTreeWidget::branch:has-children:!has-siblings:closed,
+QTreeWidget::branch:closed:has-children:has-siblings {
+    image: url(:/icon/branch_closed);
+}
+
+QTreeWidget::branch:open:has-children:!has-siblings,
+QTreeWidget::branch:open:has-children:has-siblings {
+    image: url(:/icon/branch_open);
+}
+
+QTreeWidget::branch:has-children:!has-siblings:closed:hover,
+QTreeWidget::branch:closed:has-children:has-siblings:hover {
+    image: url(:/icon/branch_closed-on);
+}
+
+QTreeWidget::branch:open:has-children:!has-siblings:hover,
+QTreeWidget::branch:open:has-children:has-siblings:hover {
+    image: url(:/icon/branch_open-on);
+}
+
+
+QTreeWidget::indicator:checked,
+QTreeWidget::indicator:unchecked,
+
+QTreeWidget::indicator:checked:hover,
+QTreeWidget::indicator:checked:focus,
+QTreeWidget::indicator:checked:pressed,
+
+QTreeWidget::indicator:unchecked:hover,
+QTreeWidget::indicator:unchecked:focus,
+QTreeWidget::indicator:unchecked:pressed,
+
+QTreeWidget::indicator:indeterminate:hover,
+QTreeWidget::indicator:indeterminate:focus,
+QTreeWidget::indicator:indeterminate:pressed,
+
+QTreeWidget::indicator:indeterminate,
+
+QTreeWidget {
+	selection-background-color: rgb(28, 151, 234);
+	selection-color: #f0f0f0;
+	color: #f0f0f0;
+}
+
+QTreeWidget:active {
+	selection-background-color: rgb(28, 151, 234);
+	selection-color: #f0f0f0;
+	color: #f0f0f0;
+}
+
+QTreeWidget::item
+{
+height:25px; 
+}
+
+</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -824,153 +900,207 @@ QTabWidget::pane:selected {
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="2">
-     <widget class="QWidget" name="view2Widget" native="true">
+    <property name="horizontalSpacing">
+     <number>11</number>
+    </property>
+    <item row="0" column="0" rowspan="2">
+     <widget class="QTabWidget" name="tabWidget_3">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_13">
-       <property name="spacing">
-        <number>1</number>
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>300</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <property name="movable">
+       <bool>false</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="tab_patient">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="leftMargin">
-        <number>0</number>
+       <property name="minimumSize">
+        <size>
+         <width>294</width>
+         <height>0</height>
+        </size>
        </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QFrame" name="frame2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-width: 4px;
-border-radius: 5px;
-border-color: rgb(0, 194, 12);
-border-style: solid; 
-background-color: rgb(0, 0, 0);</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_17">
-          <property name="spacing">
-           <number>0</number>
+       <attribute name="icon">
+        <iconset resource="mainwindow.qrc">
+         <normaloff>:/icon/resources/icon/patient.png</normaloff>:/icon/resources/icon/patient.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Patient Info</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_24">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="leftMargin">
-           <number>0</number>
+          <property name="text">
+           <string>Patient ID</string>
           </property>
-          <property name="topMargin">
-           <number>0</number>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="patientSelector">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
+          <property name="focusPolicy">
+           <enum>Qt::TabFocus</enum>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view2" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="view2subWidget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_19">
-          <property name="spacing">
-           <number>4</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QScrollBar" name="ScrollBar2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
+           <property name="text">
+            <string>test_0</string>
+           </property>
           </item>
           <item>
-           <spacer name="horizontalSpacer2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Maximum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
+           <property name="text">
+            <string>test_1</string>
+           </property>
           </item>
-          <item>
-           <widget class="QPushButton" name="zoomBtn2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string> zoom to fit </string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="fullScreenBtn2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string> full screen </string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_26">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Image</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="patientImageSelector">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QPushButton" name="addPatientBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Add Patient</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_data_manager">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>294</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <attribute name="icon">
+        <iconset resource="mainwindow.qrc">
+         <normaloff>:/icon/resources/icon/data_manager.png</normaloff>:/icon/resources/icon/data_manager.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Data Manager</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_29">
+        <item>
+         <widget class="QTreeWidget" name="data_manager">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">	border-width: 1px; 
+	border-style: solid; 
+	border-radius: 2px;
+	border-color: grey;
+	margin-bottom: 2.5ex;
+	background-color: rgb(37, 37, 38);</string>
+          </property>
+          <attribute name="headerVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="headerCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>data_manager</string>
+           </property>
+           <property name="background">
+            <color>
+             <red>45</red>
+             <green>45</green>
+             <blue>48</blue>
+            </color>
+           </property>
+           <property name="foreground">
+            <brush brushstyle="NoBrush">
+             <color alpha="255">
+              <red>255</red>
+              <green>255</green>
+              <blue>255</blue>
+             </color>
+            </brush>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item row="0" column="1">
@@ -1142,15 +1272,15 @@ background-color: rgb(0, 0, 0);
       </layout>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QWidget" name="view3Widget" native="true">
+    <item row="0" column="2">
+     <widget class="QWidget" name="view2Widget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_14">
+      <layout class="QVBoxLayout" name="verticalLayout_13">
        <property name="spacing">
         <number>1</number>
        </property>
@@ -1167,7 +1297,7 @@ background-color: rgb(0, 0, 0);
         <number>0</number>
        </property>
        <item>
-        <widget class="QFrame" name="frame3">
+        <widget class="QFrame" name="frame2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -1177,10 +1307,9 @@ background-color: rgb(0, 0, 0);
          <property name="styleSheet">
           <string notr="true">border-width: 4px;
 border-radius: 5px;
-border-color: rgb(0, 132, 255);
+border-color: rgb(0, 194, 12);
 border-style: solid; 
-background-color: rgb(0, 0, 0);
-</string>
+background-color: rgb(0, 0, 0);</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -1188,7 +1317,7 @@ background-color: rgb(0, 0, 0);
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_18">
+         <layout class="QVBoxLayout" name="verticalLayout_17">
           <property name="spacing">
            <number>0</number>
           </property>
@@ -1205,14 +1334,14 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view3" native="true"/>
+           <widget class="QVTKWidget" name="view2" native="true"/>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="view3subWidget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_20">
+        <widget class="QWidget" name="view2subWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_19">
           <property name="spacing">
            <number>4</number>
           </property>
@@ -1229,7 +1358,7 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QScrollBar" name="ScrollBar3">
+           <widget class="QScrollBar" name="ScrollBar2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1242,7 +1371,7 @@ background-color: rgb(0, 0, 0);
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer3">
+           <spacer name="horizontalSpacer2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -1258,7 +1387,7 @@ background-color: rgb(0, 0, 0);
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="zoomBtn3">
+           <widget class="QPushButton" name="zoomBtn2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1271,7 +1400,7 @@ background-color: rgb(0, 0, 0);
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="fullScreenBtn3">
+           <widget class="QPushButton" name="fullScreenBtn2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1316,7 +1445,7 @@ background-color: rgb(0, 0, 0);
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -2166,8 +2295,8 @@ background-color: rgb(0, 0, 0);
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>472</width>
-                <height>695</height>
+                <width>469</width>
+                <height>676</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2865,7 +2994,7 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>448</width>
+                <width>240</width>
                 <height>85</height>
                </rect>
               </property>
@@ -3111,124 +3240,154 @@ background-color: rgb(45, 45, 48);</string>
       </widget>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="2">
-     <widget class="QTabWidget" name="tabWidget_3">
+    <item row="1" column="1">
+     <widget class="QWidget" name="view3Widget" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>300</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tab_data_manager">
-       <attribute name="title">
-        <string>Data</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_29">
-        <item>
-         <widget class="QTreeWidget" name="data_manager">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+      <layout class="QVBoxLayout" name="verticalLayout_14">
+       <property name="spacing">
+        <number>1</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frame3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-width: 4px;
+border-radius: 5px;
+border-color: rgb(0, 132, 255);
+border-style: solid; 
+background-color: rgb(0, 0, 0);
+</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_18">
+          <property name="spacing">
+           <number>0</number>
           </property>
-          <column>
-           <property name="text">
-            <string>data_manager</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_patient">
-       <attribute name="title">
-        <string>Patient</string>
-       </attribute>
-       <layout class="QFormLayout" name="formLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_24">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="text">
-           <string>Patient ID</string>
+          <property name="topMargin">
+           <number>0</number>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="patientSelector">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-          <property name="focusPolicy">
-           <enum>Qt::TabFocus</enum>
+          <property name="bottomMargin">
+           <number>0</number>
           </property>
           <item>
-           <property name="text">
-            <string>test_0</string>
-           </property>
+           <widget class="QVTKWidget" name="view3" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="view3subWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_20">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QScrollBar" name="ScrollBar3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
           </item>
           <item>
-           <property name="text">
-            <string>test_1</string>
-           </property>
+           <spacer name="horizontalSpacer3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Maximum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_26">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Image</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="patientImageSelector">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="2">
-         <widget class="QPushButton" name="addPatientBtn">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Add Patient</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+          <item>
+           <widget class="QPushButton" name="zoomBtn3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string> zoom to fit </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="fullScreenBtn3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string> full screen </string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item row="1" column="2">
@@ -3363,25 +3522,11 @@ border-style: solid;
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1440</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuTool">
-    <property name="title">
-     <string>Tool</string>
-    </property>
-    <addaction name="action_open_file"/>
-    <addaction name="action_visualization"/>
-   </widget>
-   <addaction name="menuTool"/>
-  </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="styleSheet">
+    <string notr="true">color: rgb(240, 240, 240);
+font-size: 12px;</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -3389,9 +3534,13 @@ border-style: solid;
     <bool>false</bool>
    </attribute>
    <addaction name="action_open_file"/>
+   <addaction name="separator"/>
    <addaction name="action_visualization"/>
+   <addaction name="separator"/>
    <addaction name="action_upload_file"/>
+   <addaction name="separator"/>
    <addaction name="action_download_file"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_open_file">
@@ -3400,7 +3549,7 @@ border-style: solid;
      <normaloff>:/icon/resources/icon/dicom.png</normaloff>:/icon/resources/icon/dicom.png</iconset>
    </property>
    <property name="text">
-    <string>Open DICOM File</string>
+    <string>  DICOM</string>
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;open DICOM files&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -3415,7 +3564,7 @@ border-style: solid;
      <normaloff>:/icon/resources/icon/visualization.png</normaloff>:/icon/resources/icon/visualization.png</iconset>
    </property>
    <property name="text">
-    <string>Volume Rendering</string>
+    <string>  Visualization</string>
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;volume rendering&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -3428,7 +3577,7 @@ border-style: solid;
      <normalon>:/icon/resources/icon/open.png</normalon>:/icon/resources/icon/upload_file.png</iconset>
    </property>
    <property name="text">
-    <string>upload_file</string>
+    <string>  Upload Files</string>
    </property>
   </action>
   <action name="action_download_file">
@@ -3438,7 +3587,7 @@ border-style: solid;
     </iconset>
    </property>
    <property name="text">
-    <string>download_file</string>
+    <string>  Download Files</string>
    </property>
   </action>
  </widget>

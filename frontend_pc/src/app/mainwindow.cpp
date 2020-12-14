@@ -72,6 +72,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //qss = qssfile.readAll();
     //this->setStyleSheet(qss);
 
+    ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    ui->mainToolBar->setFixedHeight(50);
+    
 
     this->ui->view1->hide();
     this->ui->view2->hide();
