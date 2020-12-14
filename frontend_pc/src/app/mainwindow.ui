@@ -26,8 +26,8 @@
     border-left: 1px solid #16181c;
     border-top: 1px solid #16181c;
     border-bottom: 1px solid #16181c;
-	background-color: rgb(37, 37, 38);
-font-size:14px;
+	background-color: rgb(45, 45, 48);
+	border-color: rgb(45, 45, 48);
 }
 
 
@@ -927,7 +927,7 @@ height:25px;
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="movable">
        <bool>false</bool>
@@ -3525,7 +3525,8 @@ border-style: solid;
   <widget class="QToolBar" name="mainToolBar">
    <property name="styleSheet">
     <string notr="true">color: rgb(240, 240, 240);
-font-size: 12px;</string>
+font-size: 14px;
+background-color: rgb(45, 45, 48);</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -3535,9 +3536,12 @@ font-size: 12px;</string>
    </attribute>
    <addaction name="action_open_file"/>
    <addaction name="separator"/>
+   <addaction name="separator"/>
    <addaction name="action_visualization"/>
    <addaction name="separator"/>
+   <addaction name="separator"/>
    <addaction name="action_upload_file"/>
+   <addaction name="separator"/>
    <addaction name="separator"/>
    <addaction name="action_download_file"/>
    <addaction name="separator"/>

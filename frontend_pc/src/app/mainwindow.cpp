@@ -217,8 +217,11 @@ void MainWindow::load_image()
     image_item.image_name = GetFileName(fileName);
     image_item.image_data = image_vtk_;
     image_tree_.push_back(vector<ImageDataItem>{image_item});
+
+    // insert test node at the last vector
     image_item.image_name = "test";
     image_tree_.back().push_back(image_item);
+
     update_data_manager();
 
     // clean the current volume
@@ -688,7 +691,7 @@ void MainWindow::on_start_thresholding_button_clicked()
 }
 
 /*
- * update_data_manager: udpate ui->data_manager according to this->image_tree_
+ * update_data_manager: update ui->data_manager according to this->image_tree_
  * image_tree_ is two layer: 1. folder 2. images, eg: image_tree_[0][0] saves the original image of first folder we opened
  * cur_selected_image_ind saves the index, !!! make sure to check if cur_selected_image_ind is >= 0 before using it !!!
  * cur_selected_image_ind[0] = -1 means there is no selected image in current stage
@@ -697,23 +700,36 @@ void MainWindow::update_data_manager() {
     if (image_tree_.empty()) {
         return;
     }
+
+    // Clears the tree widget by removing all of its items and selections.
     ui->data_manager->clear();
     QTreeWidgetItem *folder_name;
-    for (vector<ImageDataItem> &vec : image_tree_) {
-        if (vec.empty()) {
+    for (vector<ImageDataItem> &vec : image_tree_) 
+    {
+        if (vec.empty()) 
+        {
             continue;
         }
+
+        // vec[0]: First ImageDataItem Node, set as the parent node for other items
         folder_name = new QTreeWidgetItem(ui->data_manager, QStringList(vec[0].image_name));
         folder_name->setCheckState(0, Qt::Unchecked);
-        int len = int(vec.size());
-        for (int i = 1; i < len; i++) {
+
+        int len = int(vec.size());  // the number of ImageDataItems
+        for (int i = 1; i < len; i++) 
+        {
             QTreeWidgetItem *item = new QTreeWidgetItem(folder_name, QStringList(vec[i].image_name));
             item->setCheckState(0, Qt::Unchecked);
         }
+
     }
+
+    // set the new node checked
     folder_name->setCheckState(0, Qt::Checked);
+
     cur_selected_image_ind[0] = int(image_tree_.size())-1;
     cur_selected_image_ind[1] = 0;
+
 //    update combo box
     ui->FixedImageSelector->clear();
     ui->MovingImageSelector->clear();
@@ -721,8 +737,11 @@ void MainWindow::update_data_manager() {
     ui->greyScaleImageSelector->clear();
     ui->BlendImage0Selector->clear();
     ui->BlendImage1Selector->clear();
-    for (vector<ImageDataItem> &vec: image_tree_) {
-        for (ImageDataItem &item: vec) {
+
+    for (vector<ImageDataItem> &vec: image_tree_)
+    {
+        for (ImageDataItem &item: vec) 
+        {
             ui->FixedImageSelector->addItem(item.image_name);
             ui->MovingImageSelector->addItem(item.image_name);
 //            ui->maskImageSelector->addItem(item.image_name);
@@ -741,7 +760,8 @@ void MainWindow::update_data_manager() {
  */
 void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
 {
-    if (item->checkState(column) == Qt::Checked) {
+    if (item->checkState(column) == Qt::Checked) 
+    {
         QTreeWidgetItemIterator iter(ui->data_manager);
         while (*iter) {
 //            qDebug()<<(*iter)->text(0);
