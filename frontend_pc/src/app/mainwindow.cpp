@@ -530,21 +530,18 @@ void MainWindow::clean_actors()
 
 void MainWindow::generate_surface()
 {
+    if (ui->greyScaleImageSelector->count() == 0)
+    {
+        setMandatoryField(ui->greyScaleImageSelector, true);
+
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
     Voxel2Mesh voxel2mesh_filter;
-
-    voxel2mesh_filter.SetUseGuassianSmoothing(ui->medianGroup->isChecked());
-    voxel2mesh_filter.SetMedianKernelSize(ui->kernelXSpinBox->value(),
-        ui->kernelYSpinBox->value(), ui->kernelZSpinBox->value());
-
-    voxel2mesh_filter.SetUseGuassianSmoothing(ui->gaussGroup->isChecked());
-    voxel2mesh_filter.SetGaussianStandardDeviation(ui->deviationSpinBox->value());
-    voxel2mesh_filter.SetGaussianRadius(ui->radiusSpinBox->value());
-
-    voxel2mesh_filter.SetPolygonSmoothing(ui->smoothingGroup->isChecked());
-    voxel2mesh_filter.SetIteration(ui->iterationSpinBox->value());
-    voxel2mesh_filter.SetRelaxationFactor(ui->relaxationSpinBox->value());
-
-    voxel2mesh_filter.SetIsovalue(ui->isovalueSpinBox->value());
 
     // loop for finding corresponding ImageDataItem
     QString current_name = ui->greyScaleImageSelector->currentText();
@@ -557,6 +554,8 @@ void MainWindow::generate_surface()
             {
                 if (item.image_data == nullptr)
                 {
+                    setMandatoryField(ui->greyScaleImageSelector, true);
+
                     QMessageBox::warning(nullptr,
                         tr("Error"),
                         tr("No Image Selected."),
@@ -565,6 +564,19 @@ void MainWindow::generate_surface()
 
                 }
                 else {
+                    setMandatoryField(ui->greyScaleImageSelector, false);
+
+                    voxel2mesh_filter.SetUseGuassianSmoothing(ui->medianGroup->isChecked());
+                    voxel2mesh_filter.SetMedianKernelSize(ui->kernelXSpinBox->value(),
+                        ui->kernelYSpinBox->value(), ui->kernelZSpinBox->value());
+                    voxel2mesh_filter.SetUseGuassianSmoothing(ui->gaussGroup->isChecked());
+                    voxel2mesh_filter.SetGaussianStandardDeviation(ui->deviationSpinBox->value());
+                    voxel2mesh_filter.SetGaussianRadius(ui->radiusSpinBox->value());
+                    voxel2mesh_filter.SetPolygonSmoothing(ui->smoothingGroup->isChecked());
+                    voxel2mesh_filter.SetIteration(ui->iterationSpinBox->value());
+                    voxel2mesh_filter.SetRelaxationFactor(ui->relaxationSpinBox->value());
+                    voxel2mesh_filter.SetIsovalue(ui->isovalueSpinBox->value());
+
                     voxel2mesh_filter.SetInputData(item.image_data);
                     break;
                 }
@@ -676,6 +688,8 @@ void MainWindow::on_start_smoothing_button_clicked()
 
     if (ui->smooth_selector->count() == 0)
     {
+        setMandatoryField(ui->smooth_selector, true);
+
         QMessageBox::warning(nullptr,
             tr("Error"),
             tr("No Image Selected."),
@@ -692,6 +706,7 @@ void MainWindow::on_start_smoothing_button_clicked()
         for (ImageDataItem& item : vec) {
             if (current_name == item.image_name) {
                 if (item.image_data == nullptr) {
+                    setMandatoryField(ui->smooth_selector, true);
                     QMessageBox::warning(nullptr,
                         tr("Error"),
                         tr("No Image Selected."),
@@ -700,6 +715,8 @@ void MainWindow::on_start_smoothing_button_clicked()
                 }
                 else {
                     // TODO : 
+                    setMandatoryField(ui->smooth_selector, false);
+
                     image_smooth_result = image_smoothing(item.image_data.GetPointer(), params);
 
                     QString item_name = "smooth_" + current_name;
@@ -732,10 +749,67 @@ void MainWindow::on_start_smoothing_button_clicked()
 
 void MainWindow::on_detect_edge_button_clicked()
 {
-    EdgeDetectParams params;
-    params.threshold_1 = ui->in_edge_0_thresh_1->value();
-    params.threshold_2 = ui->in_edge_0_thresh_2->value();
-//    TODO
+
+    if (ui->edge_selector->count() == 0)
+    {
+        setMandatoryField(ui->edge_selector, true);
+
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+
+    vtkSmartPointer<vtkImageData> image_edge_result;
+
+    // loop for finding corresponding ImageDataItem
+    QString current_name = ui->edge_selector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_) {
+        for (ImageDataItem& item : vec) {
+            if (current_name == item.image_name) {
+                if (item.image_data == nullptr) {
+                    setMandatoryField(ui->edge_selector, true);
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+                }
+                else {
+                    // TODO : 
+                    setMandatoryField(ui->edge_selector, false);
+
+                    image_edge_result = image_detect_edge(item.image_data.GetPointer());
+
+                    QString item_name = "edge_" + current_name;
+                    for (vector<ImageDataItem>& vec : image_tree_) {
+                        for (ImageDataItem& item : vec) {
+                            if (item_name == item.image_name) {
+                                item_name = "(1)" + item_name;
+                            }
+                        }
+                    }
+                    vtk_image_collection_.push_back(image_edge_result);
+
+                    ImageDataItem image_item;
+                    image_item.image_name = QString(item_name);
+                    image_item.image_data = image_edge_result;
+
+                    // TODO: judge if the selected item is the parent item
+                    vec.push_back(image_item);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    update_data_manager();
+
+
 }
 
 void MainWindow::on_start_thresholding_button_clicked()
@@ -746,6 +820,8 @@ void MainWindow::on_start_thresholding_button_clicked()
 
     if (ui->thre_selector->count() == 0)
     {
+        setMandatoryField(ui->thre_selector, true);
+
         QMessageBox::warning(nullptr,
             tr("Error"),
             tr("No Image Selected."),
@@ -763,6 +839,7 @@ void MainWindow::on_start_thresholding_button_clicked()
         for (ImageDataItem& item : vec){
             if (current_name == item.image_name){
                 if (item.image_data == nullptr){
+                    setMandatoryField(ui->thre_selector, true);
                     QMessageBox::warning(nullptr,
                         tr("Error"),
                         tr("No Image Selected."),
@@ -771,6 +848,8 @@ void MainWindow::on_start_thresholding_button_clicked()
                 }
                 else {
                     // TODO : 
+                    setMandatoryField(ui->thre_selector, false);
+
                     image_threshold_result = image_threshold(item.image_data.GetPointer(), params);
                     
                     QString item_name = "thresholding_" + current_name;
@@ -800,20 +879,36 @@ void MainWindow::on_start_thresholding_button_clicked()
 }
 
 
+vtkSmartPointer<vtkImageData> MainWindow::image_detect_edge(vtkImageData* input_image)
+{
+    vtkSmartPointer<vtkImageGradientMagnitude> gradient_magnitude_filter =
+        vtkSmartPointer<vtkImageGradientMagnitude>::New();
+    gradient_magnitude_filter->SetInputData(input_image);
+    gradient_magnitude_filter->Update();
+
+    vtkSmartPointer<vtkImageCast> gradient_magnitude_cast_filter =
+        vtkSmartPointer<vtkImageCast>::New();
+    gradient_magnitude_cast_filter->SetInputConnection(gradient_magnitude_filter->GetOutputPort());
+    gradient_magnitude_cast_filter->SetOutputScalarTypeToUnsignedChar();
+    gradient_magnitude_cast_filter->Update();
+
+    return gradient_magnitude_cast_filter->GetOutput();
+}
+
 
 
 vtkSmartPointer<vtkImageData> MainWindow::image_threshold(vtkImageData* input_image, ThresholdingParams params)
 {
-    vtkSmartPointer<vtkImageThreshold> thresholdFilter = vtkSmartPointer<vtkImageThreshold>::New();
-    thresholdFilter->SetInputData(input_image);
-    thresholdFilter->ThresholdBetween(params.lower_value, params.upper_value);
-    thresholdFilter->ReplaceInOn();
-    thresholdFilter->ReplaceOutOn();
-    thresholdFilter->SetInValue(1);
-    thresholdFilter->SetOutValue(0);
-    thresholdFilter->Update();
+    vtkSmartPointer<vtkImageThreshold> threshold_filter = vtkSmartPointer<vtkImageThreshold>::New();
+    threshold_filter->SetInputData(input_image);
+    threshold_filter->ThresholdBetween(params.lower_value, params.upper_value);
+    threshold_filter->ReplaceInOn();
+    threshold_filter->ReplaceOutOn();
+    threshold_filter->SetInValue(1);
+    threshold_filter->SetOutValue(0);
+    threshold_filter->Update();
 
-    return thresholdFilter->GetOutput();
+    return threshold_filter->GetOutput();
 }
 
 
@@ -835,8 +930,43 @@ vtkSmartPointer<vtkImageData> MainWindow::image_smoothing(vtkImageData* input_im
     }
     case 1:
     {
+        vtkSmartPointer<vtkImageConvolve> convolve_filter =
+            vtkSmartPointer<vtkImageConvolve>::New();
+        convolve_filter->SetInputData(input_image);
 
+        switch (params.kernel_size) 
+        {
+        case 3: {
+            double kernel[27];
+            for (int i = 0; i <27; i++)
+            {
+                kernel[i] = 1.0 / 27.0;
+            }
+            convolve_filter->SetKernel3x3x3(kernel);
+            break;
+        }
+        case 5: {
+            double kernel[125];
+            for (int i = 0; i < 125; i++)
+            {
+                kernel[i] = 1.0 / 125.0;
+            }
+            convolve_filter->SetKernel5x5x5(kernel);
+            break;
+        }
+        case 7: {
+            double kernel[343];
+            for (int i = 0; i < 343; i++)
+            {
+                kernel[i] = 1.0 / 343.0;
+            }
+            convolve_filter->SetKernel7x7x7(kernel);
+            break;
+        }
+        }
 
+        convolve_filter->Update();
+        return convolve_filter->GetOutput();
     }
     case 2:
     {
@@ -1045,4 +1175,17 @@ void MainWindow::update_patients()
         qDebug()<<pat._id()<<":"<<pat._name();
         ui->patientSelector->addItem(pat._id());
     }
+}
+
+
+
+void MainWindow::setMandatoryField(QWidget* widget, bool bEnabled) {
+    setQStyleSheetField(widget, "mandatoryField", bEnabled);
+}
+
+void MainWindow::setQStyleSheetField(QWidget* widget, const char* fieldName, bool bEnabled) {
+    widget->setProperty(fieldName, bEnabled);
+    widget->style()->unpolish(widget); // need to do this since we changed the stylesheet
+    widget->style()->polish(widget);
+    widget->update();
 }

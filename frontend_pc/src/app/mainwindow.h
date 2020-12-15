@@ -67,14 +67,17 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "vtkDistanceRepresentation2D.h"
 #include "vtkPointHandleRepresentation3D.h"
 #include "vtkPointHandleRepresentation2D.h"
+
 #include "vtkImageGaussianSmooth.h"
-
 #include "vtkImageMedian3D.h"
-
+#include "vtkImageConvolve.h"
 
 //
 #include <vtkImageThreshold.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkImageGradientMagnitude.h>
+#include <vtkImageCast.h>
+
 
 // ITK
 #include <itkImage.h>
@@ -166,6 +169,9 @@ private:
     void clean_view4();
     void update_data_manager();
     void update_patients();
+
+    void setMandatoryField(QWidget* widget, bool bEnabled);
+    void setQStyleSheetField(QWidget* widget, const char* fieldName, bool bEnabled);
     
 
 private slots:
@@ -179,6 +185,7 @@ private slots:
     void clean_actors();
     void clear_manager();
 
+    vtkSmartPointer<vtkImageData> image_detect_edge(vtkImageData* input_image);
     vtkSmartPointer<vtkImageData> image_threshold(vtkImageData* input_image, ThresholdingParams params);
     vtkSmartPointer<vtkImageData> image_smoothing(vtkImageData* input_image, SmoothingParams params);
 
@@ -200,6 +207,7 @@ private slots:
     void on_detect_edge_button_clicked();
 
     void on_start_thresholding_button_clicked();
+
 
     void on_data_manager_itemClicked(QTreeWidgetItem *item, int column);
 
