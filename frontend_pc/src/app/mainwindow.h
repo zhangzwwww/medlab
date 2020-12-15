@@ -173,8 +173,9 @@ private slots:
 
     void generate_surface();
     void clean_actors();
+    void clear_manager();
 
-    void image_threshold(vtkImageData* input_image, vtkImageData* output_image, ThresholdingParams params);
+    vtkSmartPointer<vtkImageData> image_threshold(vtkImageData* input_image, ThresholdingParams params);
 
     void on_pushButton_4_clicked();
 
@@ -207,18 +208,16 @@ private slots:
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
-
-    itk::Image<float, 3>::Pointer image_itk_;
-    vtkSmartPointer<vtkImageData> image_vtk_;
     vtkSmartPointer<vtkVolume> volume_;
 
+    //vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
+    //vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];
 
-    vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
-    vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];
-    //int dims_[3];
+    vector<vtkSmartPointer<vtkImageData>> vtk_image_collection_;
+    vector<itk::Image<float, 3>::Pointer> itk_image_collection_;
 
     vector<vector<ImageDataItem>> image_tree_;
-    int cur_selected_image_ind[2];
+    int cur_selected_image_ind_[2];
 
    QVector<patient> patients_;
 

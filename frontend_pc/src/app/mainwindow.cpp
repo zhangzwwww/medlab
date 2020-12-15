@@ -57,15 +57,14 @@ MainWindow::vtkSharedWindowLevelCallback::vtkSharedWindowLevelCallback(){
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    image_itk_(nullptr), image_vtk_(nullptr)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->data_manager->clear();
 //    ui->patientSelector->setFocus();
 //    TODO: getAllPatient and update ui, suppose we input a vector<QString> vec, use ui->patientSelector->addItem(vec[i]) to update
 
-    //const char* path = ":/resources/qssfile/dark_theme.qss";
+    //const char* path = ":/qssfile/dark_theme.qss";
     //QFile qssfile(path);
     //qssfile.open(QFile::ReadOnly);
     //QString qss;
@@ -73,10 +72,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //this->setStyleSheet(qss);
 
     ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-
     ui->mainToolBar->setFixedHeight(50);
     
-
     this->ui->view1->hide();
     this->ui->view2->hide();
     this->ui->view3->hide();
@@ -100,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
 
     connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
+    connect(ui->clear_manager_btn, SIGNAL(clicked()), this, SLOT(clear_manager()));
 
 
 //    TODO: make sure the number of spinbox/lineedit is legal
@@ -156,7 +154,6 @@ void MainWindow::init_views()
     //this->ui->view2->GetRenderWindow()->AddRenderer(m_Renderer2D[1]);
     //this->ui->view3->GetRenderWindow()->AddRenderer(m_Renderer2D[2]);
 
-
     renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
     renderer3D_->SetBackground(1, 1, 1);
     renderer3D_->SetBackground2(0.5, 0.5, 0.5);
@@ -184,9 +181,9 @@ void MainWindow::load_image()
 	//const char* fileName_str = ba.data();
 
 	RegistrationWorker worker;
-	image_itk_ = worker.readImageDICOM(name.c_str());
+    itk::Image<float, 3>::Pointer image_itk = worker.readImageDICOM(name.c_str());
 
-    if (image_itk_ == nullptr)
+    if (image_itk == nullptr)
     {
         QMessageBox::warning(nullptr,
             tr("Read Image Error"),
@@ -198,7 +195,7 @@ void MainWindow::load_image()
 
     using FilterType = itk::ImageToVTKImageFilter<itk::Image<float, 3>>;
     FilterType::Pointer filter = FilterType::New();
-    filter->SetInput(image_itk_);
+    filter->SetInput(image_itk);
 
     try
     {
@@ -212,17 +209,18 @@ void MainWindow::load_image()
             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
 
-    image_vtk_ = filter->GetOutput();
+    vtkSmartPointer<vtkImageData> image_vtk = filter->GetOutput();
+
+    itk_image_collection_.push_back(image_itk);
+    vtk_image_collection_.push_back(image_vtk);
+
     ImageDataItem image_item;
     image_item.image_name = GetFileName(fileName);
-    image_item.image_data = image_vtk_;
+    image_item.image_data = image_vtk;
+
     image_tree_.push_back(vector<ImageDataItem>{image_item});
 
-    // insert test node at the last vector
-    image_item.image_name = "test";
-    image_tree_.back().push_back(image_item);
-
-    update_data_manager();
+    this->update_data_manager();
 
     // clean the current volume
     this->clean_view4();
@@ -235,11 +233,34 @@ void MainWindow::show_image()
     vtkSmartPointer< vtkSharedWindowLevelCallback > sharedWLcbk =
         vtkSmartPointer< vtkSharedWindowLevelCallback >::New();
 
+    if (cur_selected_image_ind_[0] == -1)
+    {
+        this->ui->view1->hide();
+        this->ui->view2->hide();
+        this->ui->view3->hide();
+        return;
+    }
+
+    this->ui->view1->show();
+    this->ui->view2->show();
+    this->ui->view3->show();
+
+    vtkSmartPointer<vtkImageData> current_selected_image_ = image_tree_[cur_selected_image_ind_[0]][cur_selected_image_ind_[1]].image_data;
+    
+    if (current_selected_image_ == nullptr)
+    {
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("Image is NULL."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+
     double range[2];
     int dims[3];
-    image_vtk_->GetScalarRange(range);
-    image_vtk_->GetDimensions(dims);
-
+    current_selected_image_->GetScalarRange(range);
+    current_selected_image_->GetDimensions(dims);
 
     //vtkSmartPointer<vtkImageSliceMapper> imageSliceMapper =
     //	vtkSmartPointer<vtkImageSliceMapper>::New();
@@ -254,10 +275,10 @@ void MainWindow::show_image()
 
     for (int i = 0; i < 3; i++)
     {
-        riw_[i]->SetInputData(image_vtk_);
-        riw_[i]->SetSliceOrientation(i);
-        riw_[i]->SetSlice(dims[i] / 2);
+        riw_[i]->SetInputData(current_selected_image_);
 
+        riw_[i]->SetSliceOrientation(i);
+        riw_[i]->SetSlice(dims[i] / 2);      
         riw_[i]->SetColorWindow((range[1] - range[0]));
         riw_[i]->SetColorLevel((range[0] + range[1]) / 2.0);
 
@@ -271,7 +292,7 @@ void MainWindow::show_image()
     this->ui->ScrollBar1->setSliderPosition(dims[0] / 2 - 1);
     this->ui->ScrollBar2->setSliderPosition(dims[1] / 2 - 1);
     this->ui->ScrollBar3->setSliderPosition(dims[2] / 2 - 1);
-
+    
     this->view_zoom_to_fit();
 }
 
@@ -289,11 +310,15 @@ void MainWindow::volume_rendering(bool status)
 	}
 	else {
 
-		if (image_vtk_ == nullptr)
+        // TODO ： 判断当前被选中节点
+        vtkSmartPointer<vtkImageData> current_selected_image_ = 
+            image_tree_[cur_selected_image_ind_[0]][cur_selected_image_ind_[1]].image_data;
+
+		if (current_selected_image_ == nullptr)
 		{
 			QMessageBox::warning(nullptr,
 				tr("Error"),
-				tr("Please read the image first."),
+				tr("Image NULL."),
 				QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 		
 			ui->action_visualization->setChecked(false);
@@ -309,7 +334,7 @@ void MainWindow::volume_rendering(bool status)
 
 		vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper =
 			vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
-		volumeMapper->SetInputData(image_vtk_);
+		volumeMapper->SetInputData(current_selected_image_);
 
 		volumeMapper->SetSampleDistance(volumeMapper->GetSampleDistance() / 2);
 		volumeMapper->SetAutoAdjustSampleDistances(0);
@@ -329,10 +354,15 @@ void MainWindow::volume_rendering(bool status)
 		vtkSmartPointer<vtkColorTransferFunction> colorFun =
 			vtkSmartPointer<vtkColorTransferFunction>::New();
 
+        // TODO: add slider to control the opacity
 		compositeOpacity->AddPoint(-3024, 0, 0.5, 0.0);
 		compositeOpacity->AddPoint(-16, 0, .49, .61);
 		compositeOpacity->AddPoint(641, .72, .5, 0.0);
 		compositeOpacity->AddPoint(3071, .71, 0.5, 0.0);
+
+        //compositeOpacity->AddPoint(70, 0);
+        //compositeOpacity->AddPoint(90, 0.4);
+        //compositeOpacity->AddPoint(180, 0.6);
 
 		colorFun->AddRGBPoint(-3024, 0, 0, 0, 0.5, 0.0);
 		colorFun->AddRGBPoint(-16, 0.73, 0.25, 0.30, 0.49, .61);
@@ -574,51 +604,36 @@ void MainWindow::clean_actors()
 
 }
 
-void MainWindow::image_threshold(vtkImageData* input_image,
-    vtkImageData* output_image, ThresholdingParams params)
+void MainWindow::clear_manager()
 {
-    // loop for finding corresponding ImageDataItem
-    QString current_name = ui->greyScaleImageSelector->currentText();
+    image_tree_.clear();
+    ui->data_manager->clear();
 
-    for (vector<ImageDataItem>& vec : image_tree_)
-    {
-        for (ImageDataItem& item : vec)
-        {
-            if (current_name == item.image_name)
-            {
-                if (item.image_data == nullptr)
-                {
-                    QMessageBox::warning(nullptr,
-                        tr("Error"),
-                        tr("No Image Selected."),
-                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-                    return;
+    ui->FixedImageSelector->clear();
+    ui->MovingImageSelector->clear();
+    //    ui->maskImageSelector->clear();
+    ui->greyScaleImageSelector->clear();
+    ui->BlendImage0Selector->clear();
+    ui->BlendImage1Selector->clear();
+    ui->smooth_selector->clear();
+    ui->edge_selector->clear();
+    ui->thre_selector->clear();
+}
 
-                }
-                else {
-                    //voxel2mesh_filter.SetInputData(item.image_data);
-                    break;
-                }
-            }
-        }
-    }
-
-
-
+vtkSmartPointer<vtkImageData> MainWindow::image_threshold(vtkImageData* input_image, ThresholdingParams params)
+{
     vtkSmartPointer<vtkImageThreshold> thresholdFilter = vtkSmartPointer<vtkImageThreshold>::New();
-
     thresholdFilter->SetInputData(input_image);
+
     thresholdFilter->ThresholdBetween(params.lower_value, params.upper_value);
-
-    //thresholdFilter->ReplaceInOn();//��ֵ�ڵ�����ֵ�滻
-    thresholdFilter->ReplaceOutOn();//��ֵ�������ֵ�滻
-
-    thresholdFilter->SetInValue(1);//��ֵ������ֵȫ���滻��1
-    thresholdFilter->SetOutValue(0);//��ֵ������ֵȫ���滻��0
+    thresholdFilter->ReplaceInOn();
+    thresholdFilter->ReplaceOutOn();
+    thresholdFilter->SetInValue(1);
+    thresholdFilter->SetOutValue(0);
 
     thresholdFilter->Update();
-
-    output_image = thresholdFilter->GetOutput();
+ 
+    return thresholdFilter->GetOutput();
 }
 
 
@@ -717,7 +732,58 @@ void MainWindow::on_start_thresholding_button_clicked()
 
     vtkSmartPointer<vtkImageData> image_threshold_result;
 
-    image_threshold(image_vtk_, image_threshold_result, params);
+    // loop for finding corresponding ImageDataItem
+    QString current_name = ui->thre_selector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_)
+    {
+        for (ImageDataItem& item : vec)
+        {
+            if (current_name == item.image_name)
+            {
+                if (item.image_data == nullptr)
+                {
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+
+                }
+                else {
+
+                    // TODO : 
+                    image_threshold_result = image_threshold(item.image_data.GetPointer(), params);
+                    
+                    QString item_name = "thresholding_" + current_name;
+                    for (vector<ImageDataItem>& vec : image_tree_){
+                        for (ImageDataItem& item : vec){
+                            if (item_name == item.image_name){
+                                item_name = "(1)" + item_name;
+                            }
+                        }
+                    }
+                    vtk_image_collection_.push_back(image_threshold_result);
+
+                    ImageDataItem image_item;
+                    image_item.image_name = QString(item_name);
+                    image_item.image_data = image_threshold_result;
+
+                    // TODO: judge if the selected item is the parent item
+                    vec.push_back(image_item);
+
+                    
+
+                    break;
+                }
+            }
+        }
+    }
+
+    update_data_manager();
+
+
+
 
     //for (int i = 0; i < 3; i++)
     //{
@@ -771,8 +837,10 @@ void MainWindow::update_data_manager() {
     // set the new node checked
     folder_name->setCheckState(0, Qt::Checked);
 
-    cur_selected_image_ind[0] = int(image_tree_.size())-1;
-    cur_selected_image_ind[1] = 0;
+    cur_selected_image_ind_[0] = int(image_tree_.size())-1;
+    cur_selected_image_ind_[1] = 0;
+
+    this->ui->data_manager->expandAll();
 
 //    update combo box
     ui->FixedImageSelector->clear();
@@ -781,17 +849,12 @@ void MainWindow::update_data_manager() {
     ui->greyScaleImageSelector->clear();
     ui->BlendImage0Selector->clear();
     ui->BlendImage1Selector->clear();
+    ui->smooth_selector->clear();
+    ui->edge_selector->clear();
+    ui->thre_selector->clear();
 
     for (vector<ImageDataItem> &vec: image_tree_)
     {
-        // name: (1)(1)
-        //ui->FixedImageSelector->addItem(vec[0].image_name);
-        //ui->MovingImageSelector->addItem(vec[0].image_name);
-        ////            ui->maskImageSelector->addItem(item.image_name);
-        //ui->greyScaleImageSelector->addItem(vec[0].image_name);
-        //ui->BlendImage0Selector->addItem(vec[0].image_name);
-        //ui->BlendImage1Selector->addItem(vec[0].image_name);
-
         for (ImageDataItem &item: vec) 
         {
             ui->FixedImageSelector->addItem(item.image_name);
@@ -800,6 +863,9 @@ void MainWindow::update_data_manager() {
             ui->greyScaleImageSelector->addItem(item.image_name);
             ui->BlendImage0Selector->addItem(item.image_name);
             ui->BlendImage1Selector->addItem(item.image_name);
+            ui->smooth_selector->addItem(item.image_name);
+            ui->edge_selector->addItem(item.image_name);
+            ui->thre_selector->addItem(item.image_name);
         }
     }
 }
@@ -822,18 +888,22 @@ void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
         }
         item->setCheckState(column, Qt::Checked);
         if (item->parent() == nullptr) {
-            cur_selected_image_ind[0] = ui->data_manager->indexOfTopLevelItem(item);
-            cur_selected_image_ind[1] = 0;
+            cur_selected_image_ind_[0] = ui->data_manager->indexOfTopLevelItem(item);
+            cur_selected_image_ind_[1] = 0;
         } else {
-            cur_selected_image_ind[0] = ui->data_manager->indexOfTopLevelItem(item->parent());
-            cur_selected_image_ind[1] = column+1;
+            cur_selected_image_ind_[0] = ui->data_manager->indexOfTopLevelItem(item->parent());
+            cur_selected_image_ind_[1] = column+1;
         }
+
 //        TODO: switch img when user select
     } else {
-        cur_selected_image_ind[0] = -1;
+        cur_selected_image_ind_[0] = -1;
+
     }
-    qDebug()<<"data manager item clicked index: ("<<cur_selected_image_ind[0]<<","
-           <<cur_selected_image_ind[1]<<"), name["<<item->text(column)<<"]";
+    qDebug()<<"data manager item clicked index: ("<<cur_selected_image_ind_[0]<<","
+           <<cur_selected_image_ind_[1]<<"), name["<<item->text(column)<<"]";
+
+    show_image();
 }
 
 void MainWindow::on_addPatientBtn_clicked()

@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
+    <width>1535</width>
     <height>869</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MedPlatform</string>
+   <string>MEDLAB</string>
   </property>
   <property name="styleSheet">
    <string notr="true">/* 全局字体 */
@@ -837,12 +837,12 @@ QTreeWidget::branch:!has-children:!has-siblings:adjoins-item {
 
 QTreeWidget::branch:has-children:!has-siblings:closed,
 QTreeWidget::branch:closed:has-children:has-siblings {
-    image: url(:/icon/branch_closed);
+    image: url(:/icon/branch_closed-on);
 }
 
 QTreeWidget::branch:open:has-children:!has-siblings,
 QTreeWidget::branch:open:has-children:has-siblings {
-    image: url(:/icon/branch_open);
+    image: url(:/icon/branch_open-on);
 }
 
 QTreeWidget::branch:has-children:!has-siblings:closed:hover,
@@ -1250,6 +1250,13 @@ height: 9px;</string>
           </column>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="clear_manager_btn">
+          <property name="text">
+           <string>Clear Data Manager</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -1423,136 +1430,6 @@ background-color: rgb(0, 0, 0);
       </layout>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QWidget" name="view4Widget" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_15">
-       <property name="spacing">
-        <number>1</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QFrame" name="frame">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-width: 4px;
-border-radius: 5px;
-border-color: rgb(255, 255, 0);
-border-style: solid; 
-</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_19">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QVTKWidget" name="view4" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="view4subWidget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_21">
-          <property name="spacing">
-           <number>4</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>3</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <spacer name="horizontalSpacer4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="clean_actors_btn">
-            <property name="text">
-             <string>clean actors</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="fullScreenBtn4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string> full screen </string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="0" column="2">
      <widget class="QWidget" name="view2Widget" native="true">
       <property name="sizePolicy">
@@ -1702,6 +1579,136 @@ background-color: rgb(0, 0, 0);</string>
       </layout>
      </widget>
     </item>
+    <item row="1" column="2">
+     <widget class="QWidget" name="view4Widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_15">
+       <property name="spacing">
+        <number>1</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border-width: 4px;
+border-radius: 5px;
+border-color: rgb(255, 255, 0);
+border-style: solid; 
+</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_19">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QVTKWidget" name="view4" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="view4subWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_21">
+          <property name="spacing">
+           <number>4</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="clean_actors_btn">
+            <property name="text">
+             <string>clean actors</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="fullScreenBtn4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string> full screen </string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="3" rowspan="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="enabled">
@@ -1726,7 +1733,7 @@ background-color: rgb(0, 0, 0);</string>
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1783,146 +1790,11 @@ background-color: rgb(0, 0, 0);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>336</width>
-                <height>898</height>
+                <width>456</width>
+                <height>722</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
-               <item>
-                <widget class="QGroupBox" name="groupBox_3">
-                 <property name="title">
-                  <string>Load Image</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_4">
-                  <property name="spacing">
-                   <number>5</number>
-                  </property>
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>20</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>11</number>
-                  </property>
-                  <item>
-                   <widget class="QWidget" name="widget_12" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_12">
-                     <property name="leftMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>2</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>2</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_fixedname">
-                       <property name="text">
-                        <string>Fixed image name    </string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="FixedNameLineEdit">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Fixed image</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QWidget" name="widget_11" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_11">
-                     <property name="leftMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>2</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>2</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_movingname">
-                       <property name="text">
-                        <string>Moving image name</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="MovingNameLineEdit">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Moving image</string>
-                       </property>
-                       <property name="cursorPosition">
-                        <number>12</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QWidget" name="widget_10" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_10">
-                     <property name="leftMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>7</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>2</number>
-                     </property>
-                     <item>
-                      <widget class="QPushButton" name="loadFixedBtn">
-                       <property name="text">
-                        <string>Load Fixed Image</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="loadMovingBtn">
-                       <property name="text">
-                        <string>Load Moving Image</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_4">
                  <property name="title">
@@ -2000,48 +1872,6 @@ background-color: rgb(0, 0, 0);</string>
                     </layout>
                    </widget>
                   </item>
-                  <item>
-                   <widget class="QWidget" name="widget_17" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_17">
-                     <property name="spacing">
-                      <number>7</number>
-                     </property>
-                     <property name="leftMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>2</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>8</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>2</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_MetricsType">
-                       <property name="text">
-                        <string>Metrics type</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="MetricsType">
-                       <item>
-                        <property name="text">
-                         <string>Mutual Information</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Mean Squares</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
                  </layout>
                 </widget>
                </item>
@@ -2053,13 +1883,29 @@ background-color: rgb(0, 0, 0);</string>
                 </widget>
                </item>
                <item>
+                <spacer name="verticalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>10</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
                 <widget class="QGroupBox" name="groupBox_5">
                  <property name="title">
                   <string>Algorithm Parameters</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
                   <property name="spacing">
-                   <number>5</number>
+                   <number>6</number>
                   </property>
                   <property name="leftMargin">
                    <number>0</number>
@@ -2326,7 +2172,7 @@ background-color: rgb(0, 0, 0);</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
                   <property name="spacing">
-                   <number>5</number>
+                   <number>6</number>
                   </property>
                   <property name="leftMargin">
                    <number>0</number>
@@ -2515,17 +2361,14 @@ background-color: rgb(0, 0, 0);</string>
                 </widget>
                </item>
                <item>
-                <spacer name="spacer1">
+                <spacer name="verticalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Expanding</enum>
-                 </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>17</width>
-                   <height>136</height>
+                   <width>20</width>
+                   <height>40</height>
                   </size>
                  </property>
                 </spacer>
@@ -3312,7 +3155,7 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>432</width>
+                <width>240</width>
                 <height>85</height>
                </rect>
               </property>
@@ -3427,14 +3270,14 @@ background-color: rgb(45, 45, 48);</string>
              </widget>
             </widget>
            </item>
-           <item>
-            <widget class="QPushButton" name="start_smoothing_button">
-             <property name="text">
-              <string>start smoothing</string>
-             </property>
-            </widget>
-           </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="start_smoothing_button">
+          <property name="text">
+           <string>Start smoothing</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -3459,12 +3302,15 @@ background-color: rgb(45, 45, 48);</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="0" colspan="2">
-            <widget class="QPushButton" name="detect_edge_button">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_27">
              <property name="text">
-              <string>detect edge</string>
+              <string>Image to detect edge</string>
              </property>
             </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="edge_selector"/>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_31">
@@ -3479,17 +3325,14 @@ background-color: rgb(45, 45, 48);</string>
            <item row="1" column="1">
             <widget class="QDoubleSpinBox" name="in_edge_0_thresh_1"/>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_27">
-             <property name="text">
-              <string>Image to detect edge</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="edge_selector_2"/>
-           </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="detect_edge_button">
+          <property name="text">
+           <string>Detect edge</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -3507,19 +3350,8 @@ background-color: rgb(45, 45, 48);</string>
            <property name="rightMargin">
             <number>5</number>
            </property>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_34">
-             <property name="text">
-              <string>upper_value</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0" colspan="2">
-            <widget class="QPushButton" name="start_thresholding_button">
-             <property name="text">
-              <string>start thresholding</string>
-             </property>
-            </widget>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="thre_selector"/>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_33">
@@ -3528,10 +3360,23 @@ background-color: rgb(45, 45, 48);</string>
              </property>
             </widget>
            </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_34">
+             <property name="text">
+              <string>upper_value</string>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="1">
             <widget class="QDoubleSpinBox" name="in_lower_value">
+             <property name="minimum">
+              <double>-2000.000000000000000</double>
+             </property>
              <property name="maximum">
-              <double>255.000000000000000</double>
+              <double>4000.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>150.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -3544,7 +3389,7 @@ background-color: rgb(45, 45, 48);</string>
               <double>4000.000000000000000</double>
              </property>
              <property name="value">
-              <double>100.000000000000000</double>
+              <double>3000.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -3555,10 +3400,14 @@ background-color: rgb(45, 45, 48);</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="thre_selector_3"/>
-           </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="start_thresholding_button">
+          <property name="text">
+           <string>Start thresholding</string>
+          </property>
          </widget>
         </item>
         <item>

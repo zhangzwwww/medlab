@@ -1,5 +1,5 @@
-#ifndef __RegistrationWorker_h__
-#define __RegistrationWorker_h__
+#ifndef __registration_worker_h__
+#define __registration_worker_h__
 
 // ITK
 #include <itkImage.h>
@@ -91,7 +91,6 @@ public:
     using InterpolatorType = itk::LinearInterpolateImageFunction<InternalImageType, double>;
     using RegistrationType = itk::ImageRegistrationMethod<InternalImageType, InternalImageType>;
     using MIMetricType = itk::MutualInformationImageToImageMetric<InternalImageType, InternalImageType>;
-    using MSMetricType = itk::MutualInformationImageToImageMetric<InternalImageType, InternalImageType>;
     using FixedNormalizeFilterType = itk::NormalizeImageFilter<FixedImageType, InternalImageType>;
     using MovingNormalizeFilterType = itk::NormalizeImageFilter<MovingImageType, InternalImageType>;
     using GaussianFilterType = itk::DiscreteGaussianImageFilter<InternalImageType, InternalImageType>;
@@ -122,10 +121,6 @@ public:
 
     void setMovingImage(MovingImageType::Pointer img) {
         m_movingImage = img;
-    }
-
-    void setMetricsType(bool metricsType) {
-        m_metricsType = metricsType;
     }
 
     void setIteration(int i) {
@@ -175,7 +170,6 @@ private:
     GaussianFilterType::Pointer        m_movingSmoother;
 
     // parameters
-    bool   m_metricsType;
     int    m_iteration;
     double m_maximumStepLength;
     double m_minimumStepLength;
@@ -184,5 +178,5 @@ private:
     double m_defaultPixelValue;
 };
 
-#endif // __RegistrationWorker_h__
+#endif // __registration_worker_h__
 
