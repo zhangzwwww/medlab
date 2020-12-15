@@ -67,6 +67,10 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "vtkDistanceRepresentation2D.h"
 #include "vtkPointHandleRepresentation3D.h"
 #include "vtkPointHandleRepresentation2D.h"
+#include "vtkImageGaussianSmooth.h"
+
+#include "vtkImageMedian3D.h"
+
 
 //
 #include <vtkImageThreshold.h>
@@ -176,6 +180,8 @@ private slots:
     void clear_manager();
 
     vtkSmartPointer<vtkImageData> image_threshold(vtkImageData* input_image, ThresholdingParams params);
+    vtkSmartPointer<vtkImageData> image_smoothing(vtkImageData* input_image, SmoothingParams params);
+
 
     void on_pushButton_4_clicked();
 
@@ -217,7 +223,7 @@ private:
     vector<itk::Image<float, 3>::Pointer> itk_image_collection_;
 
     vector<vector<ImageDataItem>> image_tree_;
-    int cur_selected_image_ind_[2];
+    int cur_selected_image_ind_[2]{ -1 };
 
    QVector<patient> patients_;
 

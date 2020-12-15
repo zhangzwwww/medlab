@@ -241,10 +241,6 @@ void MainWindow::show_image()
         return;
     }
 
-    this->ui->view1->show();
-    this->ui->view2->show();
-    this->ui->view3->show();
-
     vtkSmartPointer<vtkImageData> current_selected_image_ = image_tree_[cur_selected_image_ind_[0]][cur_selected_image_ind_[1]].image_data;
     
     if (current_selected_image_ == nullptr)
@@ -271,6 +267,10 @@ void MainWindow::show_image()
     //{
     //	m_ImageStack2D[crntViewLabel]->AddImage(imageSlice);
     //}
+
+    this->ui->view1->show();
+    this->ui->view2->show();
+    this->ui->view3->show();
 
 
     for (int i = 0; i < 3; i++)
@@ -309,10 +309,22 @@ void MainWindow::volume_rendering(bool status)
 		return;
 	}
 	else {
+        qDebug() << cur_selected_image_ind_[0] << cur_selected_image_ind_[1];
 
-        // TODO ： 判断当前被选中节点
+        if (cur_selected_image_ind_[0] == -1)
+        {
+            QMessageBox::warning(nullptr,
+                tr("Error"),
+                tr("Please select image"),
+                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+            ui->action_visualization->setChecked(false);
+            return;
+        }
+
         vtkSmartPointer<vtkImageData> current_selected_image_ = 
             image_tree_[cur_selected_image_ind_[0]][cur_selected_image_ind_[1]].image_data;
+
 
 		if (current_selected_image_ == nullptr)
 		{
@@ -387,16 +399,6 @@ void MainWindow::volume_rendering(bool status)
 
 void MainWindow::clean_view4()
 {
-    //if (volume_ != nullptr)
-    //{
-    //	renderer3D_->RemoveVolume(volume_);
-    //}
-
-    //if (mesher_ != nullptr)
-    //{
-    //	renderer3D_->RemoveActor(mesher_);
-    //}
-
     this->ui->view4->GetRenderWindow()->RemoveRenderer(renderer3D_);
 
     renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
@@ -415,7 +417,6 @@ void MainWindow::view_zoom_to_fit()
         riw_[i]->GetRenderer()->ResetCamera();
         riw_[i]->Render();
     }
-
 }
 
 void MainWindow::view_full_screen(bool full_status)
@@ -490,7 +491,6 @@ void MainWindow::view_full_screen(bool full_status)
             this->ui->view4Widget->show();
         }
     }
-
 }
 
 
@@ -502,32 +502,31 @@ void MainWindow::view_change_slice()
         QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
         riw_[0]->SetSlice(tempScroll->value());
         riw_[0]->Render();
-
-        //this->ui->label_slicenum1->
-        //	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[2]));
-
     }
     if (obj == this->ui->ScrollBar2)
     {
         QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
         riw_[1]->SetSlice(tempScroll->value());
         riw_[0]->Render();
-
-        //this->ui->label_slicenum2->
-        //	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[1]));
-
     }
     if (obj == this->ui->ScrollBar3)
     {
         QScrollBar* tempScroll = qobject_cast<QScrollBar*>(obj);
         riw_[2]->SetSlice(tempScroll->value());
         riw_[0]->Render();
-
-        //this->ui->label_slicenum3->
-        //	setText(QString::number(tempScroll->value() + 1) + "  of  " + QString::number(dims[0]));
-
     }
 }
+
+
+void MainWindow::clean_actors()
+{
+    clean_view4();
+    ui->action_visualization->setChecked(false);
+}
+
+
+
+// Algorithm Function: 
 
 void MainWindow::generate_surface()
 {
@@ -595,46 +594,7 @@ void MainWindow::generate_surface()
 
 }
 
-void MainWindow::clean_actors()
-{
 
-    clean_view4();
-
-    ui->action_visualization->setChecked(false);
-
-}
-
-void MainWindow::clear_manager()
-{
-    image_tree_.clear();
-    ui->data_manager->clear();
-
-    ui->FixedImageSelector->clear();
-    ui->MovingImageSelector->clear();
-    //    ui->maskImageSelector->clear();
-    ui->greyScaleImageSelector->clear();
-    ui->BlendImage0Selector->clear();
-    ui->BlendImage1Selector->clear();
-    ui->smooth_selector->clear();
-    ui->edge_selector->clear();
-    ui->thre_selector->clear();
-}
-
-vtkSmartPointer<vtkImageData> MainWindow::image_threshold(vtkImageData* input_image, ThresholdingParams params)
-{
-    vtkSmartPointer<vtkImageThreshold> thresholdFilter = vtkSmartPointer<vtkImageThreshold>::New();
-    thresholdFilter->SetInputData(input_image);
-
-    thresholdFilter->ThresholdBetween(params.lower_value, params.upper_value);
-    thresholdFilter->ReplaceInOn();
-    thresholdFilter->ReplaceOutOn();
-    thresholdFilter->SetInValue(1);
-    thresholdFilter->SetOutValue(0);
-
-    thresholdFilter->Update();
- 
-    return thresholdFilter->GetOutput();
-}
 
 
 
@@ -697,24 +657,78 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_start_smoothing_button_clicked()
 {
-    //SmoothingParams params;
-    //params.smooth_type = ui->smoothing_toolBox->currentIndex();
-    //switch (params.smooth_type) {
-    //case 0:
-    //    params.kernel_size = ui->in_smooth_gaussian_0_kernel_size->value();
-    //    params.sigma_x = ui->in_smooth_gaussian_1_sigma_x->value();
-    //    break;
-    //case 1:
-    //    params.kernel_size = ui->in_smooth_mean_0_kernel_size->value();
-    //    break;
-    //case 2:
-    //    params.kernel_size = ui->in_smooth_median_0_kernel_size->value();
-    //    break;
-    //default:
-    //    break;
-    //}
-//    TODO
+    SmoothingParams params;
+    params.smooth_type = ui->smoothing_toolBox->currentIndex();
+    switch (params.smooth_type) {
+    case 0:
+        params.kernel_size = ui->in_smooth_gaussian_0_kernel_size->value();
+        params.sigma_x = ui->in_smooth_gaussian_1_sigma_x->value();
+        break;
+    case 1:
+        params.kernel_size = ui->in_smooth_mean_0_kernel_size->value();
+        break;
+    case 2:
+        params.kernel_size = ui->in_smooth_median_0_kernel_size->value();
+        break;
+    default:
+        break;
+    }
+
+    if (ui->smooth_selector->count() == 0)
+    {
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    vtkSmartPointer<vtkImageData> image_smooth_result;
+
+    // loop for finding corresponding ImageDataItem
+    QString current_name = ui->smooth_selector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_) {
+        for (ImageDataItem& item : vec) {
+            if (current_name == item.image_name) {
+                if (item.image_data == nullptr) {
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+                }
+                else {
+                    // TODO : 
+                    image_smooth_result = image_smoothing(item.image_data.GetPointer(), params);
+
+                    QString item_name = "smooth_" + current_name;
+                    for (vector<ImageDataItem>& vec : image_tree_) {
+                        for (ImageDataItem& item : vec) {
+                            if (item_name == item.image_name) {
+                                item_name = "(1)" + item_name;
+                            }
+                        }
+                    }
+                    vtk_image_collection_.push_back(image_smooth_result);
+
+                    ImageDataItem image_item;
+                    image_item.image_name = QString(item_name);
+                    image_item.image_data = image_smooth_result;
+
+                    // TODO: judge if the selected item is the parent item
+                    vec.push_back(image_item);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    update_data_manager();
 }
+
+
 
 void MainWindow::on_detect_edge_button_clicked()
 {
@@ -730,28 +744,32 @@ void MainWindow::on_start_thresholding_button_clicked()
     params.lower_value = this->ui->in_lower_value->value();
     params.upper_value = this->ui->in_upper_value->value();
 
+    if (ui->thre_selector->count() == 0)
+    {
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+
     vtkSmartPointer<vtkImageData> image_threshold_result;
 
     // loop for finding corresponding ImageDataItem
     QString current_name = ui->thre_selector->currentText();
 
-    for (vector<ImageDataItem>& vec : image_tree_)
-    {
-        for (ImageDataItem& item : vec)
-        {
-            if (current_name == item.image_name)
-            {
-                if (item.image_data == nullptr)
-                {
+    for (vector<ImageDataItem>& vec : image_tree_){
+        for (ImageDataItem& item : vec){
+            if (current_name == item.image_name){
+                if (item.image_data == nullptr){
                     QMessageBox::warning(nullptr,
                         tr("Error"),
                         tr("No Image Selected."),
                         QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                     return;
-
                 }
                 else {
-
                     // TODO : 
                     image_threshold_result = image_threshold(item.image_data.GetPointer(), params);
                     
@@ -772,8 +790,6 @@ void MainWindow::on_start_thresholding_button_clicked()
                     // TODO: judge if the selected item is the parent item
                     vec.push_back(image_item);
 
-                    
-
                     break;
                 }
             }
@@ -781,24 +797,64 @@ void MainWindow::on_start_thresholding_button_clicked()
     }
 
     update_data_manager();
-
-
-
-
-    //for (int i = 0; i < 3; i++)
-    //{
-    //	riw_[i]->SetSlice(this->dims[i] / 2);
-    //	riw_[i]->SetInputData(image_threshold_result);
-    //	riw_[i]->SetSliceOrientation(i);
-
-    //	riw_[i]->Render();
-
-    //	riw_[i]->GetRenderer()->ResetCamera();
-
-    //}
-
-
 }
+
+
+
+
+vtkSmartPointer<vtkImageData> MainWindow::image_threshold(vtkImageData* input_image, ThresholdingParams params)
+{
+    vtkSmartPointer<vtkImageThreshold> thresholdFilter = vtkSmartPointer<vtkImageThreshold>::New();
+    thresholdFilter->SetInputData(input_image);
+    thresholdFilter->ThresholdBetween(params.lower_value, params.upper_value);
+    thresholdFilter->ReplaceInOn();
+    thresholdFilter->ReplaceOutOn();
+    thresholdFilter->SetInValue(1);
+    thresholdFilter->SetOutValue(0);
+    thresholdFilter->Update();
+
+    return thresholdFilter->GetOutput();
+}
+
+
+vtkSmartPointer<vtkImageData> MainWindow::image_smoothing(vtkImageData* input_image, SmoothingParams params)
+{
+    switch (params.smooth_type) 
+    {
+    case 0:
+    {
+        vtkSmartPointer<vtkImageGaussianSmooth> gaussian_smooth_filter =
+            vtkSmartPointer<vtkImageGaussianSmooth>::New();
+        gaussian_smooth_filter->SetInputData(input_image);
+        gaussian_smooth_filter->SetDimensionality(3);
+        gaussian_smooth_filter->SetRadiusFactor(params.kernel_size);
+        gaussian_smooth_filter->SetStandardDeviation(params.sigma_x);
+        gaussian_smooth_filter->Update();
+
+        return gaussian_smooth_filter->GetOutput();
+    }
+    case 1:
+    {
+
+
+    }
+    case 2:
+    {
+        vtkSmartPointer<vtkImageMedian3D> median_filter =
+            vtkSmartPointer<vtkImageMedian3D>::New();
+        median_filter->SetInputData(input_image);
+        median_filter->SetKernelSize(params.kernel_size, params.kernel_size, params.kernel_size);
+        median_filter->Update();
+
+        return median_filter->GetOutput();
+    }
+    default:
+        break;
+    }
+}
+
+
+// Data Manager
 
 /*
  * update_data_manager: update ui->data_manager according to this->image_tree_
@@ -892,7 +948,7 @@ void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
             cur_selected_image_ind_[1] = 0;
         } else {
             cur_selected_image_ind_[0] = ui->data_manager->indexOfTopLevelItem(item->parent());
-            cur_selected_image_ind_[1] = column+1;
+            cur_selected_image_ind_[1] = item->parent()->indexOfChild(item)+1;
         }
 
 //        TODO: switch img when user select
@@ -904,6 +960,31 @@ void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
            <<cur_selected_image_ind_[1]<<"), name["<<item->text(column)<<"]";
 
     show_image();
+}
+
+
+void MainWindow::clear_manager()
+{
+    image_tree_.clear();
+    ui->data_manager->clear();
+    //vtk_image_collection_.clear();
+    //itk_image_collection_.clear();
+
+    ui->FixedImageSelector->clear();
+    ui->MovingImageSelector->clear();
+    //    ui->maskImageSelector->clear();
+    ui->greyScaleImageSelector->clear();
+    ui->BlendImage0Selector->clear();
+    ui->BlendImage1Selector->clear();
+    ui->smooth_selector->clear();
+    ui->edge_selector->clear();
+    ui->thre_selector->clear();
+
+    this->ui->view1->hide();
+    this->ui->view2->hide();
+    this->ui->view3->hide();
+
+    cur_selected_image_ind_[0] = -1;
 }
 
 void MainWindow::on_addPatientBtn_clicked()

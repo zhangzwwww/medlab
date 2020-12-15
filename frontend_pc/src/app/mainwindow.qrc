@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icon">
+    <file alias="down_arrow">../resources/icon/down_arrow.png</file>
+    <file alias="down_arrow_disabled">../resources/icon/down_arrow_disabled.png</file>
     <file>../resources/icon/download.png</file>
     <file alias="branch_closed">../resources/icon/branch_closed.png</file>
     <file alias="branch_closed-on">../resources/icon/branch_closed-on.png</file>

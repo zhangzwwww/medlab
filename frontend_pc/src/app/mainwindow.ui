@@ -402,7 +402,7 @@ QComboBox {
     padding-left: 4px;
     padding-right: 4px;
     background-color: #21252B;
-    color: #9DA5B4;
+	color: rgb(203, 205, 198);
 }
 
 QComboBox:disabled {
@@ -422,7 +422,7 @@ QComboBox QAbstractItemView {
     background-color: #19232D;
     border-radius: 4px;
     border: 1px solid #32414B;
-    color: #9CA3B2;
+    color: rgb(203, 205, 198);
     selection-color: #9DA5B4;
     selection-background-color: #32414B;
 }
@@ -1733,7 +1733,7 @@ border-style: solid;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1790,7 +1790,7 @@ border-style: solid;
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>456</width>
+                <width>302</width>
                 <height>722</height>
                </rect>
               </property>
@@ -3148,14 +3148,14 @@ background-color: rgb(45, 45, 48);</string>
               <enum>QFrame::Plain</enum>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="page">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>240</width>
+                <width>432</width>
                 <height>85</height>
                </rect>
               </property>
@@ -3179,10 +3179,13 @@ background-color: rgb(45, 45, 48);</string>
                   <number>1</number>
                  </property>
                  <property name="maximum">
-                  <number>9999</number>
+                  <number>21</number>
                  </property>
                  <property name="singleStep">
                   <number>2</number>
+                 </property>
+                 <property name="value">
+                  <number>3</number>
                  </property>
                 </widget>
                </item>
@@ -3194,7 +3197,11 @@ background-color: rgb(45, 45, 48);</string>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="in_smooth_gaussian_1_sigma_x"/>
+                <widget class="QDoubleSpinBox" name="in_smooth_gaussian_1_sigma_x">
+                 <property name="value">
+                  <double>0.500000000000000</double>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -3203,8 +3210,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>448</width>
-                <height>70</height>
+                <width>158</width>
+                <height>50</height>
                </rect>
               </property>
               <attribute name="label">
@@ -3224,10 +3231,13 @@ background-color: rgb(45, 45, 48);</string>
                   <number>1</number>
                  </property>
                  <property name="maximum">
-                  <number>9999</number>
+                  <number>21</number>
                  </property>
                  <property name="singleStep">
                   <number>2</number>
+                 </property>
+                 <property name="value">
+                  <number>3</number>
                  </property>
                 </widget>
                </item>
@@ -3238,7 +3248,7 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>176</width>
+                <width>158</width>
                 <height>50</height>
                </rect>
               </property>
@@ -3259,10 +3269,13 @@ background-color: rgb(45, 45, 48);</string>
                   <number>1</number>
                  </property>
                  <property name="maximum">
-                  <number>9999</number>
+                  <number>21</number>
                  </property>
                  <property name="singleStep">
                   <number>2</number>
+                 </property>
+                 <property name="value">
+                  <number>3</number>
                  </property>
                 </widget>
                </item>
