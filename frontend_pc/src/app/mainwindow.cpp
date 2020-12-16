@@ -1571,8 +1571,8 @@ void MainWindow::update_patients()
     this->patients_ = temp_patient.http_get_all_patient(&communicator);
     ui->patientSelector->clear();
     for (patient &pat: patients_) {
-        qDebug()<<pat._id()<<":"<<pat._name();
-        ui->patientSelector->addItem(pat._id());
+//        qDebug()<<pat._id()<<":"<<pat._name();
+        ui->patientSelector->addItem(pat._name());
     }
 }
 

@@ -189,7 +189,7 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
 //    httpFinished(reply_test);
 
     FILE *fp;
-    QString URL = urlbase["base3"] + urlbase["image"];
+    QString URL = urlbase["base2"] + urlbase["image"];
     QString req = "curl --location --request POST '" + URL + "'";
     req = req + " --header 'X-Auth-Token: " + token.toUtf8() + "'";
     req = req + " --form 'uploaded_file=@" + filepath + "'";
