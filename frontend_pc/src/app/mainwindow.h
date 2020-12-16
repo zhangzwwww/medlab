@@ -83,6 +83,8 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <itkImage.h>
 #include <itkImageToVTKImageFilter.h>
 #include <itkVTKImageToImageFilter.h>
+#include <itkAddImageFilter.h>
+#include <itkMultiplyImageFilter.h>
 
 #include <vtkImageSliceMapper.h>
 #include <vtkImageSlice.h>
@@ -181,9 +183,14 @@ private slots:
     void view_full_screen(bool full_status);
     void view_change_slice();
 
+    void start_registration();
+    void workerProgressUpdate(float progress);
+    void workerIsDone(itk::DataObject::Pointer data);
+    void start_fusion();
     void generate_surface();
     void clean_actors();
     void clear_manager();
+    void slidervalueChanged(int pos);
 
     vtkSmartPointer<vtkImageData> image_detect_edge(vtkImageData* input_image);
     vtkSmartPointer<vtkImageData> image_threshold(vtkImageData* input_image, ThresholdingParams params);

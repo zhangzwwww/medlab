@@ -107,14 +107,36 @@ void RegistrationWorker::preparePipeline()
 
 	// add progress observer
 	CommandIterationUpdate::Pointer observer = CommandIterationUpdate::New();
+	observer->SetCallbackWorker(this);
+	
 	//static_cast<CommandIterationUpdate*>(observer.GetPointer())->SetCallbackWorker(this);
 	m_optimizer->AddObserver(itk::IterationEvent(), observer);
 
-	// showImageInfor();
-
 }
 
+void RegistrationWorker::itkProgressCommandCallback(int iter) {
+	float progress_f = float(iter) / m_iteration;
+	emit progress(progress_f);
+}
 
+void RegistrationWorker::process() {
+
+	try {
+		preparePipeline();
+		m_output = getRegistrationResult();
+
+	}
+	catch (itk::ExceptionObject& error)
+	{
+		QMessageBox::warning(nullptr,
+			tr("Selection Error"),
+			tr(error.GetDescription()),
+			QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+	}
+
+	emit finished((itk::DataObject::Pointer) m_output);
+}
 
 itk::Image<float, 3>::Pointer RegistrationWorker::readImageDICOM(const char* DICOMImagePath)
 {
@@ -333,13 +355,7 @@ RegistrationWorker::FixedImageType::Pointer RegistrationWorker::getRegistrationR
 {
 	try
 	{
-		std::cout << std::endl <<
-			" ----------------- Registration Start ---------------- " << std::endl << std::endl;
-
 		m_registration->Update();
-
-		std::cout << std::endl << "Optimizer stop condition: " << m_registration->GetOptimizer()->GetStopConditionDescription()
-			<< std::endl << std::endl;
 	}
 	catch (itk::ExceptionObject& err)
 	{
@@ -361,19 +377,6 @@ RegistrationWorker::FixedImageType::Pointer RegistrationWorker::getRegistrationR
 
 	double bestValue = m_optimizer->GetValue();
 
-	// Print out results
-	std::cout << std::endl;
-	std::cout << "Transform Result = " << std::endl;
-	std::cout << " Translation 1 = " << TranslationAlong1 << std::endl;
-	std::cout << " Translation 2 = " << TranslationAlong2 << std::endl;
-	std::cout << " Translation 3 = " << TranslationAlong3 << std::endl;
-	std::cout << " Translation 4 = " << TranslationAlong4 << std::endl;
-	std::cout << " Translation 5 = " << TranslationAlong5 << std::endl;
-	std::cout << " Translation 6 = " << TranslationAlong6 << std::endl;
-	std::cout << " Iterations    = " << numberOfIterations << std::endl;
-	std::cout << " Metric value  = " << bestValue << std::endl;
-	std::cout << " Numb. Samples = " << m_numberOfSamples << std::endl;
-
 	TransformType::Pointer finalTransform = TransformType::New();;
 	finalTransform->SetParameters(finalParameters);
 	finalTransform->SetFixedParameters(m_transform->GetFixedParameters());
@@ -393,7 +396,6 @@ RegistrationWorker::FixedImageType::Pointer RegistrationWorker::getRegistrationR
 	try
 	{
 		resample->Update();
-		std::cout << std::endl << "Moving Image Resample Update Success" << std::endl;
 	}
 	catch (itk::ExceptionObject& error)
 	{

@@ -25,47 +25,7 @@
 #include <QObject>
 #include <QRunnable>
 
-class CommandIterationUpdate : public itk::Command
-{
-public:
-    using Self = CommandIterationUpdate;
-    using Superclass = itk::Command;
-    using Pointer = itk::SmartPointer<Self>;
-    itkNewMacro(Self);
 
-protected:
-    CommandIterationUpdate() = default;
-
-public:
-    using OptimizerType = itk::VersorRigid3DTransformOptimizer;
-    using OptimizerPointer = const OptimizerType*;
-
-    void
-        Execute(itk::Object* caller, const itk::EventObject& event) override
-    {
-    
-        Execute((const itk::Object*)caller, event);
-    }
-
-    void
-        Execute(const itk::Object* object, const itk::EventObject& event) override
-    {
-        auto optimizer = dynamic_cast<OptimizerPointer>(object);
-        if (!itk::IterationEvent().CheckEvent(&event))
-        {
-            return;
-        }
-
-        std::cout.precision(4);
-        std::cout << optimizer->GetCurrentIteration() << "   ";
-        std::cout << optimizer->GetValue() << "   ";
-        std::cout << optimizer->GetCurrentStepLength() << "   ";
-        std::cout << optimizer->GetCurrentPosition() << std::endl;
-
-        //mitk::ProgressBar::GetInstance()->Progress();
-    }
-
-};
 
 
 class RegistrationWorker : public QObject
@@ -95,15 +55,14 @@ public:
     using MovingNormalizeFilterType = itk::NormalizeImageFilter<MovingImageType, InternalImageType>;
     using GaussianFilterType = itk::DiscreteGaussianImageFilter<InternalImageType, InternalImageType>;
 
-    // inherited
     void process();
 
-    // inherited signals
-    void started(unsigned int workerId);
-    void progress(float progress, unsigned int workerId);
-    void finished(itk::DataObject::Pointer ptr, unsigned int workerId);
-    void loadImage(itk::DataObject::Pointer ptr, unsigned int workerId);
-
+signals:
+    void started();
+    void progress(float progress);
+    void finished(itk::DataObject::Pointer ptr);
+ 
+public:
     // callback for the progress command
     void itkProgressCommandCallback(int iter);
 
@@ -176,6 +135,62 @@ private:
     double m_relaxationFactor;
     unsigned int m_numberOfSamples;
     double m_defaultPixelValue;
+};
+
+
+
+class CommandIterationUpdate : public itk::Command
+{
+public:
+
+    friend class RegistrationWorker;
+
+    using Self = CommandIterationUpdate;
+    using Superclass = itk::Command;
+    using Pointer = itk::SmartPointer<Self>;
+    itkNewMacro(Self);
+
+protected:
+    CommandIterationUpdate() = default;
+
+public:
+    using OptimizerType = itk::VersorRigid3DTransformOptimizer;
+    using OptimizerPointer = const OptimizerType*;
+
+    void
+        Execute(itk::Object* caller, const itk::EventObject& event) override
+    {
+
+        Execute((const itk::Object*)caller, event);
+    }
+
+    void
+        Execute(const itk::Object* object, const itk::EventObject& event) override
+    {
+        auto optimizer = dynamic_cast<OptimizerPointer>(object);
+        if (!itk::IterationEvent().CheckEvent(&event))
+        {
+            return;
+        }
+
+        //std::cout.precision(4);
+        //std::cout << optimizer->GetCurrentIteration() << "   ";
+        //std::cout << optimizer->GetValue() << "   ";
+        //std::cout << optimizer->GetCurrentStepLength() << "   ";
+        //std::cout << optimizer->GetCurrentPosition() << std::endl;
+
+        if (m_worker) {
+            m_worker->itkProgressCommandCallback(optimizer->GetCurrentIteration());
+        }
+
+    }
+
+    void SetCallbackWorker(RegistrationWorker* worker) {
+        m_worker = worker;
+    }
+
+private:
+    RegistrationWorker* m_worker;
 };
 
 #endif // __registration_worker_h__

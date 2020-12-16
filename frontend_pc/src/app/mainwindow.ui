@@ -911,6 +911,40 @@ border-image: url(:/icon/down_arrow);
 QSpinBox::down-button:pressed {
 border-image: url(:/icon/down_arrow);
 }
+
+QDoubleSpinBox::up-arrow {
+image: url(:/icon/up_arrow);
+}
+
+QDoubleSpinBox::up-button:hover {
+border-image: url(:/icon/up_arrow);
+}
+QDoubleSpinBox::up-button:pressed {
+border-image: url(:/icon/up_arrow);
+}
+
+QDoubleSpinBox::down-arrow {
+image: url(:/icon/down_arrow);
+}
+
+QDoubleSpinBox::down-button:hover {
+border-image: url(:/icon/down_arrow);
+}
+QDoubleSpinBox::down-button:pressed {
+border-image: url(:/icon/down_arrow);
+}
+
+QProgressBar{
+border: none;  
+background: rgb(1, 1, 1);
+color: rgb(240, 240, 240);     
+height: 2px;
+} 
+
+QProgressBar::chunk {
+height: 2px;
+
+} 
 </string>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -1754,7 +1788,7 @@ border-style: solid;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1812,7 +1846,7 @@ border-style: solid;
                 <x>0</x>
                 <y>0</y>
                 <width>456</width>
-                <height>722</height>
+                <height>751</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1897,7 +1931,7 @@ border-style: solid;
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="startButton">
+                <widget class="QPushButton" name="start_registration_btn">
                  <property name="text">
                   <string>Start Registration </string>
                  </property>
@@ -1918,6 +1952,16 @@ border-style: solid;
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QProgressBar" name="registration_progressBar">
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                 <property name="textVisible">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_5">

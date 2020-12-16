@@ -73,7 +73,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     ui->mainToolBar->setFixedHeight(50);
-    
+    ui->registration_progressBar->setVisible(false);
+
     this->ui->view1->hide();
     this->ui->view2->hide();
     this->ui->view3->hide();
@@ -94,12 +95,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->ScrollBar2, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
     connect(ui->ScrollBar3, SIGNAL(valueChanged(int)), this, SLOT(view_change_slice()));
 
+   
+    connect(ui->start_registration_btn, SIGNAL(clicked()), this, SLOT(start_registration()));
+    connect(ui->startFusionButton, SIGNAL(clicked()), this, SLOT(start_fusion()));
     connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
+    connect(ui->opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(slidervalueChanged(int)));
 
     connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
     connect(ui->clear_manager_btn, SIGNAL(clicked()), this, SLOT(clear_manager()));
 
-
+    
 //    TODO: make sure the number of spinbox/lineedit is legal
 //    AlgorithmParams
 //    FusionParams
@@ -207,6 +212,7 @@ void MainWindow::load_image()
             tr("Read Image Error"),
             tr(error.GetDescription()),
             QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
     }
 
     vtkSmartPointer<vtkImageData> image_vtk = filter->GetOutput();
@@ -241,9 +247,9 @@ void MainWindow::show_image()
         return;
     }
 
-    vtkSmartPointer<vtkImageData> current_selected_image_ = image_tree_[cur_selected_image_ind_[0]][cur_selected_image_ind_[1]].image_data;
+    vtkSmartPointer<vtkImageData> current_selected_image = image_tree_[cur_selected_image_ind_[0]][cur_selected_image_ind_[1]].image_data;
     
-    if (current_selected_image_ == nullptr)
+    if (current_selected_image == nullptr)
     {
         QMessageBox::warning(nullptr,
             tr("Error"),
@@ -255,8 +261,8 @@ void MainWindow::show_image()
 
     double range[2];
     int dims[3];
-    current_selected_image_->GetScalarRange(range);
-    current_selected_image_->GetDimensions(dims);
+    current_selected_image->GetScalarRange(range);
+    current_selected_image->GetDimensions(dims);
 
     //vtkSmartPointer<vtkImageSliceMapper> imageSliceMapper =
     //	vtkSmartPointer<vtkImageSliceMapper>::New();
@@ -275,7 +281,7 @@ void MainWindow::show_image()
 
     for (int i = 0; i < 3; i++)
     {
-        riw_[i]->SetInputData(current_selected_image_);
+        riw_[i]->SetInputData(current_selected_image);
 
         riw_[i]->SetSliceOrientation(i);
         riw_[i]->SetSlice(dims[i] / 2);      
@@ -528,6 +534,376 @@ void MainWindow::clean_actors()
 
 // Algorithm Function: 
 
+// Registration
+void MainWindow::start_registration()
+{
+    if (ui->FixedImageSelector->count() == 0)
+    {
+        setMandatoryField(ui->FixedImageSelector, true);
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    if (ui->MovingImageSelector->count() == 0)
+    {
+        setMandatoryField(ui->MovingImageSelector, true);
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    RegistrationWorker::FixedImageType::Pointer fixed_image_itk;
+    RegistrationWorker::FixedImageType::Pointer moving_image_itk;
+
+    // loop for finding corresponding ImageDataItem
+    QString fixed_name = ui->FixedImageSelector->currentText();
+    QString moving_name = ui->MovingImageSelector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_) {
+        for (ImageDataItem& item : vec){
+            if (fixed_name == item.image_name){
+                if (item.image_data == nullptr){
+                    setMandatoryField(ui->FixedImageSelector, true);
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+                }
+                else {
+                    setMandatoryField(ui->FixedImageSelector, false);
+
+                    using VTK2ITKType = itk::VTKImageToImageFilter<RegistrationWorker::FixedImageType>;
+                    VTK2ITKType::Pointer vtk2itk_filter = VTK2ITKType::New();
+                    vtk2itk_filter->SetInput(item.image_data);
+
+                    try
+                    {
+                        vtk2itk_filter->Update();
+                    }
+                    catch (itk::ExceptionObject& error)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr(error.GetDescription()),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
+                    fixed_image_itk = vtk2itk_filter->GetOutput();
+                }
+            }
+        }
+    }
+
+    for (vector<ImageDataItem>& vec : image_tree_) {
+        for (ImageDataItem& item : vec) {
+            if (moving_name == item.image_name) {
+                if (item.image_data == nullptr) {
+                    setMandatoryField(ui->MovingImageSelector, true);
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+                }
+                else {
+                    setMandatoryField(ui->MovingImageSelector, false);
+
+                    using VTK2ITKType = itk::VTKImageToImageFilter<RegistrationWorker::FixedImageType>;
+                    VTK2ITKType::Pointer vtk2itk_filter = VTK2ITKType::New();
+                    vtk2itk_filter->SetInput(item.image_data);
+
+                    try
+                    {
+                        vtk2itk_filter->Update();
+                    }
+                    catch (itk::ExceptionObject& error)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr(error.GetDescription()),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
+                    moving_image_itk = vtk2itk_filter->GetOutput();
+                }
+            }
+        }
+    }
+
+
+    ui->start_registration_btn->setVisible(false);
+    ui->registration_progressBar->setVisible(true);
+
+    RegistrationWorker worker;
+    worker.setFixedImage(fixed_image_itk);
+    worker.setMovingImage(moving_image_itk);
+    worker.setIteration(ui->paramIterationSpinBox->value());
+    worker.setMaximumStepLength(ui->paramMaxSpinBox->value());
+    worker.setMinimumStepLength(ui->paramMinSpinBox->value());
+    worker.setRelaxationFactor(ui->paramRelaxSpinBox->value());
+    worker.setNumberOfSamples(ui->paramNumberspinBox->value());
+    worker.setDefualtPixelValue(ui->paramDPVSpinBox->value());
+
+    qRegisterMetaType<itk::DataObject::Pointer>("itk::DataObject::Pointer");
+
+    QObject::connect(&worker, SIGNAL(finished(itk::DataObject::Pointer)),
+        this, SLOT(workerIsDone(itk::DataObject::Pointer)));
+    QObject::connect(&worker, SIGNAL(progress(float)), this, SLOT(workerProgressUpdate(float)));
+
+    worker.process();
+
+}
+
+void MainWindow::workerProgressUpdate(float progress) 
+{
+    int progressInt = (int)(progress * 100.0f);
+    ui->registration_progressBar->setValue(progressInt);
+   
+}
+
+void MainWindow::workerIsDone(itk::DataObject::Pointer data) 
+{
+    RegistrationWorker::FixedImageType* result_image_itk =
+        dynamic_cast<RegistrationWorker::FixedImageType*>(data.GetPointer());
+
+    // cast itk image to vtk image
+    using FilterType = itk::ImageToVTKImageFilter<RegistrationWorker::FixedImageType>;
+    FilterType::Pointer filter = FilterType::New();
+    filter->SetInput(result_image_itk);
+
+    try
+    {
+        filter->Update();
+    }
+    catch (itk::ExceptionObject& error)
+    {
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr(error.GetDescription()),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    vtkSmartPointer<vtkImageData> result_image_vtk = filter->GetOutput();
+
+    vtk_image_collection_.push_back(result_image_vtk);
+    itk_image_collection_.push_back(result_image_itk);
+
+    QString item_name = "Registered image";
+    for (vector<ImageDataItem>& vec : image_tree_) {
+        for (ImageDataItem& item : vec) {
+            if (item_name == item.image_name) {
+                item_name = "(1)" + item_name;
+            }
+        }
+    }
+
+    ImageDataItem image_item;
+    image_item.image_name = QString(item_name);
+    image_item.image_data = result_image_vtk;
+
+    image_tree_.push_back(vector<ImageDataItem>{image_item});
+
+    this->update_data_manager();
+
+    ui->start_registration_btn->setVisible(true);
+    ui->registration_progressBar->setVisible(false);
+}
+
+void MainWindow::start_fusion()
+{
+    if (ui->BlendImage0Selector->count() == 0)
+    {
+        setMandatoryField(ui->BlendImage0Selector, true);
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    if (ui->BlendImage1Selector->count() == 0)
+    {
+        setMandatoryField(ui->BlendImage1Selector, true);
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    RegistrationWorker::FixedImageType::Pointer image0Itk;
+    RegistrationWorker::FixedImageType::Pointer image1Itk;
+
+    // loop for finding corresponding ImageDataItem
+    QString image0_name = ui->BlendImage0Selector->currentText();
+    QString image1_name = ui->BlendImage1Selector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_) {
+        for (ImageDataItem& item : vec) {
+            if (image0_name == item.image_name) {
+                if (item.image_data == nullptr) {
+                    setMandatoryField(ui->BlendImage0Selector, true);
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+                }
+                else {
+                    setMandatoryField(ui->BlendImage0Selector, false);
+
+                    using VTK2ITKType = itk::VTKImageToImageFilter<RegistrationWorker::FixedImageType>;
+                    VTK2ITKType::Pointer vtk2itk_filter = VTK2ITKType::New();
+                    vtk2itk_filter->SetInput(item.image_data);
+
+                    try
+                    {
+                        vtk2itk_filter->Update();
+                    }
+                    catch (itk::ExceptionObject& error)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr(error.GetDescription()),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
+                    image0Itk = vtk2itk_filter->GetOutput();
+                }
+            }
+        }
+    }
+
+    for (vector<ImageDataItem>& vec : image_tree_) {
+        for (ImageDataItem& item : vec) {
+            if (image1_name == item.image_name) {
+                if (item.image_data == nullptr) {
+                    setMandatoryField(ui->BlendImage1Selector, true);
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+                }
+                else {
+                    setMandatoryField(ui->BlendImage1Selector, false);
+
+                    using VTK2ITKType = itk::VTKImageToImageFilter<RegistrationWorker::FixedImageType>;
+                    VTK2ITKType::Pointer vtk2itk_filter = VTK2ITKType::New();
+                    vtk2itk_filter->SetInput(item.image_data);
+
+                    try
+                    {
+                        vtk2itk_filter->Update();
+                    }
+                    catch (itk::ExceptionObject& error)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr(error.GetDescription()),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
+                    image1Itk = vtk2itk_filter->GetOutput();
+                }
+            }
+        }
+    }
+
+    // 判断图像尺寸是否一致
+
+    // isValidFusionSelection(itk 0 itk1)
+    if (true) {
+
+        // fusion
+        int pos = ui->opacitySlider->value();
+        double factor0 = static_cast<double>(pos / 10.0);
+        double factor1 = 1 - factor0;
+
+        using FilterType = itk::MultiplyImageFilter<RegistrationWorker::FixedImageType,
+            RegistrationWorker::FixedImageType, RegistrationWorker::FixedImageType>;
+        FilterType::Pointer filter0 = FilterType::New();
+        filter0->SetInput(image0Itk);
+        filter0->SetConstant(factor0);
+
+        FilterType::Pointer filter1 = FilterType::New();
+        filter1->SetInput(image1Itk);
+        filter1->SetConstant(factor1);
+
+        using AddImageFilterType = itk::AddImageFilter<itk::Image<float, 3>,
+            itk::Image<float, 3>>;
+        AddImageFilterType::Pointer addFilter = AddImageFilterType::New();
+        addFilter->SetInput1(filter0->GetOutput());
+        addFilter->SetInput2(filter1->GetOutput());
+        addFilter->Update();
+
+        // cast itk image to vtk image
+        using toVTK_FilterType = itk::ImageToVTKImageFilter<itk::Image<float, 3>>;
+        toVTK_FilterType::Pointer toVTK_filter = toVTK_FilterType::New();
+        toVTK_filter->SetInput(addFilter->GetOutput());
+
+        try
+        {
+            toVTK_filter->Update();
+        }
+        catch (itk::ExceptionObject& error)
+        {
+            QMessageBox::warning(nullptr,
+                tr("Error"),
+                tr(error.GetDescription()),
+                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+            return;
+        }
+
+        vtkSmartPointer<vtkImageData> result_image_vtk = toVTK_filter->GetOutput();
+
+        vtk_image_collection_.push_back(result_image_vtk);
+        itk_image_collection_.push_back(addFilter->GetOutput());
+
+        QString item_name = ui->FusedNameLineEdit->text() + "-" + QString::number(factor0);
+        for (vector<ImageDataItem>& vec : image_tree_) {
+            for (ImageDataItem& item : vec) {
+                if (item_name == item.image_name) {
+                    item_name = "(1)" + item_name;
+                }
+            }
+        }
+
+        ImageDataItem image_item;
+        image_item.image_name = QString(item_name);
+        image_item.image_data = result_image_vtk;
+
+        image_tree_.push_back(vector<ImageDataItem>{image_item});
+
+
+        // update 无效
+        this->update_data_manager();
+
+
+    }
+}
+
+
+
+void MainWindow::slidervalueChanged(int pos) {
+    double factor0 = static_cast<double>(pos / 10.0);
+    double factor1 = 1 - factor0;
+    ui->opacity0label->setText("Image 0:  " + QString::number(factor0) + "  ");
+    ui->opacity1label->setText("  Image 1:  " + QString::number(factor1));
+}
+
+
 void MainWindow::generate_surface()
 {
     if (ui->greyScaleImageSelector->count() == 0)
@@ -667,6 +1043,7 @@ void MainWindow::on_pushButton_clicked()
 
 }
 
+// general processing
 void MainWindow::on_start_smoothing_button_clicked()
 {
     SmoothingParams params;
@@ -719,6 +1096,15 @@ void MainWindow::on_start_smoothing_button_clicked()
 
                     image_smooth_result = image_smoothing(item.image_data.GetPointer(), params);
 
+                    if (image_smooth_result == nullptr)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr("Image is NULL."),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
                     QString item_name = "smooth_" + current_name;
                     for (vector<ImageDataItem>& vec : image_tree_) {
                         for (ImageDataItem& item : vec) {
@@ -744,8 +1130,6 @@ void MainWindow::on_start_smoothing_button_clicked()
 
     update_data_manager();
 }
-
-
 
 void MainWindow::on_detect_edge_button_clicked()
 {
@@ -783,6 +1167,15 @@ void MainWindow::on_detect_edge_button_clicked()
                     setMandatoryField(ui->edge_selector, false);
 
                     image_edge_result = image_detect_edge(item.image_data.GetPointer());
+
+                    if (image_edge_result == nullptr)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr("Image is NULL."),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
 
                     QString item_name = "edge_" + current_name;
                     for (vector<ImageDataItem>& vec : image_tree_) {
@@ -852,6 +1245,15 @@ void MainWindow::on_start_thresholding_button_clicked()
 
                     image_threshold_result = image_threshold(item.image_data.GetPointer(), params);
                     
+                    if (image_threshold_result == nullptr)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr("Image is NULL."),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
                     QString item_name = "thresholding_" + current_name;
                     for (vector<ImageDataItem>& vec : image_tree_){
                         for (ImageDataItem& item : vec){
@@ -878,7 +1280,6 @@ void MainWindow::on_start_thresholding_button_clicked()
     update_data_manager();
 }
 
-
 vtkSmartPointer<vtkImageData> MainWindow::image_detect_edge(vtkImageData* input_image)
 {
     vtkSmartPointer<vtkImageGradientMagnitude> gradient_magnitude_filter =
@@ -895,8 +1296,6 @@ vtkSmartPointer<vtkImageData> MainWindow::image_detect_edge(vtkImageData* input_
     return gradient_magnitude_cast_filter->GetOutput();
 }
 
-
-
 vtkSmartPointer<vtkImageData> MainWindow::image_threshold(vtkImageData* input_image, ThresholdingParams params)
 {
     vtkSmartPointer<vtkImageThreshold> threshold_filter = vtkSmartPointer<vtkImageThreshold>::New();
@@ -910,7 +1309,6 @@ vtkSmartPointer<vtkImageData> MainWindow::image_threshold(vtkImageData* input_im
 
     return threshold_filter->GetOutput();
 }
-
 
 vtkSmartPointer<vtkImageData> MainWindow::image_smoothing(vtkImageData* input_image, SmoothingParams params)
 {
@@ -979,13 +1377,12 @@ vtkSmartPointer<vtkImageData> MainWindow::image_smoothing(vtkImageData* input_im
         return median_filter->GetOutput();
     }
     default:
-        break;
+        return nullptr;
     }
 }
 
 
 // Data Manager
-
 /*
  * update_data_manager: update ui->data_manager according to this->image_tree_
  * image_tree_ is two layer: 1. folder 2. images, eg: image_tree_[0][0] saves the original image of first folder we opened
