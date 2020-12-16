@@ -1788,7 +1788,7 @@ border-style: solid;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1845,11 +1845,11 @@ border-style: solid;
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>456</width>
-                <height>751</height>
+                <width>465</width>
+                <height>788</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
+              <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <widget class="QGroupBox" name="groupBox_4">
                  <property name="title">
@@ -1927,6 +1927,44 @@ border-style: solid;
                     </layout>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QWidget" name="widget_17" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_17">
+                     <property name="leftMargin">
+                      <number>8</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>2</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>8</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>2</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_fixedname_3">
+                       <property name="text">
+                        <string>Reigistered image name </string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="RegNameLineEdit">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text">
+                        <string>Registered image</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1934,6 +1972,16 @@ border-style: solid;
                 <widget class="QPushButton" name="start_registration_btn">
                  <property name="text">
                   <string>Start Registration </string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QProgressBar" name="registration_progressBar">
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                 <property name="textVisible">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -1952,16 +2000,6 @@ border-style: solid;
                   </size>
                  </property>
                 </spacer>
-               </item>
-               <item>
-                <widget class="QProgressBar" name="registration_progressBar">
-                 <property name="value">
-                  <number>0</number>
-                 </property>
-                 <property name="textVisible">
-                  <bool>true</bool>
-                 </property>
-                </widget>
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_5">
@@ -2381,13 +2419,13 @@ border-style: solid;
                    <widget class="QWidget" name="widget_14" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_14">
                      <property name="leftMargin">
-                      <number>15</number>
+                      <number>8</number>
                      </property>
                      <property name="topMargin">
                       <number>2</number>
                      </property>
                      <property name="rightMargin">
-                      <number>15</number>
+                      <number>8</number>
                      </property>
                      <property name="bottomMargin">
                       <number>2</number>
@@ -2484,23 +2522,11 @@ border-style: solid;
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>472</width>
-                <height>721</height>
+                <width>481</width>
+                <height>727</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
-               <property name="leftMargin">
-                <number>5</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>5</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
                <item>
                 <widget class="QTabWidget" name="tabWidget_2">
                  <property name="sizePolicy">
@@ -2720,6 +2746,16 @@ border-style: solid;
                    <number>0</number>
                   </property>
                  </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QProgressBar" name="mesher_progressBar">
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                 <property name="textVisible">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -3313,7 +3349,7 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>448</width>
+                <width>457</width>
                 <height>70</height>
                </rect>
               </property>

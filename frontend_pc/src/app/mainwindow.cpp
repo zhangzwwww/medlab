@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     ui->mainToolBar->setFixedHeight(50);
     ui->registration_progressBar->setVisible(false);
+    ui->mesher_progressBar->setVisible(false);
 
     this->ui->view1->hide();
     this->ui->view2->hide();
@@ -103,17 +104,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
     connect(ui->clear_manager_btn, SIGNAL(clicked()), this, SLOT(clear_manager()));
-
-    
-//    TODO: make sure the number of spinbox/lineedit is legal
-//    AlgorithmParams
-//    FusionParams
-//    RegistrationParams
-//    ProcessingParams
-//    MedianFilterParams
-//    GaussianParams
-//    PolygonSmoothingParams
-
 
 }
 
@@ -697,7 +687,7 @@ void MainWindow::workerIsDone(itk::DataObject::Pointer data)
     vtk_image_collection_.push_back(result_image_vtk);
     itk_image_collection_.push_back(result_image_itk);
 
-    QString item_name = "Registered image";
+    QString item_name = ui->RegNameLineEdit->text();
     for (vector<ImageDataItem>& vec : image_tree_) {
         for (ImageDataItem& item : vec) {
             if (item_name == item.image_name) {
@@ -886,11 +876,7 @@ void MainWindow::start_fusion()
 
         image_tree_.push_back(vector<ImageDataItem>{image_item});
 
-
-        // update 无效
         this->update_data_manager();
-
-
     }
 }
 
@@ -942,6 +928,10 @@ void MainWindow::generate_surface()
                 else {
                     setMandatoryField(ui->greyScaleImageSelector, false);
 
+                    ui->voxel2meshBtn->setVisible(false);
+                    ui->mesher_progressBar->setVisible(true);
+                    ui->mesher_progressBar->setValue(25);
+
                     voxel2mesh_filter.SetUseGuassianSmoothing(ui->medianGroup->isChecked());
                     voxel2mesh_filter.SetMedianKernelSize(ui->kernelXSpinBox->value(),
                         ui->kernelYSpinBox->value(), ui->kernelZSpinBox->value());
@@ -960,9 +950,13 @@ void MainWindow::generate_surface()
         }
     }
 
+    ui->mesher_progressBar->setValue(50);
+
     voxel2mesh_filter.Update();
 
     vtkPolyData* mesh = voxel2mesh_filter.GetOutput();
+
+    ui->mesher_progressBar->setValue(75);
 
     vtkSmartPointer<vtkPolyDataMapper> mesh_mapper =
         vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -980,6 +974,9 @@ void MainWindow::generate_surface()
 
     this->ui->view4->GetRenderWindow()->Render();
 
+    ui->mesher_progressBar->setValue(100);
+    ui->voxel2meshBtn->setVisible(true);
+    ui->mesher_progressBar->setVisible(false);
 }
 
 
@@ -1478,15 +1475,17 @@ void MainWindow::on_data_manager_itemClicked(QTreeWidgetItem *item, int column)
             cur_selected_image_ind_[1] = item->parent()->indexOfChild(item)+1;
         }
 
-//        TODO: switch img when user select
     } else {
         cur_selected_image_ind_[0] = -1;
+        
 
     }
     qDebug()<<"data manager item clicked index: ("<<cur_selected_image_ind_[0]<<","
            <<cur_selected_image_ind_[1]<<"), name["<<item->text(column)<<"]";
 
     show_image();
+    volume_rendering(false);
+    ui->action_visualization->setChecked(false);
 }
 
 
@@ -1512,6 +1511,9 @@ void MainWindow::clear_manager()
     this->ui->view3->hide();
 
     cur_selected_image_ind_[0] = -1;
+
+    volume_rendering(false);
+    ui->action_visualization->setChecked(false);
 }
 
 void MainWindow::on_addPatientBtn_clicked()
