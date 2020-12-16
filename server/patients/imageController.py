@@ -5,7 +5,6 @@ import datetime
 import bson.binary
 import bson.objectid
 import bson.errors
-import hashlib
 import pymongo
 import json
 import uuid
@@ -93,7 +92,7 @@ class ImageController(Resource):
         filename = request.form['filename']
 
         f = flask.request.files['uploaded_file']
-        _ = saveFile(f, filename, patientId)
+        saveFile(f, filename, patientId)
         return 'succeed', 200
 
 
@@ -116,13 +115,10 @@ class ImageDateController(Resource):
 
 
 def saveFile(content, name, patientId):
-    sha1 = hashlib.sha1(content.getvalue()).hexdigest()
-
     c = dict(
         id=uuid.uuid5(uuid.NAMESPACE_DNS, str(datetime.datetime.now())),
-        content=bson.binary.Binary(content.getvalue()),
+        content=bson.binary.Binary(content.read()),
         ctime=str(datetime.date.today()),
-        sha1=sha1,
         name=name,
         patientId=patientId,
     )
@@ -131,7 +127,6 @@ def saveFile(content, name, patientId):
         mongodb.files.save(c)
     except pymongo.errors.DuplicateKeyError:
         pass
-    return sha1
 
 
 def existsToken(token):
