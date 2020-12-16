@@ -39,9 +39,8 @@ DownloadForm::DownloadForm(DownloadFormParams &params, QWidget *parent) :
     patients_ = params.patients;
     image_manager_.setToken(user_info_._token());
     if (patients_.empty()) {
-        patient pat;
-        pat.set_token(user_info_._token());
-        patients_ = pat.http_get_all_patient(&communicator_);
+        patient::set_token(user_info_._token());
+        patients_ = patient::http_get_all_patient(&communicator_);
     }
     for (patient &pat: patients_) {
 //        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));

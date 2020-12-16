@@ -1562,6 +1562,14 @@ void MainWindow::on_patientSelector_currentTextChanged(const QString &arg1)
     for (QString &name: image_names) {
         ui->patientImageSelector->addItem(name);
     }
+    int cur_patient_index = ui->patientSelector->currentIndex();
+    if (cur_patient_index < 0 || cur_patient_index >= patients_.size()) {
+        return;
+    }
+    auto pat = patients_[cur_patient_index];
+    ui->patientGenderLabel->setText(pat._age()?"Female":"Male");
+    ui->patientBirthLabel->setText(pat._birth());
+    ui->patientAgeLabel->setText(QString::number(pat._age()));
 }
 
 void MainWindow::update_patients()
@@ -1574,6 +1582,13 @@ void MainWindow::update_patients()
 //        qDebug()<<pat._id()<<":"<<pat._name();
         ui->patientSelector->addItem(pat._name());
     }
+    if (patients_.empty()) {
+        return;
+    }
+    patient pat = patients_[0];
+    ui->patientGenderLabel->setText(pat._gender() ? "Female" : "Male");
+    ui->patientBirthLabel->setText(pat._birth());
+    ui->patientAgeLabel->setText(QString::number(pat._age()));
 }
 
 
