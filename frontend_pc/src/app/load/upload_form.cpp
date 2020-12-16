@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDir>
 
 #include "struct_define.h"
 #include "utils/general_util.h"
@@ -32,13 +33,14 @@ UploadForm::UploadForm(UploadFormParams &params, QWidget *parent) :
     ui->setupUi(this);
     user_info_ = params.user_info;
     patients_ = params.patients;
+    image_manager_.setToken(user_info_._token());
     if (patients_.empty()) {
-        patient temp_patient;
-        temp_patient.set_token(user_info_._token());
-        patients_ = temp_patient.http_get_all_patient(&communicator_);
+        patient::set_token(user_info_._token());
+        patients_ = patient::http_get_all_patient(&communicator_);
     }
     for (patient &pat:patients_) {
-        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+//        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+        ui->patientIDSelector->addItem(pat._name());
     }
 }
 
@@ -69,10 +71,27 @@ void UploadForm::on_uploadFileBtn_clicked()
         QMessageBox::warning(this, "w", "Please input image name!", QMessageBox::Yes);
         return;
     }
-    UploadFileParams params;
-    params.file_path = ui->filePathEdit->text().toStdString();
-    params.patient_id = ui->patientIDSelector->currentText().toStdString();
-    params.image_name = ui->imageNameEdit->text().toStdString();
+//    UploadFileParams params;
+    QString file_path = ui->filePathEdit->text();
+    int cur_patient_index = ui->patientIDSelector->currentIndex();
+    QString patient_id = patients_[cur_patient_index]._id();
+    QString image_name = ui->imageNameEdit->text();
 //    if upload succeed
+    image_manager_.setFilePath(file_path);
+    QDir dir(file_path);
+    QStringList file_names = dir.entryList(QDir::Files | QDir::Readable);
+    for (QString &file_name : file_names) {
+//        qDebug()<<dir.absoluteFilePath(file_name);
+        image_manager_.uploadImageHttp(patient_id, image_name, dir.absoluteFilePath(file_name));
+    }
+//    image_manager_.uploadImageHttp(patient_id, image_name, file_path);
     accept();
+}
+
+void UploadForm::on_imageNameEdit_editingFinished()
+{
+    if (ui->imageNameEdit->hasFocus()) {
+        qDebug()<<"editing finished";
+        on_uploadFileBtn_clicked();
+    }
 }

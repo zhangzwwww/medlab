@@ -39,12 +39,12 @@ DownloadForm::DownloadForm(DownloadFormParams &params, QWidget *parent) :
     patients_ = params.patients;
     image_manager_.setToken(user_info_._token());
     if (patients_.empty()) {
-        patient pat;
-        pat.set_token(user_info_._token());
-        patients_ = pat.http_get_all_patient(&communicator_);
+        patient::set_token(user_info_._token());
+        patients_ = patient::http_get_all_patient(&communicator_);
     }
     for (patient &pat: patients_) {
-        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+//        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+        ui->patientIDSelector->addItem(pat._name());
     }
 }
 
@@ -98,11 +98,11 @@ void DownloadForm::on_patientIDSelector_currentIndexChanged(int index)
     if (index >= patients_.size()) {
         return;
     }
+    ui->imageNameSelector->clear();
     QVector<QString> image_names = image_manager_.getCtimeHttp(patients_[index]._id());
     if (image_names.isEmpty()) {
         return;
     }
-    ui->imageNameSelector->clear();
     for (QString &name:image_names) {
         ui->imageNameSelector->addItem(name);
     }
