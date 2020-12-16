@@ -11,15 +11,21 @@
 
 
 RegistrationWorker::RegistrationWorker()
-	: id(002), m_metricsType(0), m_iteration(50), m_maximumStepLength(4), m_minimumStepLength(0.00001)
+	: id(002), m_iteration(50), m_maximumStepLength(4), m_minimumStepLength(0.00001)
 	, m_relaxationFactor(0.80), m_numberOfSamples(2000), m_defaultPixelValue(-1000)
 	, m_fixedImage(nullptr), m_movingImage(nullptr)
 {
 	m_transform = TransformType::New();
 	m_optimizer = OptimizerType::New();
 	m_interpolator = InterpolatorType::New();
+	m_metric = MIMetricType::New();
 	m_registration = RegistrationType::New();
 
+	m_metric->SetFixedImageStandardDeviation(0.4);
+	m_metric->SetMovingImageStandardDeviation(0.4);
+	m_optimizer->MaximizeOn();
+
+	m_registration->SetMetric(m_metric);
 	m_registration->SetOptimizer(m_optimizer);
 	m_registration->SetTransform(m_transform);
 	m_registration->SetInterpolator(m_interpolator);
@@ -49,38 +55,19 @@ RegistrationWorker::RegistrationWorker()
 
 void RegistrationWorker::preparePipeline() 
 {
-
-	// ****************************************************************************
-	// PART 1: 为配准方法参数赋值
-	// ****************************************************************************
-
-	m_metric = MIMetricType::New();
-	m_metric->SetFixedImageStandardDeviation(0.4);
-	m_metric->SetMovingImageStandardDeviation(0.4);
-	m_optimizer->MaximizeOn();
-
-	m_registration->SetMetric(m_metric);
-
-
 	m_optimizer->SetNumberOfIterations(m_iteration);
 	m_optimizer->SetMaximumStepLength(m_maximumStepLength);
 	m_optimizer->SetMinimumStepLength(m_minimumStepLength);
 
-	// 方法默认值为0.5，但这会对噪声太过敏感，有时噪声的存在会使得学习率提前减小，因此此项目默认设置为0.8
 	m_optimizer->SetRelaxationFactor(m_relaxationFactor);
 
 	const auto numberOfSamples = static_cast<unsigned int>(m_numberOfSamples);
-	/* numberOfSamples与图像尺寸大小有关，图像尺寸越大设置的数量应该越大；
-	   若重采样为256*256的话只需设置2000即可获得较好的性能与速度，若为512*512尺寸需要设置3000*/
 
 	m_metric->SetNumberOfSpatialSamples(numberOfSamples);
-	// For consistent results when regression testing.
 	m_metric->ReinitializeSeed(1000);
 
-	// 将图像重采样为256*256，加快配准速度
 	FixedImageType::Pointer resampledImage = imageResample(m_fixedImage);
 
-	// 先标准化再去噪
 	m_fixedNormalizer->SetInput(resampledImage);
 	m_movingNormalizer->SetInput(m_movingImage);
 
@@ -88,20 +75,14 @@ void RegistrationWorker::preparePipeline()
 	m_movingSmoother->SetInput(m_movingNormalizer->GetOutput());
 
 
-	// ****************************************************************************
-	// PART 2: 刚性变化 m_transform 参数初始化
-	// ****************************************************************************
-
-	// 3D刚性变换中心初始化
 	using TransformInitializerType = itk::CenteredTransformInitializer<TransformType, FixedImageType, MovingImageType>;
 	TransformInitializerType::Pointer initializer = TransformInitializerType::New();
 
 	initializer->SetTransform(m_transform);
 	initializer->SetFixedImage(m_fixedSmoother->GetOutput());
 	initializer->SetMovingImage(m_movingSmoother->GetOutput());
-	//initializer->MomentsOn(); // 设置移动中心为质心， 会提示说像素超出范围
-	// 设置质心通常不适用于多模态配准
-	initializer->GeometryOn(); // Fixed Image的中心坐标 
+	//initializer->MomentsOn(); 
+	initializer->GeometryOn();
 	initializer->InitializeTransform();
 
 	using VersorType = TransformType::VersorType;
@@ -115,12 +96,6 @@ void RegistrationWorker::preparePipeline()
 	rotation.Set(axis, angle);
 	m_transform->SetRotation(rotation);
 
-
-	// ****************************************************************************
-	// PART 3: 配准方法 m_registration 参数配置
-	// ****************************************************************************
-
-	// 配置参数
 	m_registration->SetFixedImage(m_fixedSmoother->GetOutput());
 	m_registration->SetMovingImage(m_movingSmoother->GetOutput());
 
@@ -128,23 +103,40 @@ void RegistrationWorker::preparePipeline()
 	FixedImageType::RegionType fixedImageRegion = m_fixedNormalizer->GetOutput()->GetBufferedRegion();
 	m_registration->SetFixedImageRegion(fixedImageRegion);
 
-	// transform->GetFixedParameters()、GetParameters()，二者均返回itk::TransformBase::ParametersType类型的对象
-	// 待后续优化完成后，再使用registration->GetLastTransformParameters()得到优化后的六维向量
-	// 此处只需要设置六维向量，不需要设置旋转中心，因为开始时已设置了m_registration->SetTransform(m_transform);
-	// SetInitialTransformParameters只需设置六维向量，SetTransform需要设置完整的变换（6+3）
 	m_registration->SetInitialTransformParameters(m_transform->GetParameters());
 
 	// add progress observer
 	CommandIterationUpdate::Pointer observer = CommandIterationUpdate::New();
+	observer->SetCallbackWorker(this);
+	
 	//static_cast<CommandIterationUpdate*>(observer.GetPointer())->SetCallbackWorker(this);
 	m_optimizer->AddObserver(itk::IterationEvent(), observer);
 
-	// 显示图像信息
-	showImageInfor();
-
 }
 
+void RegistrationWorker::itkProgressCommandCallback(int iter) {
+	float progress_f = float(iter) / m_iteration;
+	emit progress(progress_f);
+}
 
+void RegistrationWorker::process() {
+
+	try {
+		preparePipeline();
+		m_output = getRegistrationResult();
+
+	}
+	catch (itk::ExceptionObject& error)
+	{
+		QMessageBox::warning(nullptr,
+			tr("Selection Error"),
+			tr(error.GetDescription()),
+			QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+	}
+
+	emit finished((itk::DataObject::Pointer) m_output);
+}
 
 itk::Image<float, 3>::Pointer RegistrationWorker::readImageDICOM(const char* DICOMImagePath)
 {
@@ -160,13 +152,13 @@ itk::Image<float, 3>::Pointer RegistrationWorker::readImageDICOM(const char* DIC
 	NamesGeneratorType::Pointer fixedNameGenerator = NamesGeneratorType::New();
 	fixedNameGenerator->SetUseSeriesDetails(true);
 	fixedNameGenerator->SetDirectory(DICOMImagePath);
-	fixedNameGenerator->AddSeriesRestriction("0008|0021"); // tag: series date 保证是同一个病人
+	fixedNameGenerator->AddSeriesRestriction("0008|0021"); 
 
 	try
 	{
 		//std::cout << std::endl;
 
-		// UID ( Unique Identifiers ) 唯一标志值，每个病人拥有唯一的标志值
+		// UID ( Unique Identifiers )
 		using SeriesIdContainer = std::vector< std::string >;
 		const SeriesIdContainer& fixedSeriesUID = fixedNameGenerator->GetSeriesUIDs();
 
@@ -195,7 +187,6 @@ itk::Image<float, 3>::Pointer RegistrationWorker::readImageDICOM(const char* DIC
 		std::string fixedSeriesIdentifier;
 		std::string movingSeriesIdentifier;
 
-		// 每个病人都有其独特的UID
 		fixedSeriesIdentifier = fixedSeriesUID.begin()->c_str();
 
 		using FileNamesContainer = std::vector< std::string >;
@@ -244,13 +235,12 @@ void RegistrationWorker::readFixedImageDICOM(const char* DICOMImagePath)
 	NamesGeneratorType::Pointer fixedNameGenerator = NamesGeneratorType::New();
 	fixedNameGenerator->SetUseSeriesDetails(true);
 	fixedNameGenerator->SetDirectory(DICOMImagePath);
-	fixedNameGenerator->AddSeriesRestriction("0008|0021"); // tag: series date 保证是同一个病人
+	fixedNameGenerator->AddSeriesRestriction("0008|0021"); 
 
 	try
 	{
 		std::cout << std::endl;
 
-		// UID ( Unique Identifiers ) 唯一标志值，每个病人拥有唯一的标志值
 		using SeriesIdContainer = std::vector< std::string >;
 		const SeriesIdContainer& fixedSeriesUID = fixedNameGenerator->GetSeriesUIDs();
 
@@ -279,7 +269,6 @@ void RegistrationWorker::readFixedImageDICOM(const char* DICOMImagePath)
 		std::string fixedSeriesIdentifier;
 		std::string movingSeriesIdentifier;
 
-		// 每个病人都有其独特的UID
 		fixedSeriesIdentifier = fixedSeriesUID.begin()->c_str();
 
 		using FileNamesContainer = std::vector< std::string >;
@@ -327,13 +316,11 @@ void RegistrationWorker::readMovingImageDICOM(const char* DICOMImagePath)
 	{
 		std::cout << std::endl;
 
-		// UID ( Unique Identifiers ) 唯一标志值，每个病人拥有唯一的标志值
 		using SeriesIdContainer = std::vector< std::string >;
 		const SeriesIdContainer& movingSeriesUID = movingNameGenerator->GetSeriesUIDs();
 
 		std::string movingSeriesIdentifier;
 
-		// 每个病人都有其独特的UID
 		movingSeriesIdentifier = movingSeriesUID.begin()->c_str();
 
 		using FileNamesContainer = std::vector< std::string >;
@@ -368,13 +355,7 @@ RegistrationWorker::FixedImageType::Pointer RegistrationWorker::getRegistrationR
 {
 	try
 	{
-		std::cout << std::endl <<
-			" ----------------- Registration Start ---------------- " << std::endl << std::endl;
-
 		m_registration->Update();
-
-		std::cout << std::endl << "Optimizer stop condition: " << m_registration->GetOptimizer()->GetStopConditionDescription()
-			<< std::endl << std::endl;
 	}
 	catch (itk::ExceptionObject& err)
 	{
@@ -396,19 +377,6 @@ RegistrationWorker::FixedImageType::Pointer RegistrationWorker::getRegistrationR
 
 	double bestValue = m_optimizer->GetValue();
 
-	// Print out results
-	std::cout << std::endl;
-	std::cout << "Transform Result = " << std::endl;
-	std::cout << " Translation 1 = " << TranslationAlong1 << std::endl;
-	std::cout << " Translation 2 = " << TranslationAlong2 << std::endl;
-	std::cout << " Translation 3 = " << TranslationAlong3 << std::endl;
-	std::cout << " Translation 4 = " << TranslationAlong4 << std::endl;
-	std::cout << " Translation 5 = " << TranslationAlong5 << std::endl;
-	std::cout << " Translation 6 = " << TranslationAlong6 << std::endl;
-	std::cout << " Iterations    = " << numberOfIterations << std::endl;
-	std::cout << " Metric value  = " << bestValue << std::endl;
-	std::cout << " Numb. Samples = " << m_numberOfSamples << std::endl;
-
 	TransformType::Pointer finalTransform = TransformType::New();;
 	finalTransform->SetParameters(finalParameters);
 	finalTransform->SetFixedParameters(m_transform->GetFixedParameters());
@@ -422,15 +390,12 @@ RegistrationWorker::FixedImageType::Pointer RegistrationWorker::getRegistrationR
 	resample->SetSize(m_fixedImage->GetLargestPossibleRegion().GetSize());
 	resample->SetOutputOrigin(m_fixedImage->GetOrigin());
 	resample->SetOutputSpacing(m_fixedImage->GetSpacing());
-	// 此处的direction可能指的是DICOM中的方向，即图像第一行与第一列与病人标准正交方向的cosine值
-	// 是一个六维的向量，如1/0/0/0/0.9862/-0.1650，代表图像行方向为标准x方向，列方向与标准y方向的cosine为0.9862
 	resample->SetOutputDirection(m_fixedImage->GetDirection());
 	resample->SetDefaultPixelValue(m_defaultPixelValue);
 
 	try
 	{
 		resample->Update();
-		std::cout << std::endl << "Moving Image Resample Update Success" << std::endl;
 	}
 	catch (itk::ExceptionObject& error)
 	{
@@ -508,8 +473,6 @@ void RegistrationWorker::showImageInfor()
 	std::cout << " Origin = " << origin[0] << " " << origin[1] << " " << origin[2] << std::endl;
 	std::cout << " Size = " << size[0] << " " << size[1] << " " << size[2] << std::endl;
 
-
-	// Moving Image
 	std::cout << std::endl << "Moving Image Information: " << std::endl;
 	std::cout << std::endl;
 
@@ -522,7 +485,6 @@ void RegistrationWorker::showImageInfor()
 	std::cout << " Size = " << size1[0] << " " << size1[1] << " " << size1[2] << std::endl;
 
 
-	// 显示 Fixed Image 旋转中心坐标
 	std::cout << std::endl << "Image Center Information: " << std::endl;
 
 	RegistrationType::ParametersType center = m_transform->GetFixedParameters();

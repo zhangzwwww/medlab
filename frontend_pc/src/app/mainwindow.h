@@ -68,14 +68,23 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "vtkPointHandleRepresentation3D.h"
 #include "vtkPointHandleRepresentation2D.h"
 
+#include "vtkImageGaussianSmooth.h"
+#include "vtkImageMedian3D.h"
+#include "vtkImageConvolve.h"
+
 //
 #include <vtkImageThreshold.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkImageGradientMagnitude.h>
+#include <vtkImageCast.h>
+
 
 // ITK
 #include <itkImage.h>
 #include <itkImageToVTKImageFilter.h>
 #include <itkVTKImageToImageFilter.h>
+#include <itkAddImageFilter.h>
+#include <itkMultiplyImageFilter.h>
 
 #include <vtkImageSliceMapper.h>
 #include <vtkImageSlice.h>
@@ -162,6 +171,9 @@ private:
     void clean_view4();
     void update_data_manager();
     void update_patients();
+
+    void setMandatoryField(QWidget* widget, bool bEnabled);
+    void setQStyleSheetField(QWidget* widget, const char* fieldName, bool bEnabled);
     
 
 private slots:
@@ -171,10 +183,19 @@ private slots:
     void view_full_screen(bool full_status);
     void view_change_slice();
 
+    void start_registration();
+    void workerProgressUpdate(float progress);
+    void workerIsDone(itk::DataObject::Pointer data);
+    void start_fusion();
     void generate_surface();
     void clean_actors();
+    void clear_manager();
+    void slidervalueChanged(int pos);
 
-    void image_threshold(vtkImageData* input_image, vtkImageData* output_image, ThresholdingParams params);
+    vtkSmartPointer<vtkImageData> image_detect_edge(vtkImageData* input_image);
+    vtkSmartPointer<vtkImageData> image_threshold(vtkImageData* input_image, ThresholdingParams params);
+    vtkSmartPointer<vtkImageData> image_smoothing(vtkImageData* input_image, SmoothingParams params);
+
 
     void on_pushButton_4_clicked();
 
@@ -194,6 +215,7 @@ private slots:
 
     void on_start_thresholding_button_clicked();
 
+
     void on_data_manager_itemClicked(QTreeWidgetItem *item, int column);
 
     void on_addPatientBtn_clicked();
@@ -207,18 +229,16 @@ private slots:
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
-
-    itk::Image<float, 3>::Pointer image_itk_;
-    vtkSmartPointer<vtkImageData> image_vtk_;
     vtkSmartPointer<vtkVolume> volume_;
 
+    //vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
+    //vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];
 
-    vtkSmartPointer<vtkRenderer> m_Renderer2D[3];
-    vtkSmartPointer<vtkImageStack> m_ImageStack2D[3];
-    //int dims_[3];
+    vector<vtkSmartPointer<vtkImageData>> vtk_image_collection_;
+    vector<itk::Image<float, 3>::Pointer> itk_image_collection_;
 
     vector<vector<ImageDataItem>> image_tree_;
-    int cur_selected_image_ind[2];
+    int cur_selected_image_ind_[2]{ -1 };
 
    QVector<patient> patients_;
 

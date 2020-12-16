@@ -42,7 +42,7 @@ SOURCES += \
         commu/userinfo.cpp \
         main.cpp \
         mainwindow.cpp \
-        registration/RegistrationWorker.cpp \
+        registration/registration_worker.cpp \
         voxel2mesh/Voxel2Mesh.cpp
 
 HEADERS += \
@@ -62,7 +62,7 @@ HEADERS += \
         commu/userinfo.h \
         mainwindow.h \
         errorcode.h \
-        registration/RegistrationWorker.h \
+        registration/registration_worker.h \
         struct_define.h \
         voxel2mesh/Voxel2Mesh.h
 

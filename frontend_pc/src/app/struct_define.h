@@ -67,10 +67,6 @@ struct SmoothingParams {
     double sigma_x; // specially for gaussian blur
 };
 
-struct EdgeDetectParams {
-    double threshold_1;
-    double threshold_2;
-};
 
 struct ThresholdingParams {
     double lower_value;

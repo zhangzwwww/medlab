@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # 设置工程名称
-project(MedPlatform)
+project(MEDLAB)
 
 # 设置工程包含当前目录
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -75,6 +75,7 @@ set(PROJECT_QRCS app/mainwindow.qrc)
 # UI
 set(PROJECT_UIS app/mainwindow.ui  
                            app/login/loginform.ui 
+                           app/login/signup_form.ui
                            app/load/upload_form.ui
                            app/load/download_form.ui)
 
@@ -86,10 +87,10 @@ foreach(source IN LISTS PROJECT_SRCS)
 endforeach()
 
 # 添加可执行文件
-add_executable(MedPlatform ${PROJECT_SRCS} ${PROJECT_UIS} ${PROJECT_QRCS})
+add_executable(MEDLAB ${PROJECT_SRCS} ${PROJECT_UIS} ${PROJECT_QRCS})
 
 # 链接库
-target_link_libraries(MedPlatform
+target_link_libraries(MEDLAB
                       ${VTK_LIBRARIES}
                       ${ITK_LIBRARIES}
                       registration
