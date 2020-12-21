@@ -27,7 +27,7 @@ QString imageInfo::save_path = "";
 
 imageInfo::imageInfo(QObject* parent)
 {
-
+    connect(this, &imageInfo::sendreq, this, &imageInfo::uploadFile);
 }
 
 imageInfo::~imageInfo(){
@@ -79,7 +79,9 @@ void imageInfo::getImagesHttp(QString patientID, QString ctime){
 //    post_data.append("ctime="+ctime);
 
     // construct request
-    //connect(&qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
+    // Asynchronized way
+    connect(&qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
+
     QNetworkRequest request;
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
@@ -96,10 +98,10 @@ void imageInfo::getImagesHttp(QString patientID, QString ctime){
     progressDialog->show();
 
     // Debug: use straight way to handle reply
-    QEventLoop eventloop;
-    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
-    eventloop.exec();
-    downloadFile(reply);
+//    QEventLoop eventloop;
+//    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
+//    eventloop.exec();
+//    downloadFile(reply);
 }
 
 void imageInfo::downloadFile(QNetworkReply* reply){
@@ -154,6 +156,25 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
         qDebug() << "The file doesn't exist";
         return;
     }
+    FILE *fp;
+    QString URL = urlbase["base3"] + urlbase["image"];
+    QString req = "curl --location --request POST '" + URL + "'";
+    req = req + " --header 'X-Auth-Token: " + token.toUtf8() + "'";
+    req = req + " --form 'uploaded_file=@" + filepath + "'";
+    req = req + " --form 'patientId=" + patientId + "'";
+    req = req + " --form 'filename=" + ctime + "'";
+    char buffer[1024] = {0};
+
+    emit sendreq(req);
+
+//#ifdef Q_OS_WIN32   // Define on windows system
+//    fp = _popen(req.toUtf8(), "r");
+//#endif
+
+//#ifdef Q_OS_MACOS   // Define on MACOS system
+
+//    fp = popen(req.toUtf8(), "r");
+//#endif
 //    QHttpMultiPart* multipart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 //    QHttpPart imagePart;
 //    imagePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
@@ -187,26 +208,6 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
 //    connect(reply_test, SIGNAL(finished()), &eventloop, SLOT(quit()));
 //    eventloop.exec();
 //    httpFinished(reply_test);
-
-    FILE *fp;
-    QString URL = urlbase["base3"] + urlbase["image"];
-    QString req = "curl --location --request POST '" + URL + "'";
-    req = req + " --header 'X-Auth-Token: " + token.toUtf8() + "'";
-    req = req + " --form 'uploaded_file=@" + filepath + "'";
-    req = req + " --form 'patientId=" + patientId + "'";
-    req = req + " --form 'filename=" + ctime + "'";
-    char buffer[1024] = {0};
-    qDebug() << req;
-
-#ifdef Q_OS_WIN32   // Define on windows system
-    fp = _popen(req.toUtf8(), "r");
-#endif
-
-#ifdef Q_OS_MACOS   // Define on MACOS system
-
-    fp = popen(req.toUtf8(), "r");
-#endif
-
 
     // Read in the file
 //    afile.open(QIODevice::ReadOnly);
@@ -244,6 +245,19 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
 //    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
 //    eventloop.exec();
 //    httpFinished(reply);
+}
+
+void imageInfo::uploadFile(QString req){
+    qDebug() << req;
+    FILE *fp;
+#ifdef Q_OS_WIN32   // Define on windows system
+    fp = _popen(req.toUtf8(), "r");
+#endif
+
+#ifdef Q_OS_MACOS   // Define on MACOS system
+
+    fp = popen(req.toUtf8(), "r");
+#endif
 }
 
 QVector<QString> imageInfo::getCtimeHttp(QString patientId){

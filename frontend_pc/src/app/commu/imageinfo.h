@@ -50,10 +50,13 @@ private:
 
 private slots:
     void downloadFile(QNetworkReply*);
-    // void uploadFile();
+    void uploadFile(QString);
     void cancelDownload();
     void httpFinished(QNetworkReply*);
     void httpReadyRead();
+
+signals:
+    void sendreq(QString);
 
 public:
     // constructor and destructor
