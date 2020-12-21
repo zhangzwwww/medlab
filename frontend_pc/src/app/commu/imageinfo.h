@@ -73,8 +73,18 @@ public:
     void getImagesHttp(QString patientID, QString ctime);
 
     // Upload image data to the server
-    // INPUT: patientId and ctime
+    // INPUT: patientId, ctime and Filepath
     void uploadImageHttp(QString patientId, QString ctime, QString filepath);
+
+    // Upload a marked image data to the server
+    // INPUT: filepath, INT for image level, 4 DOUBLEs for mark position
+    void uploadMarkedImage(QString filepath, int, double, double, double, double);
+
+    // Upload image to sever and get prediction result
+    // INPUT: Filepath
+    // NORMAL OUTPUT: class of image
+    // FAIL CASE: "FILE NOT EXIST"/"CONNECTION FAIL"
+    QString predictImageHttp(QString filepath);
 
     // Get image ctimes given patientId
     // INPUT: patientId
