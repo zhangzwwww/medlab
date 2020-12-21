@@ -45,13 +45,16 @@ void testImage::test_case2(){
 
 void testImage::test_case3(){
     // test upload images
-    QString patientId = "123";
-    QString ctime = "2020-12-01";
-    QString filepath = "/Users/levius/Desktop/tempdata/123_2020-11-28/1.png";
-    imageInfo image_requester;
-    image_requester.uploadImageHttp(patientId, ctime, filepath);
+//    QString patientId = "123";
+//    QString ctime = "2020-12-01";
+//    QString filepath = "/Users/levius/Desktop/tempdata/123_2020-11-28/1.png";
+//    imageInfo image_requester;
+//    image_requester.uploadImageHttp(patientId, ctime, filepath);
 }
 
 void testImage::test_case4(){
-
+    // test predict images
+    QString filepath = "/Users/levius/Desktop/1.png";
+    imageInfo image_requester;
+    image_requester.predictImageHttp(filepath);
 }
