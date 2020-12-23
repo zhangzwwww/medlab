@@ -133,6 +133,7 @@ void MainWindow::init_views()
     riw_[2]->SetupInteractor(
         this->ui->view3->GetRenderWindow()->GetInteractor());
 
+
     // Image Stack
     //for (int crntViewLabel = 0; crntViewLabel < 3; crntViewLabel++)
     //{

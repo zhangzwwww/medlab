@@ -190,11 +190,11 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
 
     FILE *fp;
     QString URL = urlbase["base2"] + urlbase["image"];
-    QString req = "curl --location --request POST '" + URL + "'";
-    req = req + " --header 'X-Auth-Token: " + token.toUtf8() + "'";
-    req = req + " --form 'uploaded_file=@" + filepath + "'";
-    req = req + " --form 'patientId=" + patientId + "'";
-    req = req + " --form 'filename=" + ctime + "'";
+    QString req = "curl --location --request POST \"" + URL + "\"";
+    req = req + " --header \"X-Auth-Token: " + token.toUtf8() + "\"";
+    req = req + " --form \"uploaded_file=@" + filepath + "\"";
+    req = req + " --form \"patientId=" + patientId + "\"";
+    req = req + " --form \"filename=" + ctime + "\"";
     char buffer[1024] = {0};
     qDebug() << req;
 
