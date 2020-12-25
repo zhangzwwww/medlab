@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>303</width>
-    <height>208</height>
+    <width>339</width>
+    <height>217</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,6 +33,33 @@ QWidget
 background-color: #19232D;
 }
 
+/* 文本编辑框 */
+QLineEdit {
+    background-color: #282C34;
+    padding-top: 2px;     /* This QLineEdit fix  103, 111 */
+    padding-bottom: 2px;  /* This QLineEdit fix  103, 111 */
+    padding-left: 4px;
+    padding-right: 4px;
+    border-style: solid;
+    border: 1px solid #32414B;
+    border-radius: 4px;
+    color: #F0F0F0;
+}
+
+QLineEdit:disabled {
+    background-color: #282C34;
+    color: #787878;
+}
+
+QLineEdit:hover{
+    border: 1px solid #148CD2;
+    color: #F0F0F0;
+}
+
+QLineEdit:selected{
+    background: #1464A0;
+    color: #32414B;
+}
 
 
 /* Button */
@@ -167,6 +194,9 @@ QFrame[width=&quot;3&quot;] {
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="verticalSpacing">
+       <number>11</number>
+      </property>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="font">
@@ -185,10 +215,16 @@ QFrame[width=&quot;3&quot;] {
       </item>
       <item row="2" column="0">
        <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="4">
-         <spacer name="horizontalSpacer_2">
+        <property name="verticalSpacing">
+         <number>14</number>
+        </property>
+        <item row="1" column="0">
+         <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -197,6 +233,9 @@ QFrame[width=&quot;3&quot;] {
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QLineEdit" name="id_input"/>
         </item>
         <item row="1" column="1" colspan="2">
          <widget class="QLineEdit" name="pwd_input">
@@ -215,13 +254,13 @@ QFrame[width=&quot;3&quot;] {
           </property>
          </widget>
         </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QLineEdit" name="id_input"/>
-        </item>
-        <item row="1" column="0">
-         <spacer name="horizontalSpacer">
+        <item row="1" column="4">
+         <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>

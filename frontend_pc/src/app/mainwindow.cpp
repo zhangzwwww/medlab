@@ -3,6 +3,72 @@
 
 #include <QTextCodec>
 
+class vtkPointPickerCallback : public vtkCommand
+{
+public:
+    static vtkPointPickerCallback* New()
+    {
+        return new vtkPointPickerCallback;
+    }
+
+    void Execute(vtkObject* caller, unsigned long ev, 
+        void* callData)
+    {
+        if (ev == vtkCommand::RightButtonPressEvent)
+        {
+            vtkInteractorStyleImage* style =
+                dynamic_cast<vtkInteractorStyleImage*>(caller);
+
+            if (style)
+            {
+                if (style == this->view[0]->GetInteractorStyle())
+                {
+                    
+                    int current_index = this->view[0]->GetSlice();
+                    qDebug() << current_index;
+
+                    int display_pos[2];
+                    display_pos[0] = this->interactor[0]->GetEventPosition()[0];
+                    display_pos[1] = this->interactor[0]->GetEventPosition()[1];
+                    qDebug() << "Picking pixel: " << display_pos[0] << " " << display_pos[1];
+                    
+                }
+                else if (style == this->view[1]->GetInteractorStyle())
+                {
+                    int current_index = this->view[1]->GetSlice();
+                    qDebug() << current_index;
+
+                    int display_pos[2];
+                    display_pos[0] = this->interactor[1]->GetEventPosition()[0];
+                    display_pos[1] = this->interactor[1]->GetEventPosition()[1];
+                    qDebug() << "Picking pixel: " << display_pos[0] << " " << display_pos[1];
+
+                }
+                else if (style == this->view[2]->GetInteractorStyle())
+                {
+                    int current_index = this->view[2]->GetSlice();
+                    qDebug() << current_index;
+
+                    int display_pos[2];
+                    display_pos[0] = this->interactor[2]->GetEventPosition()[0];
+                    display_pos[1] = this->interactor[2]->GetEventPosition()[1];
+                    qDebug() << "Picking pixel: " << display_pos[0] << " " << display_pos[1];
+
+                }
+            }
+
+            return;
+        }
+    }
+
+    vtkPointPickerCallback() {}
+    vtkImageViewer2* view[3];
+    vtkRenderWindowInteractor* interactor[3];
+    vtkRenderer* render[3];
+};
+
+
+
 /*--------------------- Definition for subclass ------------------*/
 MainWindow::vtkSharedWindowLevelCallback* MainWindow::vtkSharedWindowLevelCallback::New(){
     return new vtkSharedWindowLevelCallback;
@@ -51,6 +117,8 @@ void MainWindow::vtkSharedWindowLevelCallback::Execute(vtkObject *caller, unsign
 MainWindow::vtkSharedWindowLevelCallback::vtkSharedWindowLevelCallback(){
 
 }
+
+
 /*--------------------- End definition for subclass --------------*/
 
 
@@ -70,17 +138,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //QString qss;
     //qss = qssfile.readAll();
     //this->setStyleSheet(qss);
+    this->init_views();
 
     ui->mainToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     ui->mainToolBar->setFixedHeight(50);
     ui->registration_progressBar->setVisible(false);
     ui->mesher_progressBar->setVisible(false);
-
-    this->ui->view1->hide();
-    this->ui->view2->hide();
-    this->ui->view3->hide();
-
-    this->init_views();
 
     connect(ui->action_open_file, SIGNAL(triggered()), this, SLOT(load_image()));
     connect(ui->action_visualization, SIGNAL(triggered(bool)), this, SLOT(volume_rendering(bool)));
@@ -133,22 +196,6 @@ void MainWindow::init_views()
     riw_[2]->SetupInteractor(
         this->ui->view3->GetRenderWindow()->GetInteractor());
 
-    // Image Stack
-    //for (int crntViewLabel = 0; crntViewLabel < 3; crntViewLabel++)
-    //{
-    //	// vtkImageStack
-    //	m_ImageStack2D[crntViewLabel] = vtkSmartPointer<vtkImageStack>::New();
-    //	// vtkRenderer
-    //	m_Renderer2D[crntViewLabel] = vtkSmartPointer<vtkRenderer>::New();
-    //	m_Renderer2D[crntViewLabel]->AddViewProp(m_ImageStack2D[crntViewLabel]);
-    //	m_Renderer2D[crntViewLabel]->GetActiveCamera()->ParallelProjectionOn(); // ƽ��ͶӰ
-    //
-    //}
-
-    //this->ui->view1->GetRenderWindow()->AddRenderer(m_Renderer2D[0]);
-    //this->ui->view2->GetRenderWindow()->AddRenderer(m_Renderer2D[1]);
-    //this->ui->view3->GetRenderWindow()->AddRenderer(m_Renderer2D[2]);
-
     renderer3D_ = vtkSmartPointer<vtkRenderer>::New();
     renderer3D_->SetBackground(1, 1, 1);
     renderer3D_->SetBackground2(0.5, 0.5, 0.5);
@@ -156,9 +203,6 @@ void MainWindow::init_views()
 
 //    this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
 
-    this->ui->view1->show();
-    this->ui->view2->show();
-    this->ui->view3->show();
 
 }
 
@@ -230,6 +274,14 @@ void MainWindow::show_image()
     vtkSmartPointer< vtkSharedWindowLevelCallback > sharedWLcbk =
         vtkSmartPointer< vtkSharedWindowLevelCallback >::New();
 
+    vtkSmartPointer< vtkPointPickerCallback > point_picker_cbk =
+        vtkSmartPointer< vtkPointPickerCallback >::New();
+
+    point_picker_cbk->interactor[0] = this->ui->view1->GetInteractor();
+    point_picker_cbk->interactor[1] = this->ui->view2->GetInteractor();
+    point_picker_cbk->interactor[2] = this->ui->view3->GetInteractor();
+
+
     if (cur_selected_image_ind_[0] == -1)
     {
         this->ui->view1->hide();
@@ -280,7 +332,12 @@ void MainWindow::show_image()
         riw_[i]->SetColorLevel((range[0] + range[1]) / 2.0);
 
         sharedWLcbk->view[i] = riw_[i];
+        point_picker_cbk->view[i] = riw_[i];
+
         riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, sharedWLcbk);
+        riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::RightButtonPressEvent, point_picker_cbk);
+
+    
     }
 
     this->ui->ScrollBar1->setMaximum(dims[0]);
