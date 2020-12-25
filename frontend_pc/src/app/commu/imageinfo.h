@@ -59,6 +59,18 @@ signals:
     void sendreq(QString);
 
 public:
+    // Define a struct for image mark
+    struct imgMark{
+        QString patientId;
+        QString imgId;
+        int layer;
+        int view;
+        double topX;
+        double topY;
+        double bottomX;
+        double bottomY;
+    };
+
     // constructor and destructor
     explicit imageInfo(QObject *parent = nullptr);
     ~imageInfo();
@@ -77,11 +89,16 @@ public:
     void uploadImageHttp(QString patientId, QString ctime, QString filepath);
 
     // Upload a marked image data to the server
-    // INPUT: filepath, INT for image level, 4 DOUBLEs for mark position
-    void uploadMarkedImage(QString filepath, int, double, double, double, double);
+    // INPUT: folderpath containting meta file, 2 INT for image level and view type, 4 DOUBLEs for mark position
+    // RETURN: return true if upload success
+    bool uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY);
+
+    // Get all marked information
+    // RETURN: a vector containing all marks
+    QVector<imgMark> getAllMarks();
 
     // Upload image to sever and get prediction result
-    // INPUT: Filepath
+    // INPUT: Filepath, PatientId
     // NORMAL OUTPUT: class of image
     // FAIL CASE: "FILE NOT EXIST"/"CONNECTION FAIL"
     QString predictImageHttp(QString filepath, QString patientID);
@@ -89,6 +106,8 @@ public:
     // Get image ctimes given patientId
     // INPUT: patientId
     QVector<QString> getCtimeHttp(QString patientId);
+
+
 };
 
 #endif // IMAGEINFO_H
