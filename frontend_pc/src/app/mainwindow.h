@@ -71,6 +71,9 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "vtkImageGaussianSmooth.h"
 #include "vtkImageMedian3D.h"
 #include "vtkImageConvolve.h"
+#include <vtkPointPicker.h>
+#include <vtkImageCanvasSource2D.h>
+#include <vtkImageActor.h>
 
 //
 #include <vtkImageThreshold.h>
