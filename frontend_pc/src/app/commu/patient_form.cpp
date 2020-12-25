@@ -28,9 +28,9 @@ void PatientForm::on_addPatientBtn_clicked()
     pat.set_token(user_info_._token());
     bool ret = pat.http_create_patient(&communicator_, name, gender, birth, age);
     if (ret == false) {
-        QMessageBox::warning(this, "w", "Please input image name!", QMessageBox::Yes);
+        QMessageBox::warning(this, "warning", "Please input image name!", QMessageBox::Yes);
     } else {
-        QMessageBox::information(this, "i", "Succeed to add patient, id:?", QMessageBox::Yes);
+        QMessageBox::information(this, "success info", "Succeed to add patient!", QMessageBox::Yes);
         accept();
     }
 //    TODO: update parent patient list

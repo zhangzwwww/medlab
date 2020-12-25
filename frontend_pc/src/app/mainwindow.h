@@ -132,6 +132,7 @@ class vtkActor;
 
 struct ImageDataItem {
     QString image_name;
+    QString image_path;
     vtkSmartPointer<vtkImageData> image_data;
 };
 

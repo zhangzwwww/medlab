@@ -211,6 +211,7 @@ void MainWindow::load_image()
     vtk_image_collection_.push_back(image_vtk);
 
     ImageDataItem image_item;
+    image_item.image_path = fileName;
     image_item.image_name = GetFileName(fileName);
     image_item.image_data = image_vtk;
 
