@@ -54,7 +54,8 @@ void testImage::test_case3(){
 
 void testImage::test_case4(){
     // test predict images
-    QString filepath = "/Users/levius/Desktop/1.png";
+    QString patientId = "123";
+    QString filepath = "/Users/levius/Desktop/m (10).jpg";
     imageInfo image_requester;
-    image_requester.predictImageHttp(filepath);
+    image_requester.predictImageHttp(filepath, patientId);
 }

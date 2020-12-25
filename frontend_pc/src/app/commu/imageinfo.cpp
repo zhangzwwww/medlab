@@ -156,14 +156,12 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
         qDebug() << "The file doesn't exist";
         return;
     }
-    FILE *fp;
     QString URL = urlbase["base3"] + urlbase["image"];
-    QString req = "curl --location --request POST '" + URL + "'";
-    req = req + " --header 'X-Auth-Token: " + token.toUtf8() + "'";
-    req = req + " --form 'uploaded_file=@" + filepath + "'";
-    req = req + " --form 'patientId=" + patientId + "'";
-    req = req + " --form 'filename=" + ctime + "'";
-    char buffer[1024] = {0};
+    QString req = "curl --location --request POST \"" + URL + "\"";
+    req = req + " --header \"X-Auth-Token: " + token.toUtf8() + "\"";
+    req = req + " --form \"uploaded_file=@" + filepath + "\"";
+    req = req + " --form \"patientId=" + patientId + "\"";
+    req = req + " --form \"filename=" + ctime + "\"";
 
     emit sendreq(req);
 
@@ -291,17 +289,18 @@ void imageInfo::uploadMarkedImage(QString filepath, int level, double f1, double
 }
 
 
-QString imageInfo::predictImageHttp(QString filepath){
+QString imageInfo::predictImageHttp(QString filepath, QString patientID){
     QFile afile(filepath);
     if (!afile.exists()){
         qDebug() << "The file doesn't exist";
         return "FILE NOT EXIST";
     }
     FILE *fp;
-    QString URL = urlbase["base2"] + urlbase["predict"];
-    QString req = "curl --location --request POST '" + URL + "'";
-    req = req + " --header 'X-Auth-Token: " + token.toUtf8() + "'";
-    req = req + " --form 'tumor_image=@" + filepath + "'";
+    QString URL = urlbase["base4"] + urlbase["predict"];
+    QString req = "curl --location --request POST \"" + URL + "\"";
+    req = req + " --header \"X-Auth-Token: " + token.toUtf8() + "\"";
+    req = req + " --form \"patientId=" + patientID + "\"";
+    req = req + " --form \"tumor_image=@" + filepath + "\"";
     char buffer[1024] = {0};
 
     qDebug() << req;
@@ -322,7 +321,23 @@ QString imageInfo::predictImageHttp(QString filepath){
     while(fgets(buffer, sizeof(buffer), fp) != NULL) {
         qDebug() << buffer;
     }
-    return "";
+    // handle the reply of server
+    QString result = buffer;
+    if (result == "no_tumor"){
+        return result;
+    }
+    else if (result == "glioma_tumor"){
+        return result;
+    }
+    else if (result == "meningioma_tumor"){
+        return result;
+    }
+    else if (result == "pituitary_tumor"){
+        return result;
+    }
+    else {
+        return "CONNECTION FAIL";
+    }
 }
 
 QVector<QString> imageInfo::getCtimeHttp(QString patientId){

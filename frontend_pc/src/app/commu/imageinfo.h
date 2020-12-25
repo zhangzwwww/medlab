@@ -84,7 +84,7 @@ public:
     // INPUT: Filepath
     // NORMAL OUTPUT: class of image
     // FAIL CASE: "FILE NOT EXIST"/"CONNECTION FAIL"
-    QString predictImageHttp(QString filepath);
+    QString predictImageHttp(QString filepath, QString patientID);
 
     // Get image ctimes given patientId
     // INPUT: patientId
