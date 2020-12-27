@@ -61,7 +61,7 @@ signals:
 public:
     // Define a struct for image mark
     struct imgMark{
-        QString patientId;
+        QString markId;
         QString imgId;
         int layer;
         int view;
@@ -69,6 +69,17 @@ public:
         double topY;
         double bottomX;
         double bottomY;
+
+        imgMark(QString mid, QString imgid, int l, int v, double tx, double ty, double bx, double by){
+            this->markId = mid;
+            this->imgId = imgid;
+            this->layer = l;
+            this->view = v;
+            this->topX = tx;
+            this->topY = ty;
+            this->bottomX = bx;
+            this->bottomY = by;
+        }
     };
 
     // constructor and destructor
@@ -91,7 +102,7 @@ public:
     // Upload a marked image data to the server
     // INPUT: folderpath containting meta file, 2 INT for image level and view type, 4 DOUBLEs for mark position
     // RETURN: return true if upload success
-    bool uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY);
+    int uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY);
 
     // Get all marked information
     // RETURN: a vector containing all marks

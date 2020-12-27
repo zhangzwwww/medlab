@@ -1,4 +1,5 @@
 #include "imageinfo.h"
+#include "../app/errorcode.h"
 
 
 // construct a progress window to show downloading progress
@@ -264,17 +265,16 @@ void imageInfo::uploadFile(QString req){
     pclose(fp);
 }
 
-bool imageInfo::uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY){
+int imageInfo::uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY){
     QDir dir(folderpath);
     QFile meta(dir.filePath("meta_data"));
     if (!meta.open(QIODevice::ReadOnly)){
         qDebug() << "The meta file doesn't exist";
-        return false;
+        return INVALID_FILEPATH;
     }
     QString content;
     // pass the first two lines
     content = meta.readLine();
-    QString patientId = content.remove("\r\n");
     content = meta.readLine();
     // read in image ids
     QVector<QString> img_ids;
@@ -285,13 +285,12 @@ bool imageInfo::uploadImgMark(QString folderpath, int level, int view, double to
     }
     if (level < 0 || level >= img_ids.size()){
         qDebug() << "image level out of range!";
-        return false;
+        return INVALID_LAYER;
     }
     QString img_id = img_ids[level];
     // construct body data
     QJsonObject json_content;
     QJsonDocument json_doc;
-    json_content.insert("id", patientId);
     json_content.insert("layer", level);
     json_content.insert("view", view);
     json_content.insert("topX", topX);
@@ -319,18 +318,66 @@ bool imageInfo::uploadImgMark(QString folderpath, int level, int view, double to
     if (status == 200){
         // normal case
         reply->deleteLater();
-        return true;
+        return SUCCESS;
     }
     else {
         // bad request
         qDebug() << "Request error";
         reply->deleteLater();
-        return false;
+        return REQUEST_FAIL;
     }
 }
 
-QVector<imageInfo::imgMark> getAllMarks(){
-
+QVector<imageInfo::imgMark> imageInfo::getAllMarks(){
+    // construct the url
+    QString url = urlbase["base2"] + urlbase["image"];
+    // construct the request
+    QNetworkRequest request;
+    request.setUrl(QUrl(url));
+    request.setRawHeader("X-Auth-Token", token.toUtf8());
+    // send request
+    QNetworkReply* reply = qnam.get(request);
+    // loop until get reply
+    QEventLoop eventloop;
+    connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
+    eventloop.exec();
+    // handle reply
+    int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
+    QVector<imageInfo::imgMark> result;
+    if (status == 200){
+        // normal case
+        QByteArray resp = reply->readAll();
+        QJsonParseError jerror;
+        QJsonDocument json = QJsonDocument::fromJson(resp, &jerror);
+        if (jerror.error == QJsonParseError::NoError && !json.isNull() && !json.isEmpty()){
+            // parse each mark info
+            QVariantList list = json.toVariant().toList();
+            for (int i = 0; i < list.count(); i++){
+                QVariantMap map = list[i].toMap();
+                result.push_back(imageInfo::imgMark(
+                        map["id"].toString(),
+                        map["imageId"].toString(),
+                        map["layer"].toInt(),
+                        map["view"].toInt(),
+                        map["topX"].toDouble(),
+                        map["topY"].toDouble(),
+                        map["bottomX"].toDouble(),
+                        map["bottomY"].toDouble())
+                        );
+            }
+        }
+        else {
+            qDebug() << "Json parsing error";
+            reply->deleteLater();
+            return result;
+        }
+        return result;
+    }
+    else {
+        qDebug() << "Connection error!";
+        reply->deleteLater();
+        return result;
+    }
 }
 
 QString imageInfo::predictImageHttp(QString filepath, QString patientID){
