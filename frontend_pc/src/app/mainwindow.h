@@ -201,17 +201,17 @@ private slots:
     vtkSmartPointer<vtkImageData> image_smoothing(vtkImageData* input_image, SmoothingParams params);
 
 
-    void on_pushButton_4_clicked();
+//    void on_pushButton_4_clicked();
 
-    void on_in_fusion_2_opacity_valueChanged(int value);
+//    void on_in_fusion_2_opacity_valueChanged(int value);
 
-    void on_pushButton_5_clicked();
+//    void on_pushButton_5_clicked();
 
-    void on_pushButton_7_clicked();
+//    void on_pushButton_7_clicked();
 
-    void on_pushButton_6_clicked();
+//    void on_pushButton_6_clicked();
 
-    void on_pushButton_clicked();
+//    void on_pushButton_clicked();
 
     void on_start_smoothing_button_clicked();
 
