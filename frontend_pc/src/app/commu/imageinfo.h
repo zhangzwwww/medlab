@@ -50,12 +50,41 @@ private:
 
 private slots:
     void downloadFile(QNetworkReply*);
-    // void uploadFile();
+    void uploadFile(QString);
     void cancelDownload();
     void httpFinished(QNetworkReply*);
     void httpReadyRead();
 
+signals:
+    void sendreq(QString);
+
 public:
+    // Define a struct for image mark
+    struct imgMark{
+        QString markId;
+        QString imgId;
+        int layer;
+        int view;
+        double topX;
+        double topY;
+        double bottomX;
+        double bottomY;
+
+        imgMark(QString mid, QString imgid, int l, int v, double tx, double ty, double bx, double by){
+            this->markId = mid;
+            this->imgId = imgid;
+            this->layer = l;
+            this->view = v;
+            this->topX = tx;
+            this->topY = ty;
+            this->bottomX = bx;
+            this->bottomY = by;
+        }
+
+        imgMark(){
+        }
+    };
+
     // constructor and destructor
     explicit imageInfo(QObject *parent = nullptr);
     ~imageInfo();
@@ -70,12 +99,30 @@ public:
     void getImagesHttp(QString patientID, QString ctime);
 
     // Upload image data to the server
-    // INPUT: patientId and ctime
+    // INPUT: patientId, ctime and Filepath
     void uploadImageHttp(QString patientId, QString ctime, QString filepath);
+
+    // Upload a marked image data to the server
+    // INPUT: folderpath containting meta file, 2 INT for image level and view type, 4 DOUBLEs for mark position
+    // RETURN: return true if upload success
+    int uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY);
+
+    // Get all marked information
+    // INPUT: folderpath containing meta file, INT for the index of image
+    // RETURN: a vector containing all marks
+    QVector<imgMark> getAllMarks(QString folderpath, int level);
+
+    // Upload image to sever and get prediction result
+    // INPUT: Filepath, PatientId
+    // NORMAL OUTPUT: class of image
+    // FAIL CASE: "FILE NOT EXIST"/"CONNECTION FAIL"
+    QString predictImageHttp(QString filepath, QString patientID);
 
     // Get image ctimes given patientId
     // INPUT: patientId
     QVector<QString> getCtimeHttp(QString patientId);
+
+
 };
 
 #endif // IMAGEINFO_H
