@@ -1683,6 +1683,7 @@ void MainWindow::on_action_upload_file_triggered()
     UploadFormParams params;
 //    params.communicator = communicator;
     params.user_info = user;
+    params.image_manager = &image_requester;
 //    params.patients = patients_;
     UploadForm upload_form(params, this);
     upload_form.exec();
@@ -1692,6 +1693,7 @@ void MainWindow::on_action_download_file_triggered()
 {
     DownloadFormParams params;
     params.user_info = user;
+    params.image_manager = &image_requester;
 //    params.patients = patients_;
     DownloadForm download_form(params, this);
     download_form.exec();
