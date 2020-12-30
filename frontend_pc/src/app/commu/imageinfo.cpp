@@ -287,6 +287,10 @@ int imageInfo::uploadImgMark(QString folderpath, int level, int view, double top
         qDebug() << "image level out of range!";
         return INVALID_LAYER;
     }
+    if (view < 0 || view >= 3){
+        qDebug() << "invalid view type!";
+        return INVALID_VIEW;
+    }
     QString img_id = img_ids[level];
     // construct body data
     QJsonObject json_content;
@@ -302,7 +306,7 @@ int imageInfo::uploadImgMark(QString folderpath, int level, int view, double top
     QByteArray data = json_doc.toJson(QJsonDocument::Compact);
     // construct request
     QNetworkRequest request;
-    QUrl url(urlbase["base2"] + urlbase["image"]);
+    QUrl url(urlbase["base2"] + urlbase["mark"]);
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
@@ -315,25 +319,53 @@ int imageInfo::uploadImgMark(QString folderpath, int level, int view, double top
 
     // handle the reply
     int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).value<int>();
-    if (status == 200){
+    if (status == 201){
         // normal case
         reply->deleteLater();
         return SUCCESS;
     }
     else {
         // bad request
-        qDebug() << "Request error";
+        qDebug() << "Request error: " << status << reply->readAll();
         reply->deleteLater();
         return REQUEST_FAIL;
     }
 }
 
-QVector<imageInfo::imgMark> imageInfo::getAllMarks(){
+QVector<imageInfo::imgMark> imageInfo::getAllMarks(QString folderpath, int layer){
+    // get the imageId first
+    QDir dir(folderpath);
+    QFile meta(dir.filePath("meta_data"));
+    if (!meta.open(QIODevice::ReadOnly)){
+        qDebug() << "The meta file doesn't exist!";
+        return QVector<imageInfo::imgMark>();
+    }
+    QString content;
+    // pass the first two lines
+    content = meta.readLine(); // patientId
+    content = meta.readLine(); // ctime
+    // read in image ids
+    QVector<QString> img_ids;
+    while(!meta.atEnd()){
+        content = meta.readLine();
+        content.remove("\r\n");
+        img_ids.push_back(content);
+    }
+    if (layer < 0 || layer >= img_ids.size()){
+        qDebug() << "image layer out of range!";
+        return QVector<imageInfo::imgMark>();
+    }
+    QString img_id = img_ids[layer];
+
     // construct the url
-    QString url = urlbase["base2"] + urlbase["image"];
+    QUrl url(urlbase["base2"] + urlbase["mark"]);
+    QUrlQuery query;
+    query.addQueryItem("imageId", img_id);
+    url.setQuery(query.query());
+
     // construct the request
     QNetworkRequest request;
-    request.setUrl(QUrl(url));
+    request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     // send request
     QNetworkReply* reply = qnam.get(request);

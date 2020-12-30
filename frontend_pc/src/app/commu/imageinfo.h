@@ -80,6 +80,9 @@ public:
             this->bottomX = bx;
             this->bottomY = by;
         }
+
+        imgMark(){
+        }
     };
 
     // constructor and destructor
@@ -105,8 +108,9 @@ public:
     int uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY);
 
     // Get all marked information
+    // INPUT: folderpath containing meta file, INT for the index of image
     // RETURN: a vector containing all marks
-    QVector<imgMark> getAllMarks();
+    QVector<imgMark> getAllMarks(QString folderpath, int level);
 
     // Upload image to sever and get prediction result
     // INPUT: Filepath, PatientId

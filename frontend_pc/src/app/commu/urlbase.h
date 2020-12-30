@@ -16,7 +16,8 @@ static QHash<QString, QString> urlbase{
     {"patient", "/v1/patient"},
     {"image", "/v1/image"},
     {"predict", "/v1/predict"},
-    {"database", "/v1/database"}
+    {"database", "/v1/database"},
+    {"mark", "/v1/image/mark"}
 };
 
 #endif // URLBASE_H

@@ -70,5 +70,23 @@ void testImage::test_case5(){
     // test upload image mark
     QString folderpath = "/Users/levius/Desktop/tempdata/123_2020-12-25";
     imageInfo image_requester;
-    image_requester.uploadImgMark(folderpath, 0, 0, 0.0, 0.0, 0.0, 0.0);
+    int result;
+//    result = image_requester.uploadImgMark(folderpath, 0, 0, 0.0, 0.0, 0.0, 0.0);
+//    QVERIFY(result == SUCCESS);
+    // test invalid cases
+    result = image_requester.uploadImgMark("", 0, 0, 0.0, 0.0, 0.0, 0.0);
+    QVERIFY(result == INVALID_FILEPATH);
+    result = image_requester.uploadImgMark(folderpath, 5, 2, 0.0, 0.0, 0.0, 0.0);
+    QVERIFY(result == INVALID_LAYER);
+    result = image_requester.uploadImgMark(folderpath, 0, 3, 0.0, 0.0, 0.0, 0.0);
+    QVERIFY(result == INVALID_VIEW);
+}
+
+void testImage::test_case6(){
+    // test get marks
+    QString folderpath = "/Users/levius/Desktop/tempdata/123_2020-12-25";
+    imageInfo image_requester;
+    QVector<imageInfo::imgMark>result = image_requester.getAllMarks(folderpath, 0);
+    QVERIFY(result.length() != 0);
+    qDebug() << result.length();
 }
