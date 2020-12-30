@@ -74,6 +74,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkPointPicker.h>
 #include <vtkImageCanvasSource2D.h>
 #include <vtkImageActor.h>
+#include <vtkSphereSource.h>
 
 //
 #include <vtkImageThreshold.h>

@@ -49,12 +49,71 @@ public:
         }
         if (ev == vtkCommand::RightButtonPressEvent)
         {
+            if (vector_displaypos[cur_view].size() > 1)
+            {
+                return;
+            }
+
             start_pos[0] = display_pos[0];
             start_pos[1] = display_pos[1];
             is_drawing = true;
-            for (int i = 0; i < 4; i++) {
-                this->view[cur_view]->GetRenderer()->AddActor(actors[i]);
+
+            auto render = this->view[cur_view]->GetRenderer();
+
+            interactor[cur_view]->GetPicker()->Pick(start_pos[0],
+                start_pos[1],
+                0,  // always zero.
+                render);
+
+            double picked[3];
+
+            //interactor[0]->GetPicker()->GetPickPosition(picked);
+
+            double start_position[3] = { double(start_pos[0]), double(start_pos[1]), 0.0 };
+
+            render->SetDisplayPoint(start_position);
+            render->DisplayToWorld();
+            render->GetWorldPoint(picked);
+
+            qDebug() << picked[0] << picked[1] << picked[2];
+
+            
+            //vector_picked[cur_view].push_back({picked[0], picked[1], picked[2]});
+            vector_displaypos[cur_view].push_back({ start_pos[0], start_pos[1]});
+
+            vtkSmartPointer<vtkSphereSource> sphereSource =
+                vtkSmartPointer<vtkSphereSource>::New();
+            sphereSource->Update();
+
+            vtkSmartPointer<vtkPolyDataMapper> mapper =
+                vtkSmartPointer<vtkPolyDataMapper>::New();
+            mapper->SetInputConnection(sphereSource->GetOutputPort());
+            vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+            actor->SetMapper(mapper);
+            actor->SetPosition(picked);
+            actor->SetScale(3);
+            actor->SetDragable(true);
+            actor->SetPickable(true);
+            
+            actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+            //this->Interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(actor);
+            //this->Interactor->GetRenderWindow()->GetRenderers()->GetNextRenderer()->AddActor(actor);
+            vtkActorCollection* actorCollection = render->GetActors();
+            int num = actorCollection->GetNumberOfItems();
+            actorCollection->InitTraversal();
+            //vtkActor* actortemp = actorCollection->GetNextActor();
+            for (int i = 0; i < num; ++i)
+            {
+                vtkActor* actortemp = actorCollection->GetNextActor();
+                //render->RemoveActor(actortemp);
             }
+            render->AddActor(actor);
+
+
+            //for (int i = 0; i < 4; i++) {
+            //    this->view[cur_view]->GetRenderer()->AddActor(actors[i]);
+            //    //actors[i]->GetProperty()-
+            //}
             qDebug()<<"cur view:"<<cur_view<<",cur index:"<<cur_slice<<
                                         ",start pos:("<<display_pos[0]<<","<<display_pos[1]<<")";
         } else if (ev == vtkCommand::MouseMoveEvent) {
@@ -65,18 +124,117 @@ public:
                                         ",end pos:("<<display_pos[0]<<","<<display_pos[1]<<")";
         } else if (ev == vtkCommand::RightButtonReleaseEvent) {
             is_drawing = false;
-            for (int i = 0; i < 4; i++) {
-                this->view[cur_view]->GetRenderer()->RemoveActor(actors[i]);
+            //for (int i = 0; i < 4; i++) {
+            //    this->view[cur_view]->GetRenderer()->RemoveActor(actors[i]);
+            //}
+
+            qDebug() << "release:" <<  vector_picked[cur_view].size();
+
+            auto render = this->view[cur_view]->GetRenderer();
+
+            vtkActorCollection* actorCollection = render->GetActors();
+            int num = actorCollection->GetNumberOfItems();
+            actorCollection->InitTraversal();
+            //vtkActor* actortemp = actorCollection->GetNextActor();
+            if (vector_displaypos[cur_view].size() == 2)
+            {
+                /*auto vct_picked_1 = vector_picked[cur_view].at(0);
+                double point1[3];
+                point1[0] = vct_picked_1.at(0); point1[1] = vct_picked_1.at(1); point1[2] = vct_picked_1.at(2);
+
+                auto vct_picked_2 = vector_picked[cur_view].at(1);
+                double point2[3];
+                point2[0] = vct_picked_2.at(0); point2[1] = vct_picked_2.at(1); point2[2] = vct_picked_2.at(2);*/
+
+                auto start_vec = vector_displaypos[cur_view].at(0);
+                double start[2];
+                start[0] = start_vec.at(0); start[1] = start_vec.at(1);
+
+                auto end_vec = vector_displaypos[cur_view].at(1);
+                double end[2];
+                end[0] = end_vec.at(0); end[1] = end_vec.at(1);
+
+
+                double point1[3];
+                double point2[3];
+                double point3[3];
+                double point4[3];
+
+                double left[2];
+                double right[2];
+
+                left[0] = start[0] <= end[0] ? start[0] : end[0];
+                left[1] = start[1] <= end[1] ? start[1] : end[1];
+
+                right[0] = start[0] > end[0] ? start[0] : end[0];
+                right[1] = start[1] > end[1] ? start[1] : end[1];
+
+                point1[0] = left[0];  point1[1] = left[1];  point1[2] = 0.0;
+                point2[0] = left[0];  point2[1] = right[1]; point2[2] = 0.0;
+                point3[0] = right[0]; point3[1] = right[1]; point3[2] = 0.0;
+                point4[0] = right[0]; point4[1] = left[1];  point4[2] = 0.0;
+
+                double p1_world[3]; 
+                double p2_world[3];
+                double p3_world[3];
+                double p4_world[3];
+
+
+                //for (int i = 0; i < 4; i++)
+                //GetScreentPos(point1, p1_world, cur_view);
+
+                GetScreentPos(point2, p2_world, cur_view);
+
+
+                //render->SetDisplayPoint(point3);
+                //render->DisplayToWorld();
+                //render->GetWorldPoint(p3_world);
+
+                //render->SetDisplayPoint(point4);
+                //render->DisplayToWorld();
+                //render->GetWorldPoint(p4_world);
+
+                qDebug() << p1_world[0] << p1_world[1] << p1_world[2];
+
+                qDebug() << p2_world[0] << p2_world[1] << p2_world[2];
+
+                
+
+                //auto actor = this->SetLine(p1_world, p2_world);
+
+                /*if (actor == nullptr)
+                {
+                    return;
+                }*/
+
+                /*vtkSmartPointer<vtkLineSource> line_source = vtkSmartPointer<vtkLineSource>::New();
+                line_source->SetPoint1(point1);
+                line_source->SetPoint2(point2);
+                line_source->Update();
+
+                vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+                mapper->SetInputConnection(line_source->GetOutputPort());
+                
+                vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+                actor->SetMapper(mapper);
+                actor->GetProperty()->SetLineWidth(2);
+                actor->GetProperty()->SetColor(0.0, 1.0, 0.0);*/
+                //render->AddActor(actor);
+                
             }
+
+            
             this->view[cur_view]->Render();
         }
         return;
     }
 
-    void SetLine(double start_point[], double end_point[], vtkSmartPointer<vtkActor> actor) {
+    vtkSmartPointer<vtkActor> SetLine(double start_point[], double end_point[]) 
+    {
         if (cur_view < 0 || cur_view > 2) {
-            return;
+            return nullptr;
         }
+
         vtkSmartPointer<vtkLineSource> line_source = vtkSmartPointer<vtkLineSource>::New();
         line_source->SetPoint1(start_point);
         line_source->SetPoint2(end_point);
@@ -84,49 +242,53 @@ public:
 
         vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         mapper->SetInputConnection(line_source->GetOutputPort());
+        
+        vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
         actor->GetProperty()->SetLineWidth(2);
-        actor->GetProperty()->SetColor(1.0,0.0,0.0);
+        actor->GetProperty()->SetColor(0.0,1.0,0.0);
+
+        return actor;
     }
 
     void DrawRect() {
-        if (cur_view < 0 || cur_view > 2) {
-            return;
-        }
-        double start_position[3] = {double(start_pos[0]), double(start_pos[1]), 0.0};
-        double end_position[3] = {double(end_pos[0]), double(end_pos[1]), 0.0};
+        //if (cur_view < 0 || cur_view > 2) {
+        //    return;
+        //}
+        //double start_position[3] = {double(start_pos[0]), double(start_pos[1]), 0.0};
+        //double end_position[3] = {double(end_pos[0]), double(end_pos[1]), 0.0};
 
-        double start[3];
-        double end[3];
-        GetScreentPos(start_position, start);
-        GetScreentPos(end_position, end);
-        qDebug() << "start pos:"<< start[0] << start[1] << start[2]<<",end pos:"<<end[0]<<end[1]<<end[2];
+        //double start[3];
+        //double end[3];
+        //GetScreentPos(start_position, start, cur_view);
+        //GetScreentPos(end_position, end, cur_view);
+        //qDebug() << "start pos:"<< start[0] << start[1] << start[2]<<",end pos:"<<end[0]<<end[1]<<end[2];
 
-        double point1[3];
-        double point2[3];
-        double point3[3];
-        double point4[3];
+        //double point1[3];
+        //double point2[3];
+        //double point3[3];
+        //double point4[3];
 
-        double left[2];
-        double right[2];
+        //double left[2];
+        //double right[2];
 
-        left[0] = start[0]<=end[0] ? start[0] : end[0];
-        left[1] = start[1]<=end[1] ? start[1] : end[1];
+        //left[0] = start[0]<=end[0] ? start[0] : end[0];
+        //left[1] = start[1]<=end[1] ? start[1] : end[1];
 
-        right[0] = start[0]>end[0] ? start[0] : end[0];
-        right[1] = start[1]>end[1] ? start[1] : end[1];
+        //right[0] = start[0]>end[0] ? start[0] : end[0];
+        //right[1] = start[1]>end[1] ? start[1] : end[1];
 
-        point1[0] = left[0];  point1[1] = left[1];  point1[2] = 0;
-        point2[0] = left[0];  point2[1] = right[1]; point2[2] = 0;
-        point3[0] = right[0]; point3[1] = right[1]; point3[2] = 0;
-        point4[0] = right[0]; point4[1] = left[1];  point4[2] = 0;
+        //point1[0] = left[0];  point1[1] = left[1];  point1[2] = 0;
+        //point2[0] = left[0];  point2[1] = right[1]; point2[2] = 0;
+        //point3[0] = right[0]; point3[1] = right[1]; point3[2] = 0;
+        //point4[0] = right[0]; point4[1] = left[1];  point4[2] = 0;
 
-        this->SetLine(point1,point2, actors[0]);
-        this->SetLine(point2,point3, actors[1]);
-        this->SetLine(point3,point4, actors[2]);
-        this->SetLine(point4,point1, actors[3]);
+        //this->SetLine(point1,point2, actors[0]);
+        //this->SetLine(point2,point3, actors[1]);
+        //this->SetLine(point3,point4, actors[2]);
+        //this->SetLine(point4,point1, actors[3]);
 
-        this->view[cur_view]->Render();
+        //this->view[cur_view]->Render();
     }
 
     void StartMark() {
@@ -137,18 +299,29 @@ public:
         is_marking = false;
     }
 
-    void GetScreentPos(double displayPos[3], double world[3])
+    void GetScreentPos(double displayPos[3], double world[3], int current_view)
     {
-      vtkSmartPointer<vtkRenderer> renderer = this->view[cur_view]->GetRenderer();
+      vtkSmartPointer<vtkRenderer> renderer = this->view[current_view]->GetRenderer();
         renderer->SetDisplayPoint(displayPos);
         renderer->DisplayToWorld();
         renderer->GetWorldPoint(world);
+
+        //interactor[current_view]->GetPicker()->Pick(displayPos[0],
+        //    displayPos[1],
+        //    0,  // always zero.
+        //    renderer);
+        //interactor[current_view]->GetPicker()->GetPickPosition(world);
+
     }
+
 
     vtkImageViewer2* view[3];
     vtkRenderWindowInteractor* interactor[3];
     vtkRenderer* render[3];
     vtkSmartPointer<vtkActor> actors[4];
+
+    vector<vector<double>> vector_picked[3];
+    vector<vector<int>> vector_displaypos[3];
     int cur_view;
     int cur_slice;
     int start_pos[2];
@@ -427,7 +600,7 @@ void MainWindow::show_image()
         riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, sharedWLcbk);
         riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::RightButtonPressEvent, point_picker_cbk);
         riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::RightButtonReleaseEvent, point_picker_cbk);
-        riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, point_picker_cbk);
+        //riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, point_picker_cbk);
 
     
     }

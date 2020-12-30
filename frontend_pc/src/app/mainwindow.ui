@@ -1020,7 +1020,7 @@ background-color: rgb(0, 0, 0);</string>
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view2"/>
+           <widget class="QVTKWidget" name="view2" native="true"/>
           </item>
          </layout>
         </widget>
@@ -1173,7 +1173,7 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view1">
+           <widget class="QVTKWidget" name="view1" native="true">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -1300,7 +1300,7 @@ background-color: rgb(0, 0, 0);
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1357,11 +1357,17 @@ background-color: rgb(0, 0, 0);
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>470</width>
-                <height>770</height>
+                <width>465</width>
+                <height>788</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
+               <property name="leftMargin">
+                <number>5</number>
+               </property>
+               <property name="rightMargin">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QGroupBox" name="groupBox_4">
                  <property name="title">
@@ -2034,11 +2040,17 @@ background-color: rgb(0, 0, 0);
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>470</width>
-                <height>750</height>
+                <width>469</width>
+                <height>727</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
+               <property name="leftMargin">
+                <number>5</number>
+               </property>
+               <property name="rightMargin">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QTabWidget" name="tabWidget_2">
                  <property name="sizePolicy">
@@ -2768,8 +2780,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>206</width>
-                <height>78</height>
+                <width>240</width>
+                <height>85</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2823,8 +2835,8 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>137</width>
-                <height>46</height>
+                <width>149</width>
+                <height>50</height>
                </rect>
               </property>
               <attribute name="label">
@@ -2861,7 +2873,7 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>445</width>
+                <width>457</width>
                 <height>70</height>
                </rect>
               </property>
@@ -3096,7 +3108,7 @@ background-color: rgb(0, 0, 0);
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view3"/>
+           <widget class="QVTKWidget" name="view3" native="true"/>
           </item>
          </layout>
         </widget>
@@ -3245,7 +3257,7 @@ border-style: solid;
            <number>0</number>
           </property>
           <item>
-           <widget class="QVTKWidget" name="view4"/>
+           <widget class="QVTKWidget" name="view4" native="true"/>
           </item>
          </layout>
         </widget>
