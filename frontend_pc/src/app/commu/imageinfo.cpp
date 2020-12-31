@@ -262,7 +262,7 @@ void imageInfo::uploadFile(QString req){
 
     fp = popen(req.toUtf8(), "r");
 #endif
-    pclose(fp);
+//    pclose(fp);
 }
 
 int imageInfo::uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY){

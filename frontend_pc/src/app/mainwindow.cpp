@@ -55,14 +55,16 @@ public:
             for (int i = 0; i < 4; i++) {
                 this->view[cur_view]->GetRenderer()->AddActor(actors[i]);
             }
-            qDebug()<<"cur view:"<<cur_view<<",cur index:"<<cur_slice<<
-                                        ",start pos:("<<display_pos[0]<<","<<display_pos[1]<<")";
+            qDebug()<<"cur view:"<<cur_view<<",cur index:"<<cur_slice
+                    <<",start pos:("<<start_pos[0]<<","<<start_pos[1]<<")"
+                    <<",end pos:("<<end_pos[0]<<","<<end_pos[1]<<")";
         } else if (ev == vtkCommand::MouseMoveEvent) {
             end_pos[0] = display_pos[0];
             end_pos[1] = display_pos[1];
             DrawRect();
-            qDebug()<<"cur view:"<<cur_view<<",cur index:"<<cur_slice<<
-                                        ",end pos:("<<display_pos[0]<<","<<display_pos[1]<<")";
+            qDebug()<<"cur view:"<<cur_view<<",cur index:"<<cur_slice
+                    <<",start pos:("<<start_pos[0]<<","<<start_pos[1]<<")"
+                    <<",end pos:("<<end_pos[0]<<","<<end_pos[1]<<")";
         } else if (ev == vtkCommand::RightButtonReleaseEvent) {
             is_drawing = false;
             for (int i = 0; i < 4; i++) {
@@ -100,7 +102,7 @@ public:
         double end[3];
         GetScreentPos(start_position, start);
         GetScreentPos(end_position, end);
-        qDebug() << "start pos:"<< start[0] << start[1] << start[2]<<",end pos:"<<end[0]<<end[1]<<end[2];
+        qDebug() << "[world] start pos:"<< start[0] << start[1] << start[2]<<",end pos:"<<end[0]<<end[1]<<end[2];
 
         double point1[3];
         double point2[3];
