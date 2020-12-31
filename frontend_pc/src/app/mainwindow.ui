@@ -797,11 +797,19 @@ QFrame[width=&quot;3&quot;] {
 /* Tab组件 */
 QTabWidget {
     padding: 2px;
-    selection-background-color: #32414B;
+    selection-background-color: rgb(28, 151, 234);
+	selection-color: rgb(28, 151, 234);
 }
 
 QTabWidget QFrame{
     border: 0;
+}
+
+QTabWidget:selected {
+    background-color: rgb(28, 151, 234);
+	selection-color: rgb(28, 151, 234);
+	selection-background-color: rgb(28, 151, 234);
+    border: 1px solid #1464A0;
 }
 
 QTabWidget::pane {
@@ -812,7 +820,8 @@ QTabWidget::pane {
 }
 
 QTabWidget::pane:selected {
-    background-color: #32414B;
+    background-color: rgb(28, 151, 234);
+	selection-background-color: rgb(28, 151, 234);
     border: 1px solid #1464A0;
 }
 
@@ -1289,7 +1298,7 @@ background-color: rgb(0, 0, 0);
       </property>
       <property name="minimumSize">
        <size>
-        <width>500</width>
+        <width>520</width>
         <height>0</height>
        </size>
       </property>
@@ -1300,7 +1309,7 @@ background-color: rgb(0, 0, 0);
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1357,7 +1366,7 @@ background-color: rgb(0, 0, 0);
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>465</width>
+                <width>476</width>
                 <height>788</height>
                </rect>
               </property>
@@ -2040,7 +2049,7 @@ background-color: rgb(0, 0, 0);
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>469</width>
+                <width>476</width>
                 <height>727</height>
                </rect>
               </property>
@@ -2708,6 +2717,276 @@ background-color: rgb(0, 0, 0);
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_segmentation">
+       <attribute name="icon">
+        <iconset resource="mainwindow.qrc">
+         <normaloff>:/icon/resources/icon/segmentation.png</normaloff>:/icon/resources/icon/segmentation.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Segmentation</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_31">
+        <item>
+         <widget class="QScrollArea" name="scrollArea_3">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="parentWidget_2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>492</width>
+             <height>721</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_21">
+            <item>
+             <widget class="QGroupBox" name="groupBox_7">
+              <property name="title">
+               <string>Image Selection</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_20">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>20</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QWidget" name="widget_10" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_7">
+                  <property name="spacing">
+                   <number>7</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>2</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>2</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_segimage">
+                    <property name="text">
+                     <string>Greyscale image</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="seg_image_selector"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="widget_18" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_22">
+                  <property name="leftMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>2</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>2</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_fixedname_4">
+                    <property name="text">
+                     <string>Result image name </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="RegNameLineEdit_2">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Segmentation</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox">
+              <property name="title">
+               <string>Algorithm Parameters</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>20</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QWidget" name="widget_12" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <property name="leftMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>2</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>2</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_31">
+                    <property name="text">
+                     <string>lower_value</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                    <property name="minimum">
+                     <double>-3000.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>3000.000000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>-1000.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="widget_19" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_12">
+                  <property name="leftMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>2</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>8</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>2</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_32">
+                    <property name="text">
+                     <string>upper_value</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+                    <property name="minimum">
+                     <double>-3000.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>3000.000000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>-400.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="add_seed_btn">
+              <property name="text">
+               <string>Add Seeds</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QProgressBar" name="registration_progressBar_2">
+              <property name="value">
+               <number>0</number>
+              </property>
+              <property name="textVisible">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>10</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="start_segmentation_btn">
+              <property name="text">
+               <string>Start Segmentation</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_processing">
        <attribute name="icon">
         <iconset resource="mainwindow.qrc">
@@ -2873,7 +3152,7 @@ background-color: rgb(45, 45, 48);</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>457</width>
+                <width>468</width>
                 <height>70</height>
                </rect>
               </property>
