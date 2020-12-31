@@ -7,6 +7,5 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # 添加子目录
 add_subdirectory(registration)
 add_subdirectory(voxel2mesh)
-#add_subdirectory(general_processing)
-#add_subdirectory(segmentation)
+add_subdirectory(segmentation)
 
