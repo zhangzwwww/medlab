@@ -1309,7 +1309,7 @@ background-color: rgb(0, 0, 0);
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -2163,18 +2163,18 @@ background-color: rgb(0, 0, 0);
                           </widget>
                          </item>
                          <item>
-                          <widget class="QSpinBox" name="isovalueSpinBox">
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
+                          <widget class="QDoubleSpinBox" name="isovalueSpinBox">
                            <property name="minimum">
-                            <number>-3000</number>
+                            <double>-3000.000000000000000</double>
                            </property>
                            <property name="maximum">
-                            <number>3000</number>
+                            <double>3000.000000000000000</double>
+                           </property>
+                           <property name="singleStep">
+                            <double>1.000000000000000</double>
                            </property>
                            <property name="value">
-                            <number>-450</number>
+                            <double>-450.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -2249,13 +2249,6 @@ background-color: rgb(0, 0, 0);
                      </property>
                     </widget>
                    </item>
-                   <item>
-                    <widget class="QPushButton" name="voxel2meshBtn">
-                     <property name="text">
-                      <string>Generate surface</string>
-                     </property>
-                    </widget>
-                   </item>
                   </layout>
                  </widget>
                 </widget>
@@ -2279,6 +2272,13 @@ background-color: rgb(0, 0, 0);
                    <number>0</number>
                   </property>
                  </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="voxel2meshBtn">
+                 <property name="text">
+                  <string>Generate surface</string>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -2813,7 +2813,7 @@ background-color: rgb(0, 0, 0);
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="RegNameLineEdit_2">
+                   <widget class="QLineEdit" name="seg_result_name">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2872,7 +2872,7 @@ background-color: rgb(0, 0, 0);
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                   <widget class="QDoubleSpinBox" name="lower_value_seg">
                     <property name="minimum">
                      <double>-3000.000000000000000</double>
                     </property>
@@ -2910,7 +2910,7 @@ background-color: rgb(0, 0, 0);
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+                   <widget class="QDoubleSpinBox" name="upper_value_seg">
                     <property name="minimum">
                      <double>-3000.000000000000000</double>
                     </property>
@@ -2936,7 +2936,7 @@ background-color: rgb(0, 0, 0);
              </widget>
             </item>
             <item>
-             <widget class="QProgressBar" name="registration_progressBar_2">
+             <widget class="QProgressBar" name="segmentation_progressBar">
               <property name="value">
                <number>0</number>
               </property>
@@ -3628,7 +3628,7 @@ border-style: solid;
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="movable">
        <bool>false</bool>

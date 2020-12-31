@@ -9,7 +9,7 @@
 #include <vtkImageGaussianSmooth.h>
 #include <vtkSmoothPolyDataFilter.h>
 #include <vtkPolyDataNormals.h>
-
+#include <vtkImageChangeInformation.h>
 
 Voxel2Mesh::Voxel2Mesh()
     : m_UseMedian(false),
@@ -87,13 +87,13 @@ void Voxel2Mesh::Update()
 		vtkSmartPointer<vtkPolyData>::New();
 	polydata = marchingCubesFilter->GetOutput();
 
-	vtkSmartPointer<vtkPolyDataConnectivityFilter> confilter =
-		vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
-	confilter->SetInputData(polydata);
-	confilter->SetExtractionModeToLargestRegion();
-	confilter->Update();
+	//vtkSmartPointer<vtkPolyDataConnectivityFilter> confilter =
+	//	vtkSmartPointer<vtkPolyDataConnectivityFilter>::New();
+	//confilter->SetInputData(polydata);
+	//confilter->SetExtractionModeToLargestRegion();
+	//confilter->Update();
 
-	polydata = confilter->GetOutput();
+	//polydata = confilter->GetOutput();
 
 	if (m_UsePolygonSmoothing)
 	{

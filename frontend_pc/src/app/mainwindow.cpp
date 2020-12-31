@@ -473,6 +473,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->startFusionButton, SIGNAL(clicked()), this, SLOT(start_fusion()));
     connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
     connect(ui->opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(slidervalueChanged(int)));
+    connect(ui->start_segmentation_btn, SIGNAL(clicked()), this, SLOT(start_segmentation()));
 
     connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
     connect(ui->clear_manager_btn, SIGNAL(clicked()), this, SLOT(clear_manager()));
@@ -1258,6 +1259,164 @@ void MainWindow::slidervalueChanged(int pos) {
     ui->opacity1label->setText("  Image 1:  " + QString::number(factor1));
 }
 
+void MainWindow::start_segmentation()
+{
+    if (ui->seg_image_selector->count() == 0)
+    {
+        setMandatoryField(ui->seg_image_selector, true);
+
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    SegmentationWorker segmentation_worker;
+
+    QString current_name = ui->seg_image_selector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_)
+    {
+        for (ImageDataItem& item : vec)
+        {
+            if (current_name == item.image_name)
+            {
+                if (item.image_data == nullptr)
+                {
+                    setMandatoryField(ui->seg_image_selector, true);
+
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+
+                }
+                else {
+                    setMandatoryField(ui->seg_image_selector, false);
+
+                    ui->start_segmentation_btn->setVisible(false);
+                    ui->segmentation_progressBar->setVisible(true);
+                    ui->segmentation_progressBar->setValue(25);
+
+                    using VTK2ITKType = itk::VTKImageToImageFilter<RegistrationWorker::FixedImageType>;
+                    VTK2ITKType::Pointer vtk2itk_filter = VTK2ITKType::New();
+                    vtk2itk_filter->SetInput(item.image_data);
+
+                    try
+                    {
+                        vtk2itk_filter->Update();
+                    }
+                    catch (itk::ExceptionObject& error)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr(error.GetDescription()),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
+                    SegmentationWorker::IndexType seed1;
+                    seed1[0] = 369;
+                    seed1[1] = 317;
+                    seed1[2] = 93;
+
+                    SegmentationWorker::IndexType seed2;
+                    seed2[0] = 403;
+                    seed2[1] = 236;
+                    seed2[2] = 78;
+
+                    SegmentationWorker::IndexType seed3;
+                    seed3[0] = 404;
+                    seed3[1] = 236;
+                    seed3[2] = 66;
+
+                    SegmentationWorker::IndexType seed4;
+                    seed4[0] = 125;
+                    seed4[1] = 236;
+                    seed4[2] = 71;
+
+                    SegmentationWorker::IndexType seed5;
+                    seed5[0] = 128;
+                    seed5[1] = 268;
+                    seed5[2] = 69;
+
+                    SegmentationWorker::IndexType seed6;
+                    seed6[0] = 146;
+                    seed6[1] = 264;
+                    seed6[2] = 93;
+
+
+                    std::vector<SegmentationWorker::IndexType> vecseed{ seed1, seed2, seed3, seed4, seed5, seed6 };
+
+                    segmentation_worker.set_lower_value(ui->lower_value_seg->value());
+                    segmentation_worker.set_upper_value(ui->upper_value_seg->value());
+
+                    segmentation_worker.set_input_image(vtk2itk_filter->GetOutput());
+                    segmentation_worker.set_seeds(vecseed);
+
+                    ui->segmentation_progressBar->setValue(50);
+
+                    segmentation_worker.update();
+                    auto result_image_itk = segmentation_worker.get_output_image();
+                    ui->segmentation_progressBar->setValue(75);
+
+                    if (result_image_itk != nullptr)
+                    {
+                        // cast itk image to vtk image
+                        using FilterType = itk::ImageToVTKImageFilter<RegistrationWorker::FixedImageType>;
+                        FilterType::Pointer filter = FilterType::New();
+                        filter->SetInput(result_image_itk);
+
+                        try
+                        {
+                            filter->Update();
+                        }
+                        catch (itk::ExceptionObject& error)
+                        {
+                            QMessageBox::warning(nullptr,
+                                tr("Error"),
+                                tr(error.GetDescription()),
+                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                            return;
+                        }
+
+                        vtkSmartPointer<vtkImageData> result_image_vtk = filter->GetOutput();
+
+                        vtk_image_collection_.push_back(result_image_vtk);
+                        itk_image_collection_.push_back(result_image_itk);
+
+                        QString item_name = ui->seg_result_name->text() + "_" + current_name;
+                        for (vector<ImageDataItem>& vec : image_tree_) {
+                            for (ImageDataItem& item : vec) {
+                                if (item_name == item.image_name) {
+                                    item_name = "(1)" + item_name;
+                                }
+                            }
+                        }
+                        ImageDataItem image_item;
+                        image_item.image_name = QString(item_name);
+                        image_item.image_data = result_image_vtk;
+
+                        vec.push_back(image_item);
+
+                        this->update_data_manager();
+
+                    }
+
+                    ui->start_segmentation_btn->setVisible(true);
+                    ui->segmentation_progressBar->setVisible(false);
+
+                    break;
+                }
+            }
+        }
+    }
+
+
+}
+
 
 void MainWindow::generate_surface()
 {
@@ -1801,6 +1960,7 @@ void MainWindow::update_data_manager() {
     ui->smooth_selector->clear();
     ui->edge_selector->clear();
     ui->thre_selector->clear();
+    ui->seg_image_selector->clear();
 
     for (vector<ImageDataItem> &vec: image_tree_)
     {
@@ -1815,6 +1975,7 @@ void MainWindow::update_data_manager() {
             ui->smooth_selector->addItem(item.image_name);
             ui->edge_selector->addItem(item.image_name);
             ui->thre_selector->addItem(item.image_name);
+            ui->seg_image_selector->addItem(item.image_name);
         }
     }
 }
@@ -1874,6 +2035,7 @@ void MainWindow::clear_manager()
     ui->smooth_selector->clear();
     ui->edge_selector->clear();
     ui->thre_selector->clear();
+    ui->seg_image_selector->clear();
 
     this->ui->view1->hide();
     this->ui->view2->hide();

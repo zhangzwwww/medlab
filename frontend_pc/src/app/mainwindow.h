@@ -109,6 +109,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "struct_define.h"
 #include "registration/registration_worker.h"
 #include "voxel2mesh/voxel2mesh.h"
+#include "segmentation/segmentation_worker.h"
 #endif
 
 #ifdef Q_OS_WIN32   // Define on windows system
@@ -123,6 +124,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "struct_define.h"
 #include "registration_worker.h"
 #include "voxel2mesh.h"
+#include "segmentation_worker.h"
 #endif
 
 using std::vector;
@@ -196,6 +198,7 @@ private slots:
     void clean_actors();
     void clear_manager();
     void slidervalueChanged(int pos);
+    void start_segmentation();
 
     vtkSmartPointer<vtkImageData> image_detect_edge(vtkImageData* input_image);
     vtkSmartPointer<vtkImageData> image_threshold(vtkImageData* input_image, ThresholdingParams params);
