@@ -6,6 +6,7 @@
 #include <vtkInteractorStyleRubberBand2D.h>
 #include <vtkLineSource.h>
 #include <vtkCoordinate.h>
+#include <vtkSphereSource.h>
 
 class vtkPointPickerCallback : public vtkCommand
 {
@@ -102,6 +103,8 @@ public:
         double end[3];
         GetScreentPos(start_position, start);
         GetScreentPos(end_position, end);
+        DrawPoint(start);
+        DrawPoint(end);
         qDebug() << "[world] start pos:"<< start[0] << start[1] << start[2]<<",end pos:"<<end[0]<<end[1]<<end[2];
 
         double point1[3];
@@ -141,10 +144,32 @@ public:
 
     void GetScreentPos(double displayPos[3], double world[3])
     {
-      vtkSmartPointer<vtkRenderer> renderer = this->view[cur_view]->GetRenderer();
-        renderer->SetDisplayPoint(displayPos);
-        renderer->DisplayToWorld();
-        renderer->GetWorldPoint(world);
+//      vtkSmartPointer<vtkRenderer> renderer = this->view[cur_view]->GetRenderer();
+//        renderer->SetDisplayPoint(displayPos);
+//        renderer->DisplayToWorld();
+//        renderer->GetWorldPoint(world);
+        vtkSmartPointer<vtkCoordinate> pCoorPress = vtkSmartPointer<vtkCoordinate>::New();
+        pCoorPress->SetCoordinateSystemToDisplay();
+        pCoorPress->SetValue(displayPos);
+        world = pCoorPress->GetComputedWorldValue(this->view[cur_view]->GetRenderer());
+    }
+
+    void DrawPoint(double pos[3]) {
+        vtkSmartPointer<vtkSphereSource> sphere_source =
+            vtkSmartPointer<vtkSphereSource>::New();
+        sphere_source->Update();
+
+        vtkSmartPointer<vtkPolyDataMapper> mapper =
+            vtkSmartPointer<vtkPolyDataMapper>::New();
+        mapper->SetInputConnection(sphere_source->GetOutputPort());
+        vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+        actor->SetMapper(mapper);
+        actor->SetPosition(pos);
+        actor->SetScale(3);
+        actor->SetDragable(true);
+        actor->SetPickable(true);
+        actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+        this->view[cur_view]->GetRenderer()->AddActor(actor);
     }
 
     vtkImageViewer2* view[3];
@@ -1711,16 +1736,16 @@ void MainWindow::on_patientSelector_currentTextChanged(const QString &arg1)
 {
     qDebug()<<"patient selected: "<<arg1;
     image_requester.setToken(user._token());
-    QVector<QString> image_names = image_requester.getCtimeHttp(arg1);
     ui->patientImageSelector->clear();
-    for (QString &name: image_names) {
-        ui->patientImageSelector->addItem(name);
-    }
     int cur_patient_index = ui->patientSelector->currentIndex();
     if (cur_patient_index < 0 || cur_patient_index >= patients_.size()) {
         return;
     }
     auto pat = patients_[cur_patient_index];
+    QVector<QString> image_names = image_requester.getCtimeHttp(pat._id());
+    for (QString &name: image_names) {
+        ui->patientImageSelector->addItem(name);
+    }
     ui->patientGenderLabel->setText(pat._age()?"Female":"Male");
     ui->patientBirthLabel->setText(pat._birth());
     ui->patientAgeLabel->setText(QString::number(pat._age()));
