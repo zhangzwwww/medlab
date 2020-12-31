@@ -37,14 +37,15 @@ DownloadForm::DownloadForm(DownloadFormParams &params, QWidget *parent) :
     ui->setupUi(this);
     user_info_ = params.user_info;
     patients_ = params.patients;
-    image_manager_.setToken(user_info_._token());
+    image_manager_ = params.image_manager;
+    image_manager_->setToken(user_info_._token());
     if (patients_.empty()) {
-        patient pat;
-        pat.set_token(user_info_._token());
-        patients_ = pat.http_get_all_patient(&communicator_);
+        patient::set_token(user_info_._token());
+        patients_ = patient::http_get_all_patient(&communicator_);
     }
     for (patient &pat: patients_) {
-        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+//        ui->patientIDSelector->addItem(QString("[%1]%2").arg(pat._name()).arg(pat._id()));
+        ui->patientIDSelector->addItem(pat._name());
     }
 }
 
@@ -82,8 +83,8 @@ void DownloadForm::on_downloadFileBtn_clicked()
         QMessageBox::warning(this, "w", "Invalid ctime!", QMessageBox::Yes);
         return;
     }
-    image_manager_.setFilePath(file_path);
-    image_manager_.getImagesHttp(patient_id, ctime);
+    image_manager_->setFilePath(file_path);
+    image_manager_->getImagesHttp(patient_id, ctime);
 //    DownloadFileParams params;
 //    params.save_path = ui->filePathEdit->text().toStdString();
 //    params.patient_id = ui->patientIDSelector->currentText().toStdString();
@@ -98,11 +99,11 @@ void DownloadForm::on_patientIDSelector_currentIndexChanged(int index)
     if (index >= patients_.size()) {
         return;
     }
-    QVector<QString> image_names = image_manager_.getCtimeHttp(patients_[index]._id());
+    ui->imageNameSelector->clear();
+    QVector<QString> image_names = image_manager_->getCtimeHttp(patients_[index]._id());
     if (image_names.isEmpty()) {
         return;
     }
-    ui->imageNameSelector->clear();
     for (QString &name:image_names) {
         ui->imageNameSelector->addItem(name);
     }

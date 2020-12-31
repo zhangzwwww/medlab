@@ -16,7 +16,6 @@ LoginForm::LoginForm(communhttp *commu, userinfo *user_info, QWidget *parent) :
     ui->pwd_input->setPlaceholderText("password");
     ui->id_input->setFocus();
 //    hide forget pwd button
-    ui->retrive_button->hide();
 
     // initialize communication object
     this->user = user_info;
@@ -36,14 +35,14 @@ void LoginForm::on_sign_in_button_clicked()
     if (ret == OK) {
         accept();
     } else if (ret == PARAM_INVALID) {
-        QMessageBox::warning(this, tr("w"), tr("Wrong ID or Password"), QMessageBox::Yes);
+        QMessageBox::warning(this, tr("Warning"), tr("Wrong ID or Password"), QMessageBox::Yes);
 
         ui->id_input->clear();
         ui->pwd_input->clear();
 
         ui->id_input->setFocus();
     } else if (ret == LOGIN_ERROR_PWD) {
-        QMessageBox::warning(this, tr("1"), tr("Wrong ID or Password"), QMessageBox::Yes);
+        QMessageBox::warning(this, tr("Error"), tr("Wrong ID or Password"), QMessageBox::Yes);
 
         ui->pwd_input->clear();
         ui->pwd_input->setFocus();
@@ -89,9 +88,3 @@ void LoginForm::on_sign_up_button_clicked()
 //    }
 }
 
-void LoginForm::on_retrive_button_clicked()
-{
-    qDebug("TODO: find my password back");
-    QString id = ui->id_input->text();
-    login_checker.RetrievePwd(id);
-}

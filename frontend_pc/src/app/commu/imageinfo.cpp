@@ -162,7 +162,7 @@ void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepa
         qDebug() << "The file doesn't exist";
         return;
     }
-    QString URL = urlbase["base3"] + urlbase["image"];
+    QString URL = urlbase["base2"] + urlbase["image"];
     QString req = "curl --location --request POST \"" + URL + "\"";
     req = req + " --header \"X-Auth-Token: " + token.toUtf8() + "\"";
     req = req + " --form \"uploaded_file=@" + filepath + "\"";
@@ -262,7 +262,7 @@ void imageInfo::uploadFile(QString req){
 
     fp = popen(req.toUtf8(), "r");
 #endif
-    pclose(fp);
+//    pclose(fp);
 }
 
 int imageInfo::uploadImgMark(QString folderpath, int level, int view, double topX, double topY, double bottomX, double bottomY){

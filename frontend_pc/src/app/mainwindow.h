@@ -71,6 +71,9 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "vtkImageGaussianSmooth.h"
 #include "vtkImageMedian3D.h"
 #include "vtkImageConvolve.h"
+#include <vtkPointPicker.h>
+#include <vtkImageCanvasSource2D.h>
+#include <vtkImageActor.h>
 
 //
 #include <vtkImageThreshold.h>
@@ -132,6 +135,7 @@ class vtkActor;
 
 struct ImageDataItem {
     QString image_name;
+    QString image_path;
     vtkSmartPointer<vtkImageData> image_data;
 };
 
@@ -197,17 +201,17 @@ private slots:
     vtkSmartPointer<vtkImageData> image_smoothing(vtkImageData* input_image, SmoothingParams params);
 
 
-    void on_pushButton_4_clicked();
+//    void on_pushButton_4_clicked();
 
-    void on_in_fusion_2_opacity_valueChanged(int value);
+//    void on_in_fusion_2_opacity_valueChanged(int value);
 
-    void on_pushButton_5_clicked();
+//    void on_pushButton_5_clicked();
 
-    void on_pushButton_7_clicked();
+//    void on_pushButton_7_clicked();
 
-    void on_pushButton_6_clicked();
+//    void on_pushButton_6_clicked();
 
-    void on_pushButton_clicked();
+//    void on_pushButton_clicked();
 
     void on_start_smoothing_button_clicked();
 
