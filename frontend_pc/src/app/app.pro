@@ -34,6 +34,8 @@ SOURCES += \
         load/download_form.cpp \
         load/upload_form.cpp \
         login/signup_form.cpp \
+    predict/predict_form.cpp \
+    segmentation/segmentation_worker.cpp \
         utils/general_util.cpp \
         login/loginchecker.cpp \
         login/loginform.cpp \
@@ -53,6 +55,8 @@ HEADERS += \
         load/download_form.h \
         load/upload_form.h \
         login/signup_form.h \
+        predict/predict_form.h \
+        segmentation/segmentation_worker.h \
         utils/general_util.h \
         login/loginchecker.h \
         login/loginform.h \
@@ -72,7 +76,8 @@ FORMS += \
         load/upload_form.ui \
         login/loginform.ui \
         login/signup_form.ui \
-        mainwindow.ui
+        mainwindow.ui \
+        predict/predict_form.ui
 
 INCLUDEPATH += /usr/local/include \
            /usr/local/include/vtk-8.2 \

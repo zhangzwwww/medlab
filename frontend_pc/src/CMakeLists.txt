@@ -42,6 +42,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/app
   ${PROJECT_SOURCE_DIR}/app/registration
   ${PROJECT_SOURCE_DIR}/app/voxel2mesh
+  ${PROJECT_SOURCE_DIR}/app/segmentation
   ${PROJECT_SOURCE_DIR}/app/commu
   ${PROJECT_SOURCE_DIR}/app/login
   ${PROJECT_SOURCE_DIR}/app/utils
@@ -95,6 +96,7 @@ target_link_libraries(MEDLAB
                       ${ITK_LIBRARIES}
                       registration
                       voxel2mesh
+                      segmentation
                       Qt5::Widgets
                       Qt5::Network)
 

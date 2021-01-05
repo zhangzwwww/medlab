@@ -74,6 +74,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkPointPicker.h>
 #include <vtkImageCanvasSource2D.h>
 #include <vtkImageActor.h>
+#include <vtkSphereSource.h>
 
 //
 #include <vtkImageThreshold.h>
@@ -108,6 +109,8 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "struct_define.h"
 #include "registration/registration_worker.h"
 #include "voxel2mesh/voxel2mesh.h"
+#include "segmentation/segmentation_worker.h"
+#include "predict/predict_form.h"
 #endif
 
 #ifdef Q_OS_WIN32   // Define on windows system
@@ -122,6 +125,8 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "struct_define.h"
 #include "registration_worker.h"
 #include "voxel2mesh.h"
+#include "segmentation_worker.h"
+#include "predict/predict_form.h"
 #endif
 
 using std::vector;
@@ -195,6 +200,7 @@ private slots:
     void clean_actors();
     void clear_manager();
     void slidervalueChanged(int pos);
+    void start_segmentation();
 
     vtkSmartPointer<vtkImageData> image_detect_edge(vtkImageData* input_image);
     vtkSmartPointer<vtkImageData> image_threshold(vtkImageData* input_image, ThresholdingParams params);
@@ -229,6 +235,8 @@ private slots:
     void on_action_download_file_triggered();
 
     void on_patientSelector_currentTextChanged(const QString &arg1);
+
+    void on_action_predict_triggered();
 
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];

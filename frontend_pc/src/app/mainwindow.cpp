@@ -50,15 +50,73 @@ public:
         }
         if (ev == vtkCommand::RightButtonPressEvent)
         {
+            if (vector_displaypos[cur_view].size() > 1)
+            {
+                return;
+            }
+
             start_pos[0] = display_pos[0];
             start_pos[1] = display_pos[1];
             is_drawing = true;
-            for (int i = 0; i < 4; i++) {
-                this->view[cur_view]->GetRenderer()->AddActor(actors[i]);
+
+            auto render = this->view[cur_view]->GetRenderer();
+
+            interactor[cur_view]->GetPicker()->Pick(start_pos[0],
+                start_pos[1],
+                0,  // always zero.
+                render);
+
+            double picked[3];
+
+            //interactor[0]->GetPicker()->GetPickPosition(picked);
+
+            double start_position[3] = { double(start_pos[0]), double(start_pos[1]), 0.0 };
+
+            render->SetDisplayPoint(start_position);
+            render->DisplayToWorld();
+            render->GetWorldPoint(picked);
+
+            qDebug() << picked[0] << picked[1] << picked[2];
+
+            
+            //vector_picked[cur_view].push_back({picked[0], picked[1], picked[2]});
+            vector_displaypos[cur_view].push_back({ start_pos[0], start_pos[1]});
+
+            vtkSmartPointer<vtkSphereSource> sphereSource =
+                vtkSmartPointer<vtkSphereSource>::New();
+            sphereSource->Update();
+
+            vtkSmartPointer<vtkPolyDataMapper> mapper =
+                vtkSmartPointer<vtkPolyDataMapper>::New();
+            mapper->SetInputConnection(sphereSource->GetOutputPort());
+            vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+            actor->SetMapper(mapper);
+            actor->SetPosition(picked);
+            actor->SetScale(3);
+            actor->SetDragable(true);
+            actor->SetPickable(true);
+            
+            actor->GetProperty()->SetColor(0.0, 1.0, 0.0);
+            //this->Interactor->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->AddActor(actor);
+            //this->Interactor->GetRenderWindow()->GetRenderers()->GetNextRenderer()->AddActor(actor);
+            vtkActorCollection* actorCollection = render->GetActors();
+            int num = actorCollection->GetNumberOfItems();
+            actorCollection->InitTraversal();
+            //vtkActor* actortemp = actorCollection->GetNextActor();
+            for (int i = 0; i < num; ++i)
+            {
+                vtkActor* actortemp = actorCollection->GetNextActor();
+                //render->RemoveActor(actortemp);
             }
-            qDebug()<<"cur view:"<<cur_view<<",cur index:"<<cur_slice
-                    <<",start pos:("<<start_pos[0]<<","<<start_pos[1]<<")"
-                    <<",end pos:("<<end_pos[0]<<","<<end_pos[1]<<")";
+            render->AddActor(actor);
+
+
+            //for (int i = 0; i < 4; i++) {
+            //    this->view[cur_view]->GetRenderer()->AddActor(actors[i]);
+            //    //actors[i]->GetProperty()-
+            //}
+            qDebug()<<"cur view:"<<cur_view<<",cur index:"<<cur_slice<<
+                                        ",start pos:("<<display_pos[0]<<","<<display_pos[1]<<")";
         } else if (ev == vtkCommand::MouseMoveEvent) {
             end_pos[0] = display_pos[0];
             end_pos[1] = display_pos[1];
@@ -68,18 +126,163 @@ public:
                     <<",end pos:("<<end_pos[0]<<","<<end_pos[1]<<")";
         } else if (ev == vtkCommand::RightButtonReleaseEvent) {
             is_drawing = false;
-            for (int i = 0; i < 4; i++) {
-                this->view[cur_view]->GetRenderer()->RemoveActor(actors[i]);
+            //for (int i = 0; i < 4; i++) {
+            //    this->view[cur_view]->GetRenderer()->RemoveActor(actors[i]);
+            //}
+
+            qDebug() << "release:" <<  vector_picked[cur_view].size();
+
+            auto render = this->view[cur_view]->GetRenderer();
+
+            vtkActorCollection* actorCollection = render->GetActors();
+            int num = actorCollection->GetNumberOfItems();
+            actorCollection->InitTraversal();
+            //vtkActor* actortemp = actorCollection->GetNextActor();
+            if (vector_displaypos[cur_view].size() == 2)
+            {
+                /*auto vct_picked_1 = vector_picked[cur_view].at(0);
+                double point1[3];
+                point1[0] = vct_picked_1.at(0); point1[1] = vct_picked_1.at(1); point1[2] = vct_picked_1.at(2);
+
+                auto vct_picked_2 = vector_picked[cur_view].at(1);
+                double point2[3];
+                point2[0] = vct_picked_2.at(0); point2[1] = vct_picked_2.at(1); point2[2] = vct_picked_2.at(2);*/
+
+                auto start_vec = vector_displaypos[cur_view].at(0);
+                double start[2];
+                start[0] = start_vec.at(0); start[1] = start_vec.at(1);
+
+                auto end_vec = vector_displaypos[cur_view].at(1);
+                double end[2];
+                end[0] = end_vec.at(0); end[1] = end_vec.at(1);
+
+
+                double point1[2];
+                double point2[2];
+                double point3[2];
+                double point4[2];
+
+                double left[2];
+                double right[2];
+
+                left[0] = start[0] <= end[0] ? start[0] : end[0];
+                left[1] = start[1] <= end[1] ? start[1] : end[1];
+
+                right[0] = start[0] > end[0] ? start[0] : end[0];
+                right[1] = start[1] > end[1] ? start[1] : end[1];
+
+                point1[0] = left[0];  point1[1] = left[1];  //point1[2] = 0.0;
+                point2[0] = left[0];  point2[1] = right[1]; //point2[2] = 0.0;
+                point3[0] = right[0]; point3[1] = right[1]; //point3[2] = 0.0;
+                point4[0] = right[0]; point4[1] = left[1];  //point4[2] = 0.0;
+
+                //double p1_world[3]; 
+                //double p2_world[3];
+                //double p3_world[3];
+                //double p4_world[3];
+
+                qDebug() << "Right: " << right[0] << right[1];
+                qDebug() << "Left:  " << left[0] << left[1];
+
+                qDebug() << "point1: " << point1[0] << point1[1];
+                qDebug() << "point2:  " << point2[0] << point2[1];
+                qDebug() << "point3: " << point3[0] << point3[1];
+                qDebug() << "point4:  " << point4[0] << point4[1];
+
+                //for (int i = 0; i < 4; i++)
+
+                vtkSmartPointer<vtkCoordinate> pCoorPress1 = vtkSmartPointer<vtkCoordinate>::New();
+                pCoorPress1->SetCoordinateSystemToDisplay();
+                pCoorPress1->SetValue(point1);
+                double* p1_world = pCoorPress1->GetComputedWorldValue(render);
+
+                vtkSmartPointer<vtkCoordinate> pCoorPress2 = vtkSmartPointer<vtkCoordinate>::New();
+                pCoorPress2->SetCoordinateSystemToDisplay();
+                pCoorPress2->SetValue(point2);
+                double* p2_world = pCoorPress2->GetComputedWorldValue(render);
+
+                vtkSmartPointer<vtkCoordinate> pCoorPress3 = vtkSmartPointer<vtkCoordinate>::New();
+                pCoorPress3->SetCoordinateSystemToDisplay();
+                pCoorPress3 ->SetValue(point3);
+                double* p3_world = pCoorPress3->GetComputedWorldValue(render);
+
+
+                vtkSmartPointer<vtkCoordinate> pCoorPress4 = vtkSmartPointer<vtkCoordinate>::New();
+                pCoorPress4->SetCoordinateSystemToDisplay();
+                pCoorPress4->SetValue(point4);
+                double* p4_world = pCoorPress4->GetComputedWorldValue(render);
+
+                //GetScreentPos(point1, p1_world, cur_view);
+
+                //GetScreentPos(point2, p2_world, cur_view);
+
+                //render->SetDisplayPoint(point1);
+                //render->DisplayToWorld();
+                //render->GetWorldPoint(p1_world);
+
+
+                //render->SetDisplayPoint(point2);
+                //render->DisplayToWorld();
+                //render->GetWorldPoint(p2_world);
+                    
+                //render->SetDisplayPoint(point3);
+                //render->DisplayToWorld();
+                //render->GetWorldPoint(p3_world);
+
+                //render->SetDisplayPoint(point4);
+                //render->DisplayToWorld();
+                //render->GetWorldPoint(p4_world);
+
+
+                qDebug() << p1_world[0] << p1_world[1] << p1_world[2];
+                qDebug() << p2_world[0] << p2_world[1] << p2_world[2];
+                qDebug() << p3_world[0] << p3_world[1] << p3_world[2];
+                qDebug() << p4_world[0] << p4_world[1] << p4_world[2];
+
+                
+
+                auto actor1 = this->SetLine(p1_world, p2_world);
+                auto actor2 = this->SetLine(p2_world, p3_world);
+                auto actor3 = this->SetLine(p3_world, p4_world);
+                auto actor4 = this->SetLine(p4_world, p1_world);
+
+                if (actor1 == nullptr)
+                {
+                    return;
+                }
+
+                /*vtkSmartPointer<vtkLineSource> line_source = vtkSmartPointer<vtkLineSource>::New();
+                line_source->SetPoint1(point1);
+                line_source->SetPoint2(point2);
+                line_source->Update();
+
+                vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+                mapper->SetInputConnection(line_source->GetOutputPort());
+                
+                vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+                actor->SetMapper(mapper);
+                actor->GetProperty()->SetLineWidth(2);
+                actor->GetProperty()->SetColor(0.0, 1.0, 0.0);*/
+
+
+                render->AddActor(actor1);
+                render->AddActor(actor2);
+                render->AddActor(actor3);
+                render->AddActor(actor4);
             }
+
+            
             this->view[cur_view]->Render();
         }
         return;
     }
 
-    void SetLine(double start_point[], double end_point[], vtkSmartPointer<vtkActor> actor) {
+    vtkSmartPointer<vtkActor> SetLine(double start_point[], double end_point[]) 
+    {
         if (cur_view < 0 || cur_view > 2) {
-            return;
+            return nullptr;
         }
+
         vtkSmartPointer<vtkLineSource> line_source = vtkSmartPointer<vtkLineSource>::New();
         line_source->SetPoint1(start_point);
         line_source->SetPoint2(end_point);
@@ -87,51 +290,53 @@ public:
 
         vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         mapper->SetInputConnection(line_source->GetOutputPort());
+        
+        vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
         actor->SetMapper(mapper);
         actor->GetProperty()->SetLineWidth(2);
-        actor->GetProperty()->SetColor(1.0,0.0,0.0);
+        actor->GetProperty()->SetColor(0.0,1.0,0.0);
+
+        return actor;
     }
 
     void DrawRect() {
-        if (cur_view < 0 || cur_view > 2) {
-            return;
-        }
-        double start_position[3] = {double(start_pos[0]), double(start_pos[1]), 0.0};
-        double end_position[3] = {double(end_pos[0]), double(end_pos[1]), 0.0};
+        //if (cur_view < 0 || cur_view > 2) {
+        //    return;
+        //}
+        //double start_position[3] = {double(start_pos[0]), double(start_pos[1]), 0.0};
+        //double end_position[3] = {double(end_pos[0]), double(end_pos[1]), 0.0};
 
-        double start[3];
-        double end[3];
-        GetScreentPos(start_position, start);
-        GetScreentPos(end_position, end);
-        DrawPoint(start);
-        DrawPoint(end);
-        qDebug() << "[world] start pos:"<< start[0] << start[1] << start[2]<<",end pos:"<<end[0]<<end[1]<<end[2];
+        //double start[3];
+        //double end[3];
+        //GetScreentPos(start_position, start, cur_view);
+        //GetScreentPos(end_position, end, cur_view);
+        //qDebug() << "start pos:"<< start[0] << start[1] << start[2]<<",end pos:"<<end[0]<<end[1]<<end[2];
 
-        double point1[3];
-        double point2[3];
-        double point3[3];
-        double point4[3];
+        //double point1[3];
+        //double point2[3];
+        //double point3[3];
+        //double point4[3];
 
-        double left[2];
-        double right[2];
+        //double left[2];
+        //double right[2];
 
-        left[0] = start[0]<=end[0] ? start[0] : end[0];
-        left[1] = start[1]<=end[1] ? start[1] : end[1];
+        //left[0] = start[0]<=end[0] ? start[0] : end[0];
+        //left[1] = start[1]<=end[1] ? start[1] : end[1];
 
-        right[0] = start[0]>end[0] ? start[0] : end[0];
-        right[1] = start[1]>end[1] ? start[1] : end[1];
+        //right[0] = start[0]>end[0] ? start[0] : end[0];
+        //right[1] = start[1]>end[1] ? start[1] : end[1];
 
-        point1[0] = left[0];  point1[1] = left[1];  point1[2] = 0;
-        point2[0] = left[0];  point2[1] = right[1]; point2[2] = 0;
-        point3[0] = right[0]; point3[1] = right[1]; point3[2] = 0;
-        point4[0] = right[0]; point4[1] = left[1];  point4[2] = 0;
+        //point1[0] = left[0];  point1[1] = left[1];  point1[2] = 0;
+        //point2[0] = left[0];  point2[1] = right[1]; point2[2] = 0;
+        //point3[0] = right[0]; point3[1] = right[1]; point3[2] = 0;
+        //point4[0] = right[0]; point4[1] = left[1];  point4[2] = 0;
 
-        this->SetLine(point1,point2, actors[0]);
-        this->SetLine(point2,point3, actors[1]);
-        this->SetLine(point3,point4, actors[2]);
-        this->SetLine(point4,point1, actors[3]);
+        //this->SetLine(point1,point2, actors[0]);
+        //this->SetLine(point2,point3, actors[1]);
+        //this->SetLine(point3,point4, actors[2]);
+        //this->SetLine(point4,point1, actors[3]);
 
-        this->view[cur_view]->Render();
+        //this->view[cur_view]->Render();
     }
 
     void StartMark() {
@@ -142,7 +347,7 @@ public:
         is_marking = false;
     }
 
-    void GetScreentPos(double displayPos[3], double world[3])
+    void GetScreentPos(double displayPos[2], double world[2], int current_view)
     {
 //      vtkSmartPointer<vtkRenderer> renderer = this->view[cur_view]->GetRenderer();
 //        renderer->SetDisplayPoint(displayPos);
@@ -172,10 +377,14 @@ public:
         this->view[cur_view]->GetRenderer()->AddActor(actor);
     }
 
+
     vtkImageViewer2* view[3];
     vtkRenderWindowInteractor* interactor[3];
     vtkRenderer* render[3];
     vtkSmartPointer<vtkActor> actors[4];
+
+    vector<vector<double>> vector_picked[3];
+    vector<vector<int>> vector_displaypos[3];
     int cur_view;
     int cur_slice;
     int start_pos[2];
@@ -281,6 +490,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->startFusionButton, SIGNAL(clicked()), this, SLOT(start_fusion()));
     connect(ui->voxel2meshBtn, SIGNAL(clicked()), this, SLOT(generate_surface()));
     connect(ui->opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(slidervalueChanged(int)));
+    connect(ui->start_segmentation_btn, SIGNAL(clicked()), this, SLOT(start_segmentation()));
 
     connect(ui->clean_actors_btn, SIGNAL(clicked()), this, SLOT(clean_actors()));
     connect(ui->clear_manager_btn, SIGNAL(clicked()), this, SLOT(clear_manager()));
@@ -445,8 +655,8 @@ void MainWindow::show_image()
 
         riw_[i]->SetSliceOrientation(i);
         riw_[i]->SetSlice(dims[i] / 2);      
-        riw_[i]->SetColorWindow((range[1] - range[0]));
-        riw_[i]->SetColorLevel((range[0] + range[1]) / 2.0);
+        //riw_[i]->SetColorWindow((range[1] - range[0]));
+        //riw_[i]->SetColorLevel((range[0] + range[1]) / 2.0);
 
         sharedWLcbk->view[i] = riw_[i];
         point_picker_cbk->view[i] = riw_[i];
@@ -454,7 +664,7 @@ void MainWindow::show_image()
         riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::WindowLevelEvent, sharedWLcbk);
         riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::RightButtonPressEvent, point_picker_cbk);
         riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::RightButtonReleaseEvent, point_picker_cbk);
-        riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, point_picker_cbk);
+        //riw_[i]->GetInteractorStyle()->AddObserver(vtkCommand::MouseMoveEvent, point_picker_cbk);
 
     
     }
@@ -1066,6 +1276,164 @@ void MainWindow::slidervalueChanged(int pos) {
     ui->opacity1label->setText("  Image 1:  " + QString::number(factor1));
 }
 
+void MainWindow::start_segmentation()
+{
+    if (ui->seg_image_selector->count() == 0)
+    {
+        setMandatoryField(ui->seg_image_selector, true);
+
+        QMessageBox::warning(nullptr,
+            tr("Error"),
+            tr("No Image Selected."),
+            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        return;
+    }
+
+    SegmentationWorker segmentation_worker;
+
+    QString current_name = ui->seg_image_selector->currentText();
+
+    for (vector<ImageDataItem>& vec : image_tree_)
+    {
+        for (ImageDataItem& item : vec)
+        {
+            if (current_name == item.image_name)
+            {
+                if (item.image_data == nullptr)
+                {
+                    setMandatoryField(ui->seg_image_selector, true);
+
+                    QMessageBox::warning(nullptr,
+                        tr("Error"),
+                        tr("No Image Selected."),
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                    return;
+
+                }
+                else {
+                    setMandatoryField(ui->seg_image_selector, false);
+
+                    ui->start_segmentation_btn->setVisible(false);
+                    ui->segmentation_progressBar->setVisible(true);
+                    ui->segmentation_progressBar->setValue(25);
+
+                    using VTK2ITKType = itk::VTKImageToImageFilter<RegistrationWorker::FixedImageType>;
+                    VTK2ITKType::Pointer vtk2itk_filter = VTK2ITKType::New();
+                    vtk2itk_filter->SetInput(item.image_data);
+
+                    try
+                    {
+                        vtk2itk_filter->Update();
+                    }
+                    catch (itk::ExceptionObject& error)
+                    {
+                        QMessageBox::warning(nullptr,
+                            tr("Error"),
+                            tr(error.GetDescription()),
+                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                        return;
+                    }
+
+                    SegmentationWorker::IndexType seed1;
+                    seed1[0] = 369;
+                    seed1[1] = 317;
+                    seed1[2] = 93;
+
+                    SegmentationWorker::IndexType seed2;
+                    seed2[0] = 403;
+                    seed2[1] = 236;
+                    seed2[2] = 78;
+
+                    SegmentationWorker::IndexType seed3;
+                    seed3[0] = 404;
+                    seed3[1] = 236;
+                    seed3[2] = 66;
+
+                    SegmentationWorker::IndexType seed4;
+                    seed4[0] = 125;
+                    seed4[1] = 236;
+                    seed4[2] = 71;
+
+                    SegmentationWorker::IndexType seed5;
+                    seed5[0] = 128;
+                    seed5[1] = 268;
+                    seed5[2] = 69;
+
+                    SegmentationWorker::IndexType seed6;
+                    seed6[0] = 146;
+                    seed6[1] = 264;
+                    seed6[2] = 93;
+
+
+                    std::vector<SegmentationWorker::IndexType> vecseed{ seed1, seed2, seed3, seed4, seed5, seed6 };
+
+                    segmentation_worker.set_lower_value(ui->lower_value_seg->value());
+                    segmentation_worker.set_upper_value(ui->upper_value_seg->value());
+
+                    segmentation_worker.set_input_image(vtk2itk_filter->GetOutput());
+                    segmentation_worker.set_seeds(vecseed);
+
+                    ui->segmentation_progressBar->setValue(50);
+
+                    segmentation_worker.update();
+                    auto result_image_itk = segmentation_worker.get_output_image();
+                    ui->segmentation_progressBar->setValue(75);
+
+                    if (result_image_itk != nullptr)
+                    {
+                        // cast itk image to vtk image
+                        using FilterType = itk::ImageToVTKImageFilter<RegistrationWorker::FixedImageType>;
+                        FilterType::Pointer filter = FilterType::New();
+                        filter->SetInput(result_image_itk);
+
+                        try
+                        {
+                            filter->Update();
+                        }
+                        catch (itk::ExceptionObject& error)
+                        {
+                            QMessageBox::warning(nullptr,
+                                tr("Error"),
+                                tr(error.GetDescription()),
+                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+                            return;
+                        }
+
+                        vtkSmartPointer<vtkImageData> result_image_vtk = filter->GetOutput();
+
+                        vtk_image_collection_.push_back(result_image_vtk);
+                        itk_image_collection_.push_back(result_image_itk);
+
+                        QString item_name = ui->seg_result_name->text() + "_" + current_name;
+                        for (vector<ImageDataItem>& vec : image_tree_) {
+                            for (ImageDataItem& item : vec) {
+                                if (item_name == item.image_name) {
+                                    item_name = "(1)" + item_name;
+                                }
+                            }
+                        }
+                        ImageDataItem image_item;
+                        image_item.image_name = QString(item_name);
+                        image_item.image_data = result_image_vtk;
+
+                        vec.push_back(image_item);
+
+                        this->update_data_manager();
+
+                    }
+
+                    ui->start_segmentation_btn->setVisible(true);
+                    ui->segmentation_progressBar->setVisible(false);
+
+                    break;
+                }
+            }
+        }
+    }
+
+
+}
+
 
 void MainWindow::generate_surface()
 {
@@ -1609,6 +1977,7 @@ void MainWindow::update_data_manager() {
     ui->smooth_selector->clear();
     ui->edge_selector->clear();
     ui->thre_selector->clear();
+    ui->seg_image_selector->clear();
 
     for (vector<ImageDataItem> &vec: image_tree_)
     {
@@ -1623,6 +1992,7 @@ void MainWindow::update_data_manager() {
             ui->smooth_selector->addItem(item.image_name);
             ui->edge_selector->addItem(item.image_name);
             ui->thre_selector->addItem(item.image_name);
+            ui->seg_image_selector->addItem(item.image_name);
         }
     }
 }
@@ -1682,6 +2052,7 @@ void MainWindow::clear_manager()
     ui->smooth_selector->clear();
     ui->edge_selector->clear();
     ui->thre_selector->clear();
+    ui->seg_image_selector->clear();
 
     this->ui->view1->hide();
     this->ui->view2->hide();
@@ -1781,4 +2152,12 @@ void MainWindow::setQStyleSheetField(QWidget* widget, const char* fieldName, boo
     widget->style()->unpolish(widget); // need to do this since we changed the stylesheet
     widget->style()->polish(widget);
     widget->update();
+}
+
+void MainWindow::on_action_predict_triggered()
+{
+    PredictFormParams params;
+    params.user_info = user;
+    PredictForm predict_form(params, this);
+    predict_form.exec();
 }
