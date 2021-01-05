@@ -34,8 +34,9 @@ public:
     void EndMark();
     void RefreshMark();
     void UploadMark(QString folder_path);
-    void GetScreentPos(double displayPos[2], double world[2], int current_view);
+    void GetScreentPos(double displayPos[2], double world[2]);
     void DrawPoint(double pos[3]);
+    void SetFolderPath(QString folder_path);
 
     vtkImageViewer2* view[3];
     vtkRenderWindowInteractor* interactor[3];
@@ -51,6 +52,7 @@ public:
     bool is_drawing;
     bool is_marking;
     imageInfo *image_manager_;
+    QString folder_path_;
 };
 
 #endif // VTK_POINT_PICKER_CALLBACK_H

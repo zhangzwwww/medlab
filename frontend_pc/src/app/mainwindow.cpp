@@ -288,6 +288,8 @@ void MainWindow::show_image()
     this->ui->ScrollBar3->setSliderPosition(dims[2] / 2 - 1);
     
     this->view_zoom_to_fit();
+    point_picker_cbk->EndMark();
+    point_picker_cbk->SetFolderPath(image_tree_[cur_selected_image_ind_[0]][0].image_path);
 }
 
 void MainWindow::volume_rendering(bool status)

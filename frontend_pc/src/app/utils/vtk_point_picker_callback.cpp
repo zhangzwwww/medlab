@@ -270,10 +270,15 @@ void vtkPointPickerCallback::Execute(vtkObject* caller, unsigned long ev,
             render->AddActor(actor2);
             render->AddActor(actor3);
             render->AddActor(actor4);
+
+            this->view[cur_view]->Render();
+//            upload mark
+            QMessageBox message_box(QMessageBox::NoIcon, "UploadMark", "Upload this mark?", QMessageBox::Yes | QMessageBox::No);
+            int choice = message_box.exec();
+            if (choice == QMessageBox::Yes) {
+                UploadMark(folder_path_);
+            }
         }
-
-
-        this->view[cur_view]->Render();
     }
     return;
 }
@@ -350,6 +355,7 @@ void vtkPointPickerCallback::EndMark() {
 
 void vtkPointPickerCallback::RefreshMark() {
     for (int i = 0; i < 3; i++) {
+        vector_displaypos[i].clear();
         auto render = this->view[i]->GetRenderer();
         vtkActorCollection* actorCollection = render->GetActors();
         int num = actorCollection->GetNumberOfItems();
@@ -361,14 +367,18 @@ void vtkPointPickerCallback::RefreshMark() {
             render->RemoveActor(actortemp);
         }
         this->view[i]->Render();
+        render->ResetCamera();
     }
 }
 
 void vtkPointPickerCallback::UploadMark(QString folder_path) {
-    double left_top_x = double(std::min(start_pos[0], end_pos[0]));
-    double left_top_y = double(std::min(start_pos[1], end_pos[1]));
-    double right_bottom_x = double(std::max(start_pos[0], end_pos[0]));
-    double right_bottom_y = double(std::max(start_pos[1], end_pos[1]));
+    if (vector_displaypos[cur_view].size() < 2 || vector_displaypos[cur_view][0].size() < 2 || vector_displaypos[cur_view][1].size() < 2) {
+        return;
+    }
+    double left_top_x = double(std::min(vector_displaypos[cur_view][0][0], vector_displaypos[cur_view][1][0]));
+    double left_top_y = double(std::min(vector_displaypos[cur_view][0][1], vector_displaypos[cur_view][1][1]));
+    double right_bottom_x = double(std::max(vector_displaypos[cur_view][0][0], vector_displaypos[cur_view][1][0]));
+    double right_bottom_y = double(std::max(vector_displaypos[cur_view][0][1], vector_displaypos[cur_view][1][1]));
     int ret = image_manager_->uploadImgMark(folder_path, cur_slice, cur_view, left_top_x, left_top_y, right_bottom_x, right_bottom_y);
     if (ret == SUCCESS) {
         QMessageBox::information(nullptr, "success", "Succeed to upload mark!", QMessageBox::Yes);
@@ -379,7 +389,11 @@ void vtkPointPickerCallback::UploadMark(QString folder_path) {
     }
 }
 
-void vtkPointPickerCallback::GetScreentPos(double displayPos[2], double world[2], int current_view)
+void vtkPointPickerCallback::SetFolderPath(QString folder_path) {
+    folder_path_ = folder_path;
+}
+
+void vtkPointPickerCallback::GetScreentPos(double displayPos[2], double world[2])
 {
 //      vtkSmartPointer<vtkRenderer> renderer = this->view[cur_view]->GetRenderer();
 //        renderer->SetDisplayPoint(displayPos);
