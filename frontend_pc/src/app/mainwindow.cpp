@@ -2158,6 +2158,7 @@ void MainWindow::on_action_predict_triggered()
 {
     PredictFormParams params;
     params.user_info = user;
+    params.image_manager = &image_requester;
     PredictForm predict_form(params, this);
     predict_form.exec();
 }

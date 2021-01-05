@@ -463,6 +463,43 @@ QString imageInfo::predictImageHttp(QString filepath, QString patientID){
     }
 }
 
+QString imageInfo::predictImageHttp(QString filepath){
+    QFile afile(filepath);
+    if (!afile.exists()){
+        qDebug() << "The file doesn't exist";
+        return "FILE NOT EXIST";
+    }
+    FILE *fp;
+    QString URL = urlbase["base4"] + urlbase["predict"];
+    QString req = "curl --location --request POST \"" + URL + "\"";
+    req = req + " --header \"X-Auth-Token: " + token.toUtf8() + "\"";
+    req = req + " --form \"tumor_image=@" + filepath + "\"";
+    char buffer[1024] = {0};
+
+    qDebug() << req;
+
+#ifdef Q_OS_WIN32   // Define on windows system
+    fp = _popen(req.toUtf8(), "r");
+#endif
+
+#ifdef Q_OS_MACOS   // Define on MACOS system
+
+    fp = popen(req.toUtf8(), "r");
+#endif
+    if (fp == NULL){
+        qDebug() << "CONNECTION FAIL";
+        return "CONNECTION FAIL";
+    }
+
+    while(fgets(buffer, sizeof(buffer), fp) != NULL) {
+        qDebug() << buffer;
+    }
+    // handle the reply of server
+    QString result = buffer;
+    result = result.replace('"', ' ');
+    return result;
+}
+
 QVector<QString> imageInfo::getCtimeHttp(QString patientId){
     // construct url and query item
     QUrl url(urlbase["base2"] + urlbase["image"] + "/ctime");

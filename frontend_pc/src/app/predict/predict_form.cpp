@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <QFileInfo>
 
 #include "struct_define.h"
 #include "utils/general_util.h"
@@ -13,6 +14,7 @@ PredictForm::PredictForm(QWidget *parent) :
     ui(new Ui::PredictForm)
 {
     ui->setupUi(this);
+    last_folder_path = "./";
 }
 
 PredictForm::PredictForm(PredictFormParams &params, QWidget *parent) :
@@ -21,7 +23,8 @@ PredictForm::PredictForm(PredictFormParams &params, QWidget *parent) :
 {
     ui->setupUi(this);
     user_info_ = params.user_info;
-    prediction_manager_.set_token(user_info_._token());
+    image_manager_ = params.image_manager;
+    image_manager_->setToken(user_info_._token());
 }
 
 PredictForm::~PredictForm()
@@ -34,12 +37,14 @@ void PredictForm::on_openFileBtn_clicked()
     QString fileName = QFileDialog::getOpenFileName(
             this,
             tr("open a file."),
-            "./",
+            last_folder_path,
             tr("Image Files(*.jpg *.png *.jpeg)"));
     if (fileName.isEmpty() == true)
         return;
-
+    QFileInfo file_info(fileName);
+    last_folder_path = file_info.path();
     ui->filePathEdit->setText(fileName);
+    ui->predictResultEdit->setText("");
 }
 
 void PredictForm::on_predictBtn_clicked()
@@ -49,6 +54,6 @@ void PredictForm::on_predictBtn_clicked()
         QMessageBox::warning(this, "error", "Please select file to predict!", QMessageBox::Yes);
         return;
     }
-    QString prediction = prediction_manager_.predictTumor(&communicator_, file_path);
+    QString prediction = image_manager_->predictImageHttp(file_path);
     ui->predictResultEdit->setText(prediction);
 }

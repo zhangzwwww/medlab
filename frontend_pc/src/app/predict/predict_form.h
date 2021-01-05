@@ -7,7 +7,7 @@
 
 #include "commu/communhttp.h"
 #include "commu/userinfo.h"
-#include "commu/prediction.h"
+#include "commu/imageinfo.h"
 
 namespace Ui {
 class PredictForm;
@@ -15,6 +15,7 @@ class PredictForm;
 
 struct PredictFormParams {
     userinfo user_info;
+    imageInfo *image_manager;
 };
 
 class PredictForm : public QDialog
@@ -35,7 +36,8 @@ private:
     Ui::PredictForm *ui;
     communhttp communicator_;
     userinfo user_info_;
-    prediction prediction_manager_;
+    imageInfo *image_manager_;
+    QString last_folder_path;
 };
 
 #endif // PREDICT_FORM_H

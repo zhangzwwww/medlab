@@ -14,7 +14,6 @@
 #include <QJsonDocument>
 #include <QByteArray>
 #include <stdlib.h>
-#include <cstdio>
 
 #include "communhttp.h"
 #include "urlbase.h"
@@ -117,6 +116,7 @@ public:
     // NORMAL OUTPUT: class of image
     // FAIL CASE: "FILE NOT EXIST"/"CONNECTION FAIL"
     QString predictImageHttp(QString filepath, QString patientID);
+    QString predictImageHttp(QString filepath);
 
     // Get image ctimes given patientId
     // INPUT: patientId
