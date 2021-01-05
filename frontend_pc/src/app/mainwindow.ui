@@ -3153,7 +3153,7 @@ background-color: rgb(45, 45, 48);</string>
                 <x>0</x>
                 <y>0</y>
                 <width>465</width>
-                <height>70</height>
+                <height>46</height>
                </rect>
               </property>
               <attribute name="label">
@@ -3305,6 +3305,36 @@ background-color: rgb(45, 45, 48);</string>
           <property name="text">
            <string>Start thresholding</string>
           </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Mark</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_30">
+           <item>
+            <widget class="QPushButton" name="start_mark_btn">
+             <property name="text">
+              <string>Start Mark</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="refresh_mark_btn">
+             <property name="text">
+              <string>Refresh Mark</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="upload_mark_btn">
+             <property name="text">
+              <string>Upload Mark</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>

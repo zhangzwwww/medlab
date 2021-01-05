@@ -111,6 +111,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "voxel2mesh/voxel2mesh.h"
 #include "segmentation/segmentation_worker.h"
 #include "predict/predict_form.h"
+#include "utils/vtk_point_picker_callback.h"
 #endif
 
 #ifdef Q_OS_WIN32   // Define on windows system
@@ -127,6 +128,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "voxel2mesh.h"
 #include "segmentation_worker.h"
 #include "predict/predict_form.h"
+#include "utils/vtk_point_picker_callback.h"
 #endif
 
 using std::vector;
@@ -238,6 +240,12 @@ private slots:
 
     void on_action_predict_triggered();
 
+    void on_start_mark_btn_clicked();
+
+    void on_refresh_mark_btn_clicked();
+
+    void on_upload_mark_btn_clicked();
+
 private:
     vtkSmartPointer<vtkImageViewer2> riw_[3];
     vtkSmartPointer<vtkRenderer> renderer3D_;
@@ -253,6 +261,7 @@ private:
     int cur_selected_image_ind_[2]{ -1 };
 
    QVector<patient> patients_;
+   vtkSmartPointer< vtkPointPickerCallback > point_picker_cbk;
 
 private:
     Ui::MainWindow *ui;

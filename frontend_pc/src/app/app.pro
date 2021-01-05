@@ -45,6 +45,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         registration/registration_worker.cpp \
+    utils/vtk_point_picker_callback.cpp \
         voxel2mesh/Voxel2Mesh.cpp
 
 HEADERS += \
@@ -68,6 +69,7 @@ HEADERS += \
         errorcode.h \
         registration/registration_worker.h \
         struct_define.h \
+        utils/vtk_point_picker_callback.h \
         voxel2mesh/Voxel2Mesh.h
 
 FORMS += \
