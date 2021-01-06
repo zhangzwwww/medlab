@@ -466,6 +466,9 @@ QString imageInfo::predictImageHttp(QString filepath, QString patientID){
     if (result == "no_tumor"){
         return result;
     }
+    else if (result == "tumor") {
+        return result;
+    }
     else if (result == "glioma_tumor"){
         return result;
     }
