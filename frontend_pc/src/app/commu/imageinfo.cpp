@@ -122,6 +122,7 @@ void imageInfo::downloadFile(QNetworkReply* reply){
         QFile meta(dir.filePath("meta_data"));
         if (!meta.open(QIODevice::Append)){
             qDebug() << "Open meta file fails";
+            reply->deleteLater();
             return;
         }
         // normal case
@@ -152,9 +153,27 @@ void imageInfo::downloadFile(QNetworkReply* reply){
                 meta.write("\r\n");
             }
         }
+        meta.close();
     }
     reply->deleteLater();
 }
+
+void imageInfo::uploadFolerImage(QString patientId, QString ctime, QString folderpath){
+    QDir dir(folderpath);
+    // check if there exists meta file
+    QFile meta(dir.filePath("meta_data"));
+    if (meta.open(QIODevice::ReadOnly)){
+        qDebug() << "Already in backend, will not upload!";
+        QMessageBox::warning(nullptr, "w", "The folder already in backend, will not upload", QMessageBox::Yes);
+        return;
+    }
+    // upload images
+    QStringList file_names = dir.entryList(QDir::Files | QDir::Readable);
+    for (QString &file_name : file_names){
+        this->uploadImageHttp(patientId, ctime, dir.absoluteFilePath(file_name));
+    }
+}
+
 
 void imageInfo::uploadImageHttp(QString patientId, QString ctime, QString filepath){
     QFile afile(filepath);
@@ -305,13 +324,14 @@ int imageInfo::uploadImgMark(QString folderpath, int level, int view, double top
     json_doc.setObject(json_content);
     QByteArray data = json_doc.toJson(QJsonDocument::Compact);
     // construct request
+    QNetworkAccessManager local_qnam;
     QNetworkRequest request;
     QUrl url(urlbase["base2"] + urlbase["mark"]);
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
     // send request
-    QNetworkReply* reply = qnam.post(request, data);
+    QNetworkReply* reply = local_qnam.post(request, data);
     // wait until server reply
     QEventLoop eventloop;
     connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
@@ -364,11 +384,12 @@ QVector<imageInfo::imgMark> imageInfo::getAllMarks(QString folderpath, int layer
     url.setQuery(query.query());
 
     // construct the request
+    QNetworkAccessManager local_qnam;
     QNetworkRequest request;
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     // send request
-    QNetworkReply* reply = qnam.get(request);
+    QNetworkReply* reply = local_qnam.get(request);
     // loop until get reply
     QEventLoop eventloop;
     connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
@@ -502,6 +523,7 @@ QString imageInfo::predictImageHttp(QString filepath){
 
 QVector<QString> imageInfo::getCtimeHttp(QString patientId){
     // construct url and query item
+    QNetworkAccessManager local_qnam;
     QUrl url(urlbase["base2"] + urlbase["image"] + "/ctime");
     QUrlQuery query;
     query.addQueryItem("patientId", patientId);
@@ -511,7 +533,7 @@ QVector<QString> imageInfo::getCtimeHttp(QString patientId){
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     // send request
-    QNetworkReply* reply = qnam.get(request);
+    QNetworkReply* reply = local_qnam.get(request);
 
     QEventLoop eventloop;
     connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
@@ -534,6 +556,7 @@ QVector<QString> imageInfo::getCtimeHttp(QString patientId){
     if (status == 200){
         // normal case
         QByteArray resp = reply->readAll();
+        // qDebug() << resp;
         QJsonParseError jerror;
         QJsonDocument json = QJsonDocument::fromJson(resp, &jerror);
         if (jerror.error == QJsonParseError::NoError && !json.isNull() && !json.isEmpty()){
