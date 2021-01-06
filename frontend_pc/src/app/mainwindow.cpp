@@ -1799,5 +1799,8 @@ void MainWindow::on_upload_mark_btn_clicked()
     }
     QString folder_path = image_tree_[cur_selected_image_ind_[0]][0].image_path;
     qDebug()<<"cur mark image path:"<<folder_path;
-    point_picker_cbk->UploadMark(folder_path);
+    int ret = point_picker_cbk->UploadMark(folder_path);
+    if (ret == 0) {
+        ui->start_mark_btn->setCheckable(false);
+    }
 }

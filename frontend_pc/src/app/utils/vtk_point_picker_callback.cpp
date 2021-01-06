@@ -273,13 +273,13 @@ void vtkPointPickerCallback::Execute(vtkObject* caller, unsigned long ev,
 
             this->view[cur_view]->Render();
 //            upload mark
-            QMessageBox message_box(QMessageBox::NoIcon, "UploadMark", "Upload this mark?", QMessageBox::Yes | QMessageBox::No);
-            int choice = message_box.exec();
-            if (choice == QMessageBox::Yes) {
-                UploadMark(folder_path_);
-            } else {
-                RefreshMark();
-            }
+//            QMessageBox message_box(QMessageBox::NoIcon, "UploadMark", "Upload this mark?", QMessageBox::Yes | QMessageBox::No);
+//            int choice = message_box.exec();
+//            if (choice == QMessageBox::Yes) {
+//                UploadMark(folder_path_);
+//            } else {
+//                RefreshMark();
+//            }
         }
     }
     return;
@@ -374,9 +374,10 @@ void vtkPointPickerCallback::RefreshMark() {
     }
 }
 
-void vtkPointPickerCallback::UploadMark(QString folder_path) {
+int vtkPointPickerCallback::UploadMark(QString folder_path) {
     if (vector_displaypos[cur_view].size() < 2 || vector_displaypos[cur_view][0].size() < 2 || vector_displaypos[cur_view][1].size() < 2) {
-        return;
+        QMessageBox::warning(nullptr, "error", "Please select two points!", QMessageBox::Yes);
+        return -1;
     }
     double left_top_x = double(std::min(vector_displaypos[cur_view][0][0], vector_displaypos[cur_view][1][0]));
     double left_top_y = double(std::min(vector_displaypos[cur_view][0][1], vector_displaypos[cur_view][1][1]));
@@ -387,8 +388,10 @@ void vtkPointPickerCallback::UploadMark(QString folder_path) {
         QMessageBox::information(nullptr, "success", "Succeed to upload mark!", QMessageBox::Yes);
         RefreshMark();
         EndMark();
+        return 0;
     } else {
         QMessageBox::warning(nullptr, "error", "Fail to upload mark!", QMessageBox::Yes);
+        return -1;
     }
 }
 

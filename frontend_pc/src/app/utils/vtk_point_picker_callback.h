@@ -33,7 +33,7 @@ public:
     void StartMark();
     void EndMark();
     void RefreshMark();
-    void UploadMark(QString folder_path);
+    int UploadMark(QString folder_path);
     void GetScreentPos(double displayPos[2], double world[2]);
     void DrawPoint(double pos[3]);
     void SetFolderPath(QString folder_path);
