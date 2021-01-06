@@ -277,6 +277,8 @@ void vtkPointPickerCallback::Execute(vtkObject* caller, unsigned long ev,
             int choice = message_box.exec();
             if (choice == QMessageBox::Yes) {
                 UploadMark(folder_path_);
+            } else {
+                RefreshMark();
             }
         }
     }
@@ -350,6 +352,7 @@ void vtkPointPickerCallback::StartMark() {
 }
 
 void vtkPointPickerCallback::EndMark() {
+    RefreshMark();
     is_marking = false;
 }
 

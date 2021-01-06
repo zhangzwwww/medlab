@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1535</width>
-    <height>869</height>
+    <height>943</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1367,7 +1367,7 @@ background-color: rgb(0, 0, 0);
                 <x>0</x>
                 <y>0</y>
                 <width>490</width>
-                <height>770</height>
+                <height>792</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2050,7 +2050,7 @@ background-color: rgb(0, 0, 0);
                 <x>0</x>
                 <y>0</y>
                 <width>490</width>
-                <height>754</height>
+                <height>793</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2737,7 +2737,7 @@ background-color: rgb(0, 0, 0);
              <x>0</x>
              <y>0</y>
              <width>490</width>
-             <height>719</height>
+             <height>793</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3083,7 +3083,7 @@ background-color: rgb(45, 45, 48);</string>
                   <number>1</number>
                  </property>
                  <property name="maximum">
-                  <number>21</number>
+                  <number>7</number>
                  </property>
                  <property name="singleStep">
                   <number>2</number>
@@ -3153,7 +3153,7 @@ background-color: rgb(45, 45, 48);</string>
                 <x>0</x>
                 <y>0</y>
                 <width>465</width>
-                <height>46</height>
+                <height>70</height>
                </rect>
               </property>
               <attribute name="label">
@@ -3173,7 +3173,7 @@ background-color: rgb(45, 45, 48);</string>
                   <number>1</number>
                  </property>
                  <property name="maximum">
-                  <number>21</number>
+                  <number>7</number>
                  </property>
                  <property name="singleStep">
                   <number>2</number>
@@ -3317,6 +3317,9 @@ background-color: rgb(45, 45, 48);</string>
             <widget class="QPushButton" name="start_mark_btn">
              <property name="text">
               <string>Start Mark</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>

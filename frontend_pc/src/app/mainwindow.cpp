@@ -288,6 +288,7 @@ void MainWindow::show_image()
     this->ui->ScrollBar3->setSliderPosition(dims[2] / 2 - 1);
     
     this->view_zoom_to_fit();
+    ui->start_mark_btn->setChecked(false);
     point_picker_cbk->EndMark();
     point_picker_cbk->SetFolderPath(image_tree_[cur_selected_image_ind_[0]][0].image_path);
 }
@@ -1458,7 +1459,7 @@ vtkSmartPointer<vtkImageData> MainWindow::image_threshold(vtkImageData* input_im
     threshold_filter->ThresholdBetween(params.lower_value, params.upper_value);
     threshold_filter->ReplaceInOn();
     threshold_filter->ReplaceOutOn();
-    threshold_filter->SetInValue(1);
+    threshold_filter->SetInValue(255);
     threshold_filter->SetOutValue(0);
     threshold_filter->Update();
 
@@ -1697,7 +1698,12 @@ void MainWindow::on_action_upload_file_triggered()
     params.image_manager = &image_requester;
 //    params.patients = patients_;
     UploadForm upload_form(params, this);
-    upload_form.exec();
+    int ret = upload_form.exec();
+    if (ret == QDialog::Accepted) {
+        QMessageBox::information(this, "success", "Succeed to upload file!");
+    } else {
+        QMessageBox::warning(this, "error", "Fail to upload file!");
+    }
 }
 
 void MainWindow::on_action_download_file_triggered()

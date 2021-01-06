@@ -11,6 +11,7 @@ ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent, QString progres
     setValue(0);
     setMinimumDuration(0);
     setMinimumSize(QSize(400, 75));
+    this->setCancelButton(nullptr);
 }
 
 ProgressDialog::~ProgressDialog(){
