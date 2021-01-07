@@ -11,6 +11,7 @@ ProgressDialog::ProgressDialog(const QUrl &url, QWidget *parent, QString progres
     setValue(0);
     setMinimumDuration(0);
     setMinimumSize(QSize(400, 75));
+    this->setCancelButton(nullptr);
 }
 
 ProgressDialog::~ProgressDialog(){
@@ -122,6 +123,7 @@ void imageInfo::downloadFile(QNetworkReply* reply){
         QFile meta(dir.filePath("meta_data"));
         if (!meta.open(QIODevice::Append)){
             qDebug() << "Open meta file fails";
+            reply->deleteLater();
             return;
         }
         // normal case
@@ -152,6 +154,7 @@ void imageInfo::downloadFile(QNetworkReply* reply){
                 meta.write("\r\n");
             }
         }
+        meta.close();
     }
     reply->deleteLater();
 }
@@ -322,13 +325,14 @@ int imageInfo::uploadImgMark(QString folderpath, int level, int view, double top
     json_doc.setObject(json_content);
     QByteArray data = json_doc.toJson(QJsonDocument::Compact);
     // construct request
+    QNetworkAccessManager local_qnam;
     QNetworkRequest request;
     QUrl url(urlbase["base2"] + urlbase["mark"]);
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
     // send request
-    QNetworkReply* reply = qnam.post(request, data);
+    QNetworkReply* reply = local_qnam.post(request, data);
     // wait until server reply
     QEventLoop eventloop;
     connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
@@ -381,11 +385,12 @@ QVector<imageInfo::imgMark> imageInfo::getAllMarks(QString folderpath, int layer
     url.setQuery(query.query());
 
     // construct the request
+    QNetworkAccessManager local_qnam;
     QNetworkRequest request;
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     // send request
-    QNetworkReply* reply = qnam.get(request);
+    QNetworkReply* reply = local_qnam.get(request);
     // loop until get reply
     QEventLoop eventloop;
     connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
@@ -483,8 +488,46 @@ QString imageInfo::predictImageHttp(QString filepath, QString patientID){
     }
 }
 
+QString imageInfo::predictImageHttp(QString filepath){
+    QFile afile(filepath);
+    if (!afile.exists()){
+        qDebug() << "The file doesn't exist";
+        return "FILE NOT EXIST";
+    }
+    FILE *fp;
+    QString URL = urlbase["base4"] + urlbase["predict"];
+    QString req = "curl --location --request POST \"" + URL + "\"";
+    req = req + " --header \"X-Auth-Token: " + token.toUtf8() + "\"";
+    req = req + " --form \"tumor_image=@" + filepath + "\"";
+    char buffer[1024] = {0};
+
+    qDebug() << req;
+
+#ifdef Q_OS_WIN32   // Define on windows system
+    fp = _popen(req.toUtf8(), "r");
+#endif
+
+#ifdef Q_OS_MACOS   // Define on MACOS system
+
+    fp = popen(req.toUtf8(), "r");
+#endif
+    if (fp == NULL){
+        qDebug() << "CONNECTION FAIL";
+        return "CONNECTION FAIL";
+    }
+
+    while(fgets(buffer, sizeof(buffer), fp) != NULL) {
+        qDebug() << buffer;
+    }
+    // handle the reply of server
+    QString result = buffer;
+    result = result.replace('"', ' ');
+    return result;
+}
+
 QVector<QString> imageInfo::getCtimeHttp(QString patientId){
     // construct url and query item
+    QNetworkAccessManager local_qnam;
     QUrl url(urlbase["base2"] + urlbase["image"] + "/ctime");
     QUrlQuery query;
     query.addQueryItem("patientId", patientId);
@@ -494,7 +537,7 @@ QVector<QString> imageInfo::getCtimeHttp(QString patientId){
     request.setUrl(url);
     request.setRawHeader("X-Auth-Token", token.toUtf8());
     // send request
-    QNetworkReply* reply = qnam.get(request);
+    QNetworkReply* reply = local_qnam.get(request);
 
     QEventLoop eventloop;
     connect(reply, SIGNAL(finished()), &eventloop, SLOT(quit()));
@@ -517,6 +560,7 @@ QVector<QString> imageInfo::getCtimeHttp(QString patientId){
     if (status == 200){
         // normal case
         QByteArray resp = reply->readAll();
+        // qDebug() << resp;
         QJsonParseError jerror;
         QJsonDocument json = QJsonDocument::fromJson(resp, &jerror);
         if (jerror.error == QJsonParseError::NoError && !json.isNull() && !json.isEmpty()){

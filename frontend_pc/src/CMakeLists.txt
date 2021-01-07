@@ -42,9 +42,11 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/app
   ${PROJECT_SOURCE_DIR}/app/registration
   ${PROJECT_SOURCE_DIR}/app/voxel2mesh
+  ${PROJECT_SOURCE_DIR}/app/segmentation
   ${PROJECT_SOURCE_DIR}/app/commu
   ${PROJECT_SOURCE_DIR}/app/login
   ${PROJECT_SOURCE_DIR}/app/utils
+  ${PROJECT_SOURCE_DIR}/app/predict
   ${PROJECT_SOURCE_DIR}/app/load
   ${PROJECT_SOURCE_DIR}/app/general_processing
   ${CMAKE_CURRENT_BINARY_DIR})
@@ -64,6 +66,8 @@ file(GLOB
      ${PROJECT_SOURCE_DIR}/app/load/*.h
      ${PROJECT_SOURCE_DIR}/app/utils/*.cpp
      ${PROJECT_SOURCE_DIR}/app/load/*.cpp
+     ${PROJECT_SOURCE_DIR}/app/predict/*.cpp
+     ${PROJECT_SOURCE_DIR}/app/predict/*.h
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.cpp
      ${PROJECT_SOURCE_DIR}/app/general_processing/*.h
      ${PROJECT_SOURCE_DIR}/resources/myapp.rc
@@ -77,7 +81,8 @@ set(PROJECT_UIS app/mainwindow.ui
                            app/login/loginform.ui 
                            app/login/signup_form.ui
                            app/load/upload_form.ui
-                           app/load/download_form.ui)
+                           app/load/download_form.ui
+                           app/predict/predict_form.ui)
 
 # 链接库文件
 #link_directories(${PROJECT_SOURCE_DIR}/lib)
@@ -95,6 +100,7 @@ target_link_libraries(MEDLAB
                       ${ITK_LIBRARIES}
                       registration
                       voxel2mesh
+                      segmentation
                       Qt5::Widgets
                       Qt5::Network)
 
