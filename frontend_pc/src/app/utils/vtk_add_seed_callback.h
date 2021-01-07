@@ -10,8 +10,12 @@
 #include <vtkImageViewer2.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#ifdef Q_OS_WIN32
 #include <segmentation_worker.h>
-
+#endif
+#ifdef Q_OS_MACOS
+#include "segmentation/segmentation_worker.h"
+#endif
 using std::vector;
 
 class vtkAddSeedCallback : public vtkCommand
