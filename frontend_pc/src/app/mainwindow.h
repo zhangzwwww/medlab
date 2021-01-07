@@ -33,7 +33,6 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include <vtkRendererCollection.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkAxesActor.h>
-#include <vtk_add_seed_callback.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -112,6 +111,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "segmentation/segmentation_worker.h"
 #include "predict/predict_form.h"
 #include "utils/vtk_point_picker_callback.h"
+#include "utils/vtk_add_seed_callback.h"
 #endif
 
 #ifdef Q_OS_WIN32   // Define on windows system
@@ -129,6 +129,7 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 #include "segmentation_worker.h"
 #include "predict/predict_form.h"
 #include "utils/vtk_point_picker_callback.h"
+#include <vtk_add_seed_callback.h>
 #endif
 
 using std::vector;

@@ -146,7 +146,7 @@ void MainWindow::init_views()
     renderer3D_->SetBackground2(0.5, 0.5, 0.5);
     renderer3D_->SetGradientBackground(1);
 
-    this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
+//    this->ui->view4->GetRenderWindow()->AddRenderer(renderer3D_);
 
 
 }

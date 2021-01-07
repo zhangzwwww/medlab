@@ -1,0 +1,299 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  description: "This is the patients server"
+  title: "Patient"
+basePath: "/v1"
+tags:
+  - name: "patient"
+  - name: "image"
+paths:
+  /images:
+    get:
+      tags:
+        - "image"
+      summary: "get images by patientId and ctime"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: query
+          name: patientId
+          type: "string"
+          required: True
+        - in: query
+          name: ctime
+          type: "string"
+          required: True
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Image"
+        "401":
+          description: "Unauthorized"
+    post:
+      tags:
+        - "image"
+      summary: "upload file"
+      consumes:
+        - application/x-www-form-urlencoded
+        - multipart/form-data
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: "formData"
+          name: patientId
+          type: "string"
+          required: True
+        - in: "formData"
+          name: ctime
+          type: "string"
+          required: True
+        - in: "formData"
+          name: uploaded_file
+          type: "file"
+          required: True
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+  /image/ctime:
+    get:
+      tags:
+        - "image"
+      summary: "get image ctimes"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: True
+        - in: query
+          name: patientId
+          type: "string"
+          required: True
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CTime"
+        "401":
+          description: "Unauthorized"
+  /image/mark:
+    get:
+      tags:
+        - "image"
+      summary: "get all marks"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: True
+        - in: query
+          name: imageId
+          type: "string"
+          requried: True
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Mark"
+        "401":
+          description: "Unauthorized"
+    post:
+      tags:
+        - "image"
+      summary: "create mark"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: True
+        - in: body
+          name: "mark"
+          required: True
+          schema:
+            $ref: "#/definitions/Mark"
+      responses:
+        '201':
+          description: "Created"
+        '401':
+          description: "Unauthroized"
+  /patient:
+    get:
+      tags:
+        - "patient"
+      summary: "get all patients info"
+      operationId: "GetAllPatients"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Patient"
+        "401":
+          description: "Unauthorized"
+    post:
+      tags:
+        - "patient"
+      summary: "create new patient"
+      operationId: "CreatePatient"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: body
+          name: "patient"
+          required: true
+          schema:
+            $ref: "#/definitions/Patient"
+      responses:
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "400":
+          description: "Bad Request"
+  /patient/{patientId}:
+    get:
+      tags:
+        - "patient"
+      summary: "get patient by id"
+      operationId: "getPatientById"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: "path"
+          name: "patientId"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Patient"
+        "401":
+          description: "Unauthorized"
+        "400":
+          description: "Bad Request"
+    put:
+      tags:
+        - "patient"
+      summary: "modify patient by id"
+      operationId: "ModifyPatientById"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: "body"
+          name: "patient"
+          required: true
+          schema:
+            $ref: "#/definitions/Patient"
+        - in: "path"
+          name: "patientId"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+        "400":
+          description: "Bad Request"
+    delete:
+      tags:
+        - "patient"
+      summary: "delete patient by id"
+      operationId: "DeletePatientById"
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: "path"
+          name: "patientId"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: "OK"
+        "401":
+          description: "Unauthorized"
+        "400":
+          description: "Bad Request"
+definitions:
+  Patient:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      gender:
+        type: "boolean"
+      birth:
+        type: "string"
+        format: "date"
+      age:
+        type: "integer"
+  Image:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      content:
+        type: "string"
+      patientId:
+        type: "string"
+      ctime:
+        type: "string"
+  CTime:
+    type: "object"
+    properties:
+      ctime:
+        type: "string"
+  Mark:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      layer:
+        type: "number"
+      topX:
+        type: "number"
+      topY:
+        type: "number"
+      bottomX:
+        type: "number" 
+      bottomY:
+        type: "number"
+      view:
+        type: "number"
+      imageId:
+        type: "string"
