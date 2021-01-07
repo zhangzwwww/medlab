@@ -1,0 +1,39 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  description: "This is the tumor prediction server"
+  title: "Predict"
+basePath: "/v1"
+tags:
+  - name: "predict"
+paths:
+  /predict:
+    post:
+      tags:
+        - "predict"
+      summary: "upload file"
+      consumes:
+        - application/x-www-form-urlencoded
+        - multipart/form-data
+      parameters:
+        - in: "header"
+          name: X-Auth-Token
+          type: "string"
+          required: true
+        - in: "formData"
+          name: tumor_image
+          type: "file"
+          required: True
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: string
+        "401":
+          description: "Unauthorized"
+definitions:
+  Tumor:
+    type: "object"
+    properties:
+      type:
+        type: "string"

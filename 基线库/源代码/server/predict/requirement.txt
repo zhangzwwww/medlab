@@ -1,0 +1,12 @@
+gunicorn
+gevent
+flask
+flask_sqlalchemy
+flask_restful
+redis
+uuid
+mysqlclient
+torch
+python-consul
+Pillow
+torchvision

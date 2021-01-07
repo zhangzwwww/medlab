@@ -1,0 +1,10 @@
+gunicorn
+gevent
+flask
+flask_sqlalchemy
+flask_restful
+redis
+uuid
+mysqlclient
+pymongo
+python-consul
